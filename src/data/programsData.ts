@@ -19,7 +19,7 @@ export const programCategories = [
     ],
   },
   {
-    category: 'Income and Business Taxation',
+    category: 'Business and Finance',
     programs: [
       'Financial Statements: Preparation, Presentation and Analysis',
       'Fundamentals of Governance, Business Ethics, Risk Management, and Internal Control',
