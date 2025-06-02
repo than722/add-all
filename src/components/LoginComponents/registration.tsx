@@ -1,5 +1,13 @@
 import React from 'react';
 
+/**
+ * A modal component for user registration.
+ *
+ * @param {Object} props - The component props.
+ * @param {boolean} props.isOpen - Determines if the modal is open.
+ * @param {Function} props.onClose - Callback function to close the modal.
+ * @returns {JSX.Element | null} The rendered modal component or null if not open.
+ */
 export default function RegisterModal({
   isOpen,
   onClose,
@@ -7,18 +15,18 @@ export default function RegisterModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  // Return null to prevent rendering the modal when it is not open
   if (!isOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
       <div
-        className="relative bg-white/90 backdrop-blur-md rounded-2xl max-w-md w-full p-8 shadow-xl"
-        onClick={(e) => e.stopPropagation()}
+        className="absolute inset-0"
+        onClick={onClose}
+      ></div>
+      <div
+        className="relative bg-white/90 backdrop-blur-md rounded-2xl max-w-md w-full p-8 shadow-xl z-10"
       >
-        {/* Close X button */}
         <button
           onClick={onClose}
           aria-label="Close modal"
@@ -39,7 +47,14 @@ export default function RegisterModal({
         <h2 className="text-2xl font-bold text-center mb-6 text-[#1E3A5F]">
           Register
         </h2>
-        <form className="space-y-4">
+        <form
+          className="space-y-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            // Handle form submission here
+            console.log('Form submitted');
+          }}
+        >
           <div>
             <label htmlFor="fullname" className="block text-gray-700 mb-1 font-semibold">
               Full Name
@@ -48,7 +63,7 @@ export default function RegisterModal({
               type="text"
               id="fullname"
               name="fullname"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#92D0D3]"
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
               required
             />
           </div>
@@ -78,7 +93,7 @@ export default function RegisterModal({
           </div>
           <button
             type="submit"
-            className="w-full bg-[#92D0D3] text-white py-2 rounded-lg font-semibold hover:bg-[#7bbec2] transition"
+            className="w-full bg-primary text-white py-2 rounded-lg font-semibold hover:bg-primary-dark transition"
           >
             Register
           </button>

@@ -6,14 +6,7 @@ import React from 'react';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { programsList } from '@/data/programsData';
-
-const dummyDetails = {
-  description:
-    'This is a placeholder description of the program. It provides information about the program objectives, topics covered, and what participants can expect.',
-  timeAndSessions: '2:00 PM - 5:00 PM | 6 Sessions',
-  date: 'June 10, 2025 - July 15, 2025',
-  instructor: 'John Doe',
-};
+import { dummyDetails } from '@/data/data';
 
 const ProgramSimpleView: React.FC = () => {
   const searchParams = useSearchParams();
