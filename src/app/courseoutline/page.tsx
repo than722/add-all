@@ -38,16 +38,10 @@ function ProgressCircle({ percent }: { percent: number }) {
 export default function CourseOutlinePage() {
 	const [expandedModule, setExpandedModule] = useState<number | null>(null);
 	const [selectedModule, setSelectedModule] = useState<number>(initialCourseOutline[0].id);
+	const [selectedSubsection, setSelectedSubsection] = useState<{ modId: number; subId: number } | null>(null);
 	const [search, setSearch] = useState('');
-	const [courseOutline, setCourseOutline] = useState(initialCourseOutline);
+	const [courseOutline] = useState(initialCourseOutline);
 	const [role, setRole] = useState<string | null>(null);
-
-	// Editing state
-	const [editingModuleId, setEditingModuleId] = useState<number | null>(null);
-	const [editingSubId, setEditingSubId] = useState<number | null>(null);
-	const [editModuleTitle, setEditModuleTitle] = useState('');
-	const [editModuleContent, setEditModuleContent] = useState('');
-	const [editSubTitle, setEditSubTitle] = useState('');
 
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
@@ -62,49 +56,8 @@ export default function CourseOutlinePage() {
 	);
 
 	const selected = courseOutline.find((mod) => mod.id === selectedModule);
-
-	// Handlers for editing
-	const startEditModule = (mod: any) => {
-		setEditingModuleId(mod.id);
-		setEditModuleTitle(mod.title);
-		setEditModuleContent(mod.content);
-	};
-	const saveEditModule = (modId: number) => {
-		setCourseOutline((prev) =>
-			prev.map((mod) =>
-				mod.id === modId
-					? { ...mod, title: editModuleTitle, content: editModuleContent }
-					: mod
-			)
-		);
-		setEditingModuleId(null);
-	};
-	const cancelEditModule = () => {
-		setEditingModuleId(null);
-	};
-
-	const startEditSub = (sub: any) => {
-		setEditingSubId(sub.id);
-		setEditSubTitle(sub.title);
-	};
-	const saveEditSub = (modId: number, subId: number) => {
-		setCourseOutline((prev) =>
-			prev.map((mod) =>
-				mod.id === modId
-					? {
-							...mod,
-							subsections: mod.subsections.map((sub: any) =>
-								sub.id === subId ? { ...sub, title: editSubTitle } : sub
-							),
-					  }
-					: mod
-			)
-		);
-		setEditingSubId(null);
-	};
-	const cancelEditSub = () => {
-		setEditingSubId(null);
-	};
+	const selectedSub = selectedSubsection && courseOutline
+		.find((mod) => mod.id === selectedSubsection.modId)?.subsections.find((sub) => sub.id === selectedSubsection.subId);
 
 	return (
 		<div className="min-h-screen bg-gray-100 flex flex-col md:flex-row">
@@ -124,54 +77,16 @@ export default function CourseOutlinePage() {
 					)}
 					{filteredModules.map((mod) => (
 						<li key={mod.id}>
-							{role === 'teacher' && editingModuleId === mod.id ? (
-								<div className="mb-2">
-									<input
-										className="w-full mb-1 px-2 py-1 border rounded"
-										value={editModuleTitle}
-										onChange={e => setEditModuleTitle(e.target.value)}
-									/>
-									<textarea
-										className="w-full mb-1 px-2 py-1 border rounded"
-										value={editModuleContent}
-										onChange={e => setEditModuleContent(e.target.value)}
-									/>
-									<div className="flex gap-2">
-										<button
-											className="bg-[#92D0D3] text-white px-2 py-1 rounded"
-											onClick={() => saveEditModule(mod.id)}
-										>
-											Save
-										</button>
-										<button
-											className="bg-gray-300 text-[#002B5C] px-2 py-1 rounded"
-											onClick={cancelEditModule}
-										>
-											Cancel
-										</button>
-									</div>
-								</div>
-							) : (
-								<>
-									<button
-										className={`w-full text-left px-3 py-2 rounded font-semibold transition ${selectedModule === mod.id ? 'bg-[#92D0D3] text-white' : 'hover:bg-gray-100 text-[#002B5C]'}`}
-										onClick={() => {
-											setExpandedModule(expandedModule === mod.id ? null : mod.id);
-											setSelectedModule(mod.id);
-										}}
-									>
-										{mod.title}
-									</button>
-									{role === 'teacher' && (
-										<button
-											className="text-xs text-[#002B5C] underline ml-2"
-											onClick={() => startEditModule(mod)}
-										>
-											Edit
-										</button>
-									)}
-								</>
-							)}
+							<button
+								className={`w-full text-left px-3 py-2 rounded font-semibold transition ${selectedModule === mod.id ? 'bg-[#92D0D3] text-white' : 'hover:bg-gray-100 text-[#002B5C]'}`}
+								onClick={() => {
+									setExpandedModule(expandedModule === mod.id ? null : mod.id);
+									setSelectedModule(mod.id);
+									setSelectedSubsection(null); // Reset subsection selection when module is clicked
+								}}
+							>
+								{mod.title}
+							</button>
 							{/* Progress bar under module name */}
 							<div className="mt-1 mb-2">
 								<div className="w-full bg-gray-200 rounded h-2">
@@ -186,43 +101,14 @@ export default function CourseOutlinePage() {
 							{expandedModule === mod.id && (
 								<ul className="ml-4 mt-1 space-y-1">
 									{mod.subsections.map((sub) => (
-										<li key={sub.id} className="text-sm text-gray-700 flex items-center gap-2">
-											<ProgressCircle percent={subsectionProgress[sub.id] || 0} />
-											{role === 'teacher' && editingSubId === sub.id ? (
-												<>
-													<input
-														className="px-1 py-0.5 border rounded text-sm"
-														value={editSubTitle}
-														onChange={e => setEditSubTitle(e.target.value)}
-													/>
-													<button
-														className="text-xs text-[#92D0D3] underline"
-														onClick={() => saveEditSub(mod.id, sub.id)}
-													>
-														Save
-													</button>
-													<button
-														className="text-xs text-gray-400 underline"
-														onClick={cancelEditSub}
-													>
-														Cancel
-													</button>
-												</>
-											) : (
-												<>
-													<span>• {sub.title}</span>
-													{role === 'teacher' && (
-														<button
-															className="text-xs text-[#002B5C] underline ml-1"
-															onClick={() => startEditSub(sub)}
-														>
-															Edit
-														</button>
-													)}
-												</>
-											)}
-											<span className="text-xs text-gray-400 ml-1">{subsectionProgress[sub.id] || 0}%</span>
-										</li>
+										<li key={sub.id} className={`text-sm text-gray-700 flex items-center gap-2 ${selectedSubsection && selectedSubsection.modId === mod.id && selectedSubsection.subId === sub.id ? 'bg-[#e6f7f8] rounded' : ''}`}
+											style={{ cursor: 'pointer' }}
+											onClick={() => setSelectedSubsection({ modId: mod.id, subId: sub.id })}
+									>
+										<ProgressCircle percent={subsectionProgress[sub.id] || 0} />
+										<span>• {sub.title}</span>
+										<span className="text-xs text-gray-400 ml-1">{subsectionProgress[sub.id] || 0}%</span>
+									</li>
 									))}
 								</ul>
 							)}
@@ -232,80 +118,26 @@ export default function CourseOutlinePage() {
 			</div>
 			{/* Content Area */}
 			<div className="flex-1 p-8">
-				{selected ? (
+				{selectedSub ? (
 					<div className="bg-white rounded-xl shadow p-6">
-						{role === 'teacher' && editingModuleId === selected.id ? (
-							<>
-								<h3 className="text-2xl font-bold text-[#002B5C] mb-2">
-									<input
-										className="w-full px-2 py-1 border rounded"
-										value={editModuleTitle}
-										onChange={e => setEditModuleTitle(e.target.value)}
-									/>
-								</h3>
-								<textarea
-									className="w-full mb-4 px-2 py-1 border rounded"
-									value={editModuleContent}
-									onChange={e => setEditModuleContent(e.target.value)}
-								/>
-								<div className="flex gap-2 mb-4">
-									<button
-										className="bg-[#92D0D3] text-white px-2 py-1 rounded"
-										onClick={() => saveEditModule(selected.id)}
-									>
-										Save
-									</button>
-									<button
-										className="bg-gray-300 text-[#002B5C] px-2 py-1 rounded"
-										onClick={cancelEditModule}
-									>
-										Cancel
-									</button>
-								</div>
-							</>
-						) : (
-							<>
-								<h3 className="text-2xl font-bold text-[#002B5C] mb-2">{selected.title}</h3>
-								<p className="text-gray-700 mb-4">{selected.content}</p>
-							</>
-						)}
+						<h3 className="text-2xl font-bold text-[#002B5C] mb-2">{selectedSub.title}</h3>
+						<p className="text-gray-700 mb-4">{selectedSub.content}</p>
+						<button
+							className="text-[#92D0D3] underline text-sm mb-2"
+							onClick={() => setSelectedSubsection(null)}
+						>
+							← Back to module
+						</button>
+					</div>
+				) : selected ? (
+					<div className="bg-white rounded-xl shadow p-6">
+						<h3 className="text-2xl font-bold text-[#002B5C] mb-2">{selected.title}</h3>
+						<p className="text-gray-700 mb-4">{selected.content}</p>
 						<h4 className="text-lg font-semibold text-[#002B5C] mb-2">Subsections</h4>
 						<ul className="list-disc list-inside text-gray-700 space-y-1">
 							{selected.subsections.map((sub) => (
 								<li key={sub.id} className="flex items-center gap-2">
-									{role === 'teacher' && editingSubId === sub.id ? (
-										<>
-											<input
-												className="px-1 py-0.5 border rounded text-sm"
-												value={editSubTitle}
-												onChange={e => setEditSubTitle(e.target.value)}
-											/>
-											<button
-												className="text-xs text-[#92D0D3] underline"
-												onClick={() => saveEditSub(selected.id, sub.id)}
-											>
-												Save
-											</button>
-											<button
-												className="text-xs text-gray-400 underline"
-												onClick={cancelEditSub}
-											>
-												Cancel
-											</button>
-										</>
-									) : (
-										<>
-											{sub.title}
-											{role === 'teacher' && (
-												<button
-													className="text-xs text-[#002B5C] underline ml-1"
-													onClick={() => startEditSub(sub)}
-												>
-													Edit
-												</button>
-											)}
-										</>
-									)}
+									{sub.title}
 								</li>
 							))}
 						</ul>

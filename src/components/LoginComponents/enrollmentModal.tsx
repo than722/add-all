@@ -5,7 +5,7 @@ interface EnrollModalProps {
   onClose: () => void;
   program: string;
   price: number;
-  onEnrollmentSubmitted?: () => void;
+  onEnrollmentSubmitted?: (receiptFile: File, paymentType: string) => void;
 }
 
 const EnrollModal: React.FC<EnrollModalProps> = ({ isOpen, onClose, program, price, onEnrollmentSubmitted }) => {
@@ -33,9 +33,7 @@ const EnrollModal: React.FC<EnrollModalProps> = ({ isOpen, onClose, program, pri
       return;
     }
     setError(null);
-    // Handle enrollment logic here (e.g., send data to server)
-    alert('Enrollment submitted!');
-    if (onEnrollmentSubmitted) onEnrollmentSubmitted();
+    if (onEnrollmentSubmitted) onEnrollmentSubmitted(receipt, paymentType);
     onClose();
   };
 

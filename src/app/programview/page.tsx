@@ -4,9 +4,18 @@ import { useSearchParams } from 'next/navigation';
 import { programsList } from '@/data/programsData';
 import Navbar from '@/components/ui/Navbar';
 import React, { useState, useEffect } from 'react';
-import EnrollModal from '@/components/LoginComponents/enroll';
+import EnrollModal from '@/components/LoginComponents/enrollmentModal';
 import { getRole, UserRole } from '@/components/roles/role';
 import { dummyStudents, programPrices } from '@/data/data';
+import Link from 'next/link';
+
+interface PendingApplication {
+  name: string;
+  email: string;
+  receiptUrl: string;
+  paymentType: string;
+  status: 'pending' | 'enrolled';
+}
 
 const ProgramView = () => {
   const searchParams = useSearchParams();
@@ -15,16 +24,47 @@ const ProgramView = () => {
 
   const [isEnrollOpen, setIsEnrollOpen] = useState(false);
   const [enrollmentPending, setEnrollmentPending] = useState(false);
-  const [showStudents, setShowStudents] = useState(false);
   const [role, setRole] = useState<UserRole | undefined>(undefined);
+  const [pendingApps, setPendingApps] = useState<PendingApplication[]>([]);
   const price = programData ? programPrices[programData.program] || 0 : 0;
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const storedRole = localStorage.getItem('role');
       if (storedRole) setRole(storedRole as UserRole);
+      // Load pending applications from localStorage for demo
+      const pending = localStorage.getItem(`pendingApps_${programName}`);
+      if (pending) setPendingApps(JSON.parse(pending));
     }
-  }, []);
+  }, [programName]);
+
+  // Save pending applications to localStorage for demo persistence
+  useEffect(() => {
+    if (typeof window !== 'undefined' && programName) {
+      localStorage.setItem(`pendingApps_${programName}`, JSON.stringify(pendingApps));
+    }
+  }, [pendingApps, programName]);
+
+  // Simulate current student info
+  const currentStudent = { name: 'Juan Dela Cruz', email: 'student@example.com' };
+
+  // Handle enrollment submission from modal
+  const handleEnrollmentSubmitted = (receiptFile: File, paymentType: string) => {
+    // For demo, create a URL for the uploaded file
+    const receiptUrl = URL.createObjectURL(receiptFile);
+    setPendingApps((prev) => [
+      ...prev,
+      {
+        name: currentStudent.name,
+        email: currentStudent.email,
+        receiptUrl,
+        paymentType,
+        status: 'pending',
+      },
+    ]);
+    setEnrollmentPending(true);
+    setIsEnrollOpen(false);
+  };
 
   if (!programData) {
     return (
@@ -33,6 +73,14 @@ const ProgramView = () => {
       </div>
     );
   }
+
+  // For student: check if they have a pending application
+  const studentPendingApp = pendingApps.find(
+    (app) => app.email === currentStudent.email && app.status === 'pending'
+  );
+  const studentEnrolledApp = pendingApps.find(
+    (app) => app.email === currentStudent.email && app.status === 'enrolled'
+  );
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -98,26 +146,37 @@ const ProgramView = () => {
       {/* Action Button */}
       <div className="max-w-4xl mx-auto p-8 mt-6 mb-12 text-center">
         {role === 'teacher' ? (
-          <button
-            className="bg-[#002B5C] text-white font-bold py-3 px-6 rounded-full hover:bg-[#001f40] transition duration-300"
-            onClick={() => setShowStudents(true)}
-          >
-            Show List of Students
-          </button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link
+              href={`/studentList?program=${encodeURIComponent(programData.program)}`}
+              className="inline-block bg-[#92D0D3] text-white font-bold py-3 px-6 rounded-full hover:bg-[#6bb7b9] transition"
+            >
+              List of Students
+            </Link>
+            <Link
+              href="/editcourseoutline"
+              className="inline-block bg-[#002B5C] text-white font-bold py-3 px-6 rounded-full hover:bg-[#001f40] transition"
+            >
+              Edit Course Outline
+            </Link>
+          </div>
         ) : role === 'student' ? (
-          <button
-            className={
-              enrollmentPending
-                ? 'bg-yellow-400 text-white font-bold py-3 px-6 rounded-full cursor-not-allowed transition duration-300'
-                : 'bg-[#002B5C] text-white font-bold py-3 px-6 rounded-full hover:bg-[#001f40] transition duration-300'
-            }
-            onClick={() => {
-              if (!enrollmentPending) setIsEnrollOpen(true);
-            }}
-            disabled={enrollmentPending}
-          >
-            {enrollmentPending ? 'Wait for Confirmation' : 'Enroll Now'}
-          </button>
+          studentPendingApp ? (
+            <span className="inline-block bg-yellow-400 text-white font-bold py-3 px-6 rounded-full cursor-not-allowed">
+              Pending Application
+            </span>
+          ) : studentEnrolledApp ? (
+            <span className="inline-block bg-green-500 text-white font-bold py-3 px-6 rounded-full">
+              Enrolled
+            </span>
+          ) : (
+            <button
+              className="bg-[#002B5C] text-white font-bold py-3 px-6 rounded-full hover:bg-[#001f40] transition duration-300"
+              onClick={() => setIsEnrollOpen(true)}
+            >
+              Enroll Now
+            </button>
+          )
         ) : null}
       </div>
       {/* Enroll Modal for students */}
@@ -126,33 +185,11 @@ const ProgramView = () => {
         onClose={() => setIsEnrollOpen(false)}
         program={programData.program}
         price={price}
-        onEnrollmentSubmitted={() => {
-          setEnrollmentPending(true);
-          setIsEnrollOpen(false);
-        }}
+        onEnrollmentSubmitted={(receiptFile: File, paymentType: string) =>
+          handleEnrollmentSubmitted(receiptFile, paymentType)
+        }
       />
-      {/* Student List Modal for teachers */}
-      {showStudents && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
-            <h3 className="text-xl font-bold mb-4 text-[#002B5C]">Enrolled Students</h3>
-            <ul className="mb-4">
-              {dummyStudents.map((student, idx) => (
-                <li key={idx} className="mb-2">
-                  <span className="font-semibold">{student.name}</span>
-                  <span className="text-gray-500 ml-2 text-sm">{student.email}</span>
-                </li>
-              ))}
-            </ul>
-            <button
-              className="bg-[#92D0D3] text-white px-4 py-2 rounded hover:bg-[#6bb7bb] transition"
-              onClick={() => setShowStudents(false)}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      {/* No student list modal for teachers */}
     </div>
   );
 };

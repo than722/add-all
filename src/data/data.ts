@@ -45,8 +45,8 @@ export const initialCourseOutline = [
     title: 'Module 1: Introduction',
     content: 'This module covers the basics and overview of the course.',
     subsections: [
-      { id: 11, title: 'What is this course about?' },
-      { id: 12, title: 'Course Objectives' },
+      { id: 11, title: 'What is this course about?', content: 'This subsection explains what the course is about, its scope, and its intended audience.' },
+      { id: 12, title: 'Course Objectives', content: 'This subsection lists the objectives and learning outcomes for the course.' },
     ],
   },
   {
@@ -54,8 +54,8 @@ export const initialCourseOutline = [
     title: 'Module 2: Core Concepts',
     content: 'This module dives into the core concepts and foundational knowledge.',
     subsections: [
-      { id: 21, title: 'Key Terms' },
-      { id: 22, title: 'Fundamental Theories' },
+      { id: 21, title: 'Key Terms', content: 'This subsection defines key terms and vocabulary used throughout the course.' },
+      { id: 22, title: 'Fundamental Theories', content: 'This subsection covers the fundamental theories relevant to the course.' },
     ],
   },
   {
@@ -63,8 +63,8 @@ export const initialCourseOutline = [
     title: 'Module 3: Application',
     content: 'This module focuses on applying what you have learned.',
     subsections: [
-      { id: 31, title: 'Practical Exercises' },
-      { id: 32, title: 'Case Studies' },
+      { id: 31, title: 'Practical Exercises', content: 'This subsection provides practical exercises for hands-on learning.' },
+      { id: 32, title: 'Case Studies', content: 'This subsection presents case studies for analysis and discussion.' },
     ],
   },
 ];
@@ -89,3 +89,36 @@ export const programPrices: Record<string, number> = {
   'Capital Markets': 1950,
   'Customer Grouping': 1250,
 };
+
+// Add instructorStatus dummy data
+export const instructorStatus: Record<string, 'active' | 'inactive'> = {
+  'john@school.edu': 'active',
+  'jane@school.edu': 'inactive',
+  'mark@school.edu': 'active',
+};
+
+// Dummy enrolled students for a program (simulate localStorage for studentList demo)
+export const demoEnrolledStudentsKey = 'pendingApps_Floristry';
+export const demoEnrolledStudentsValue = JSON.stringify([
+  {
+    name: 'Alice Johnson',
+    email: 'alice@email.com',
+    receiptUrl: '',
+    paymentType: 'GCash',
+    status: 'enrolled',
+  },
+  {
+    name: 'Bob Smith',
+    email: 'bob@email.com',
+    receiptUrl: '',
+    paymentType: 'Bank Transfer',
+    status: 'enrolled',
+  },
+]);
+
+// Dummy admin data for superadmin page
+export const admins = [
+  { name: "Super Admin", email: "superadmin@add-all.edu", contact: "09123456789", position: "Employee", isAdmin: true },
+  { name: "John Doe", email: "john@school.edu", contact: "09112223333", position: "Employee", isAdmin: false },
+  { name: "Jane Smith", email: "jane@school.edu", contact: "09114445555", position: "Employee", isAdmin: false },
+];

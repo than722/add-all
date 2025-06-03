@@ -5,9 +5,13 @@ import { useRouter } from 'next/navigation';
 
 interface ProfileProps {
   onClose: () => void;
+  profile: { name: string; email: string; img: string; bio: string; type?: 'instructor' | 'student' };
+  isAdmin?: boolean;
+  instructorStatus?: { [email: string]: 'active' | 'inactive' };
+  onStatusChange?: (instructorName: string, instructorEmail: string, statusToSet: 'active' | 'inactive') => void;
 }
 
-export default function Profile({ onClose }: ProfileProps) {
+export default function Profile({ onClose, profile, isAdmin, instructorStatus, onStatusChange }: ProfileProps) {
   const router = useRouter();
 
   // Dummy notifications
@@ -27,23 +31,41 @@ export default function Profile({ onClose }: ProfileProps) {
           </div>
           <div className="text-center mb-4">
             <Image
-              src="/profileicon.png"
-              alt="User"
+              src={profile.img}
+              alt={profile.name}
               width={80}
               height={80}
               className="mx-auto rounded-full mb-2"
             />
-            <p className="font-semibold text-[#002B5C]">Juan Dela Cruz</p>
-            <p className="text-sm text-gray-500">student@example.com</p>
+            <p className="font-semibold text-[#002B5C]">{profile.name}</p>
+            <p className="text-sm text-gray-500">{profile.email}</p>
           </div>
           <div className="space-y-2">
+            {/* Admin controls for instructor status */}
+            {isAdmin && profile.type === 'instructor' && instructorStatus && onStatusChange && (
+              <div className="flex gap-2 mb-2">
+                <button
+                  className={`flex-1 py-2 rounded ${instructorStatus[profile.email] === 'active' ? 'bg-green-600 text-white' : 'bg-gray-200 text-[#002B5C]'} font-semibold`}
+                  onClick={() => onStatusChange(profile.name, profile.email, 'active')}
+                  disabled={instructorStatus[profile.email] === 'active'}
+                >
+                  Active
+                </button>
+                <button
+                  className={`flex-1 py-2 rounded ${instructorStatus[profile.email] === 'inactive' ? 'bg-red-600 text-white' : 'bg-gray-200 text-[#002B5C]'} font-semibold`}
+                  onClick={() => onStatusChange(profile.name, profile.email, 'inactive')}
+                  disabled={instructorStatus[profile.email] === 'inactive'}
+                >
+                  Inactive
+                </button>
+              </div>
+            )}
             <button className="w-full bg-[#002B5C] text-white py-2 rounded hover:bg-[#1a3d7c] transition">
               Edit Profile
             </button>
             <button
               className="w-full bg-gray-200 text-[#002B5C] py-2 rounded hover:bg-gray-300 transition"
               onClick={() => {
-                // Simulate logout: clear localStorage/sessionStorage if used
                 if (typeof window !== 'undefined') {
                   localStorage.clear();
                   sessionStorage.clear();

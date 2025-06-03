@@ -19,14 +19,9 @@ export default function RegisterModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
-      <div
-        className="absolute inset-0"
-        onClick={onClose}
-      ></div>
-      <div
-        className="relative bg-white/90 backdrop-blur-md rounded-2xl max-w-md w-full p-8 shadow-xl z-10"
-      >
+    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+      <div className="absolute inset-0" onClick={onClose}></div>
+      <div className="relative bg-white rounded-2xl max-w-md w-full p-8 shadow-xl z-10">
         <button
           onClick={onClose}
           aria-label="Close modal"

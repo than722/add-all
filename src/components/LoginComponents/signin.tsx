@@ -29,8 +29,9 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg p-8 max-w-xs w-full">
+    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+      <div className="absolute inset-0" onClick={onClose}></div>
+      <div className="relative bg-white rounded-2xl max-w-md w-full p-8 shadow-xl z-10">
         <h3 className="text-xl font-bold mb-6 text-[#002B5C] text-center">Sign In As</h3>
         <div className="flex flex-col gap-4">
           <button
@@ -50,6 +51,15 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
             onClick={() => handleSignIn(3)}
           >
             Admin
+          </button>
+          <button
+            className="bg-[#1E3A5F] text-white px-4 py-2 rounded hover:bg-[#16325c] transition font-semibold"
+            onClick={() => {
+              onClose();
+              router.push('/superadmin');
+            }}
+          >
+            SuperAdmin
           </button>
         </div>
         <button
