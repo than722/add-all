@@ -58,31 +58,41 @@ const EnrollModal: React.FC<EnrollModalProps> = ({ isOpen, onClose, program, pri
           </div>
           <div>
             <label className="block text-gray-700 mb-1 font-semibold">Upload Receipt</label>
-            <input
-              type="file"
-              accept="image/*"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#92D0D3]"
-              required
-            />
+            <div className="relative">
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                required
+                aria-label="Choose File"
+              />
+              <button
+                type="button"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-gray-900 text-left focus:outline-none focus:ring-2 focus:ring-[#92D0D3]"
+                onClick={() => fileInputRef.current && fileInputRef.current.click()}
+              >
+                {receipt ? receipt.name : 'Choose File'}
+              </button>
+            </div>
             {receipt && <div className="mt-2 text-green-600 text-sm">{receipt.name} selected</div>}
           </div>
           <div>
             <label className="block text-gray-700 mb-1 font-semibold">Payment Type</label>
             <div className="flex gap-4">
-              <label className="flex items-center gap-2">
+              <label className="flex items-center gap-2 text-gray-700">
                 <input
                   type="radio"
                   name="paymentType"
                   value="cash"
                   checked={paymentType === 'cash'}
                   onChange={() => setPaymentType('cash')}
-                  className="accent-[#92D0D3]"
+                  className="accent-[#92D0D3]"  
                 />
                 Cash
               </label>
-              <label className="flex items-center gap-2">
+              <label className="flex items-center gap-2 text-gray-700">
                 <input
                   type="radio"
                   name="paymentType"

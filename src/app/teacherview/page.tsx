@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { programsList } from '@/data/programsData';
-import Navbar from '@/components/ui/Navbar';
+import Navbar from '@/components/ui/navbar/Navbar';
 
 const TeacherView: React.FC = () => {
   return (

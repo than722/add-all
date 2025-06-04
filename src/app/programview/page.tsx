@@ -2,9 +2,9 @@
 
 import { useSearchParams } from 'next/navigation';
 import { programsList } from '@/data/programsData';
-import Navbar from '@/components/ui/Navbar';
+import Navbar from '@/components/ui/navbar/Navbar';
 import React, { useState, useEffect } from 'react';
-import EnrollModal from '@/components/LoginComponents/enrollmentModal';
+import EnrollModal from '@/components/ui/enrollmentModal';
 import { getRole, UserRole } from '@/components/roles/role';
 import { dummyStudents, programPrices } from '@/data/data';
 import Link from 'next/link';
@@ -95,21 +95,21 @@ const ProgramView = () => {
             <p className="text-gray-600 mt-2 mb-4 italic">{programData.category}</p>
 
             <p className="mb-4">
-              <span className="font-semibold">Description:</span>{' '}
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              <span className="font-semibold text-black">Description:</span>{' '}
+              <span className="text-black">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
             </p>
 
             <p className="mb-2">
-              <span className="font-semibold">Time:</span> 9:00 AM – 12:00 PM
+              <span className="font-semibold text-black">Time:</span> <span className="text-black">9:00 AM – 12:00 PM</span>
             </p>
             <p className="mb-2">
-              <span className="font-semibold">No. of Sessions:</span> 6
+              <span className="font-semibold text-black">No. of Sessions:</span> <span className="text-black">6</span>
             </p>
             <p className="mb-2">
-              <span className="font-semibold">Date:</span> June 15, 2025
+              <span className="font-semibold text-black">Date:</span> <span className="text-black">June 15, 2025</span>
             </p>
             <p className="mb-2">
-              <span className="font-semibold">Instructor:</span> John Doe
+              <span className="font-semibold text-black">Instructor:</span> <span className="text-black">John Doe</span>
             </p>
           </div>
 

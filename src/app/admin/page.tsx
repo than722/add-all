@@ -2,7 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
-import Navbar from '@/components/ui/Navbar';
+import Navbar from '@/components/ui/navbar/Navbar';
 import { programsList } from '@/data/programsData';
 import Image from 'next/image';
 import { instructors, students, dummyDetails, instructorStatus as initialInstructorStatus } from '@/data/data';
@@ -10,6 +10,7 @@ import PendingModal from '@/components/ui/pendingModal';
 import StatusModal from '@/components/ui/statusModal';
 import Profile from '@/components/ui/profileview';
 import AddProgramModal from '@/components/ui/addprogramModal';
+import AddInstructorModal from '@/components/ui/addinstructorModal';
 
 interface PendingApplication {
   name: string;
@@ -65,6 +66,10 @@ export default function AdminPage() {
   });
   const [adminPrograms, setAdminPrograms] = useState(programsList);
 
+  // Add instructor modal state
+  const [showAddInstructorModal, setShowAddInstructorModal] = useState(false);
+  const [instructorsList, setInstructorsList] = useState(instructors);
+
   // Fix: Normalize adminPrograms to always have all fields (for both default and added programs)
   const normalizedAdminPrograms = adminPrograms.map((p) => ({
     program: p.program,
@@ -106,6 +111,15 @@ export default function AdminPage() {
     ]);
     setShowAddProgramModal(false);
     setNewProgram({ program: '', category: '', instructor: '', date: '', time: '', sessions: '', description: '', thumbnail: '' });
+  };
+
+  // Add instructor handler
+  const handleAddInstructor = (instructor: { name: string; email: string; contact: string; img: string }) => {
+    setInstructorsList((prev) => [
+      ...prev,
+      { ...instructor, bio: 'New instructor.' },
+    ]);
+    setShowAddInstructorModal(false);
   };
 
   return (
@@ -175,9 +189,17 @@ export default function AdminPage() {
 
         {tab === 'instructors' && (
           <div>
-            <h2 className="text-xl font-bold mb-4 text-[#002B5C]">Instructors</h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold mb-0 text-[#002B5C]">Instructors</h2>
+              <button
+                className="bg-[#002B5C] text-white px-4 py-2 rounded hover:bg-[#1a3d7c]"
+                onClick={() => setShowAddInstructorModal(true)}
+              >
+                + Add Instructor
+              </button>
+            </div>
             <ul className="space-y-3">
-              {instructors.map((inst, idx) => (
+              {instructorsList.map((inst, idx) => (
                 <li
                   key={idx}
                   className="bg-white rounded shadow p-4 flex items-center gap-4 cursor-pointer hover:bg-gray-100 transition"
@@ -201,6 +223,11 @@ export default function AdminPage() {
                 </li>
               ))}
             </ul>
+            <AddInstructorModal
+              isOpen={showAddInstructorModal}
+              onClose={() => setShowAddInstructorModal(false)}
+              onAdd={handleAddInstructor}
+            />
           </div>
         )}
 
@@ -211,6 +238,9 @@ export default function AdminPage() {
               {students.map((stud, idx) => {
                 const pendingApp = pendingApps.find(
                   (app) => app.email === stud.email && app.status === 'pending'
+                );
+                const enrolledApp = pendingApps.find(
+                  (app) => app.email === stud.email && app.status === 'enrolled'
                 );
                 return (
                   <li
@@ -242,6 +272,9 @@ export default function AdminPage() {
                       >
                         Pending Application
                       </button>
+                    )}
+                    {!pendingApp && enrolledApp && (
+                      <span className="ml-auto bg-green-500 text-white px-3 py-1 rounded text-xs font-semibold">Enrolled</span>
                     )}
                   </li>
                 );

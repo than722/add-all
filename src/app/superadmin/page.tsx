@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-import Navbar from "@/components/ui/Navbar";
+import Navbar from "@/components/ui/navbar/Navbar";
 import Image from "next/image";
 import { instructors, students, admins } from "@/data/data";
 import { programsList } from '@/data/programsData';
 import { dummyDetails, instructorStatus as initialInstructorStatus } from '@/data/data';
 import Profile from '@/components/ui/profileview';
 import AdminModal from '@/components/ui/adminModal';
+import AddInstructorModal from '@/components/ui/addinstructorModal';
+import AddAdminModal from '@/components/ui/addAdminModal';
 
 export default function SuperAdminPage() {
   const [adminList, setAdminList] = useState(admins);
@@ -15,6 +17,8 @@ export default function SuperAdminPage() {
   const [activeTab, setActiveTab] = useState<'administrators' | 'instructors' | 'students' | 'programs'>('administrators');
   const [profileModal, setProfileModal] = useState<null | { name: string; email: string; img: string; bio: string; type?: 'instructor' | 'student' }>(null);
   const [instructorStatus, setInstructorStatus] = useState<{ [email: string]: 'active' | 'inactive' }>(initialInstructorStatus);
+  const [showAddAdminModal, setShowAddAdminModal] = useState(false);
+  const [newAdmin, setNewAdmin] = useState({ name: '', email: '', contact: '', img: '' });
 
   // For navbar tab switching
   React.useEffect(() => {
@@ -36,9 +40,9 @@ export default function SuperAdminPage() {
 
   // Combine all users for admin assignment
   const allUsers = [
-    ...students.map((s) => ({ ...s, contact: '[contact]', position: 'Employee', isAdmin: false })),
+    ...students.map((s) => ({ ...s, contact: '[contact]', position: 'Student', isAdmin: false })),
     ...instructors.map((i) => ({ ...i, contact: '[contact]', position: 'Employee', isAdmin: false })),
-    ...adminList,
+    ...adminList, // adminList now contains the correct position from AddAdminModal
   ];
   // Unique by email
   const uniqueUsers = Array.from(new Map(allUsers.map((u) => [u.email, u])).values());
@@ -66,6 +70,16 @@ export default function SuperAdminPage() {
     setModal(null);
   };
 
+  // Add admin handler
+  const handleAddAdmin = (admin: { name: string; email: string; contact: string; img: string; position: string }) => {
+    setAdminList((prev) => [
+      ...prev,
+      { ...admin, isAdmin: false }, // New employees are NOT admins by default
+    ]);
+    setShowAddAdminModal(false);
+    setNewAdmin({ name: '', email: '', contact: '', img: '' });
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar admin />
@@ -73,6 +87,15 @@ export default function SuperAdminPage() {
         {/* Tab Content */}
         {activeTab === 'administrators' && (
           <div className="bg-white rounded-2xl shadow p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold text-[#002B5C]">Administrators</h2>
+              <button
+                className="bg-[#002B5C] text-white px-4 py-2 rounded hover:bg-[#1a3d7c]"
+                onClick={() => setShowAddAdminModal(true)}
+              >
+                + Add Admin
+              </button>
+            </div>
             <table className="w-full text-left border-separate border-spacing-y-4">
               <thead>
                 <tr className="text-[#002B5C] font-bold text-lg">
@@ -92,7 +115,7 @@ export default function SuperAdminPage() {
                       <td className="py-3 text-black">{user.name || "[Employee's name]"}</td>
                       <td className="text-black">{user.email || "[email]"}</td>
                       <td className="text-black">{user.contact || "[contact]"}</td>
-                      <td className="text-black">Employee</td>
+                      <td className="text-black">{user.position || 'Employee'}</td>
                       <td className="text-black">{isAdmin ? "Admin" : ""}</td>
                       <td>
                         <button
@@ -107,6 +130,11 @@ export default function SuperAdminPage() {
                 })}
               </tbody>
             </table>
+            <AddAdminModal
+              isOpen={showAddAdminModal}
+              onClose={() => setShowAddAdminModal(false)}
+              onAdd={handleAddAdmin}
+            />
           </div>
         )}
         {activeTab === 'instructors' && (

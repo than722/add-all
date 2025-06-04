@@ -2,6 +2,8 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import EditProfileModal from './editprofileModal';
 
 interface ProfileProps {
   onClose: () => void;
@@ -13,6 +15,11 @@ interface ProfileProps {
 
 export default function Profile({ onClose, profile, isAdmin, instructorStatus, onStatusChange }: ProfileProps) {
   const router = useRouter();
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [profileState, setProfileState] = useState({
+    name: profile.name,
+    contactNo: '', // You may want to add contactNo to the profile prop or fetch it from somewhere
+  });
 
   // Dummy notifications
   const notifications = [
@@ -37,8 +44,11 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
               height={80}
               className="mx-auto rounded-full mb-2"
             />
-            <p className="font-semibold text-[#002B5C]">{profile.name}</p>
+            <p className="font-semibold text-[#002B5C]">{profileState.name}</p>
             <p className="text-sm text-gray-500">{profile.email}</p>
+            {profileState.contactNo && (
+              <p className="text-sm text-gray-500">{profileState.contactNo}</p>
+            )}
           </div>
           <div className="space-y-2">
             {/* Admin controls for instructor status */}
@@ -60,7 +70,7 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
                 </button>
               </div>
             )}
-            <button className="w-full bg-[#002B5C] text-white py-2 rounded hover:bg-[#1a3d7c] transition">
+            <button className="w-full bg-[#002B5C] text-white py-2 rounded hover:bg-[#1a3d7c] transition" onClick={() => setShowEditModal(true)}>
               Edit Profile
             </button>
             <button
@@ -100,6 +110,13 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
             )}
           </ul>
         </div>
+        {/* Edit Profile Modal */}
+        <EditProfileModal
+          isOpen={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          profile={{ name: profileState.name, contactNo: profileState.contactNo }}
+          onSave={(updated) => setProfileState(updated)}
+        />
       </div>
     </div>
   );

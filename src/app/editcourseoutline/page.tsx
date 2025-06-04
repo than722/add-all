@@ -5,7 +5,7 @@ import { initialCourseOutline, moduleProgress, subsectionProgress } from '@/data
 import Sidebar from '@/components/courseoutlineComponents/sidebar';
 import ContentArea from '@/components/courseoutlineComponents/contentArea';
 import ProgressCircle from '@/components/courseoutlineComponents/progressCircle';
-import Navbar from '@/components/ui/Navbar';
+import Navbar from '@/components/ui/navbar/Navbar';
 
 interface Module {
   id: number;
@@ -17,7 +17,7 @@ interface Module {
 interface Subsection {
   id: number;
   title: string;
-  content?: string;
+  content: string;
 }
 
 export default function EditCourseOutlinePage() {
@@ -75,7 +75,7 @@ export default function EditCourseOutlinePage() {
     setEditingModuleId(null);
   };
   const cancelEditModule = () => {
-    setEditingModuleId(null);
+    setEditingModuleId(null); 
   };
 
   const startEditSub = (sub: Subsection) => {
@@ -139,10 +139,6 @@ export default function EditCourseOutlinePage() {
           startEditModule={startEditModule}
           saveEditModule={saveEditModule}
           cancelEditModule={cancelEditModule}
-          editModuleTitle={editModuleTitle}
-          setEditModuleTitle={setEditModuleTitle}
-          editModuleContent={editModuleContent}
-          setEditModuleContent={setEditModuleContent}
           moduleProgress={moduleProgress}
           selectedSubsection={selectedSubsection}
           setSelectedSubsection={setSelectedSubsection}
@@ -152,9 +148,12 @@ export default function EditCourseOutlinePage() {
           cancelEditSub={cancelEditSub}
           editSubTitle={editSubTitle}
           setEditSubTitle={setEditSubTitle}
+          editModuleContent={editModuleContent}
+          setEditModuleContent={setEditModuleContent}
           subsectionProgress={subsectionProgress}
           lockedModules={lockedModules}
           toggleLockModule={toggleLockModule}
+          setCourseOutline={setCourseOutline}
         />
         <div className="flex-1 flex flex-col">
           <ContentArea

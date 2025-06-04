@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import Navbar from '../components/ui/Navbar';
+import Navbar from '../components/ui/navbar/Navbar';
 import HeroSection from '../components/ui/HeroSection';
 import RegisterModal from '../components/LoginComponents/registration';
 import ProgramsPage from '../components/ui/programs/programs';

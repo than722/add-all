@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 interface Subsection {
   id: number;
   title: string;
-  content?: string;
+  content: string;
 }
 
 interface Module {
@@ -130,7 +130,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
                 />
               </h3>
               <textarea
-                className="w-full mb-4 px-2 py-1 border rounded"
+                className="w-full mb-4 px-2 py-1 border rounded text-gray-900"
                 value={editModuleContent}
                 onChange={e => setEditModuleContent(e.target.value)}
               />
@@ -168,7 +168,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
           ) : (
             <>
               <h3 className="text-2xl font-bold text-[#002B5C] mb-2">{selected.title}</h3>
-              <p className="text-gray-700 mb-4">{selected.content}</p>
+              <p className="text-gray-900 mb-4">{selected.content}</p>
               {/* Video placeholder for module (view mode) */}
               <div className="mb-4 flex items-center gap-4">
                 <label className="block text-sm font-medium text-gray-700 mb-0">
@@ -197,37 +197,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
           <ul className="list-disc list-inside text-gray-700 space-y-1">
             {selected.subsections.map((sub) => (
               <li key={sub.id} className="flex items-center gap-2">
-                {editingSubId === sub.id ? (
-                  <>
-                    <input
-                      className="px-1 py-0.5 border rounded text-sm"
-                      value={editSubTitle}
-                      onChange={e => setEditSubTitle(e.target.value)}
-                    />
-                    <button
-                      className="text-xs text-[#92D0D3] underline"
-                      onClick={() => saveEditSub(selected.id, sub.id)}
-                    >
-                      Save
-                    </button>
-                    <button
-                      className="text-xs text-gray-400 underline"
-                      onClick={cancelEditSub}
-                    >
-                      Cancel
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    {sub.title}
-                    <button
-                      className="text-xs text-[#002B5C] underline ml-1"
-                      onClick={() => startEditSub(sub)}
-                    >
-                      Edit
-                    </button>
-                  </>
-                )}
+                {sub.title}
               </li>
             ))}
           </ul>

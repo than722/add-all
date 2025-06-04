@@ -133,7 +133,7 @@ const AddProgramModal: React.FC<AddProgramModalProps> = ({
             )}
           </div>
           <div className="flex flex-col items-center gap-2">
-            <label htmlFor="thumbnail-upload" className="cursor-pointer bg-blue-400 hover:bg-blue-500 text-white px-3 py-1 rounded flex items-center text-base font-semibold">
+            <label htmlFor="thumbnail-upload" className="cursor-pointer bg-blue-400 hover:bg-blue-500 text-black px-3 py-1 rounded flex items-center text-base font-semibold">
               Upload Program Thumbnail
             </label>
             <input

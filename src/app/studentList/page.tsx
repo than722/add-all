@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import Navbar from "@/components/ui/Navbar";
+import Navbar from "@/components/ui/navbar/Navbar";
 
 interface PendingApplication {
   name: string;
