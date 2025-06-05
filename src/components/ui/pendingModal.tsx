@@ -32,8 +32,8 @@ const PendingModal: React.FC<PendingModalProps> = ({
 
   return (
     <>
-      <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
-        <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md flex flex-col gap-4 relative">
+      <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-2 sm:px-0">
+        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-xl w-full max-w-xs sm:max-w-md flex flex-col gap-3 sm:gap-4 relative">
           <button
             className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
             onClick={onClose}
@@ -41,16 +41,16 @@ const PendingModal: React.FC<PendingModalProps> = ({
           >
             ✕
           </button>
-          <h3 className="text-lg font-bold text-[#002B5C] mb-2">Pending Application</h3>
-          <div className="mb-2 text-center">
-            <span className="font-semibold text-[#002B5C] text-lg block">{pendingModal.name}</span>
-            <span className="block text-sm text-gray-500">{pendingModal.email}</span>
+          <h3 className="text-base sm:text-lg font-bold text-[#002B5C] mb-1 sm:mb-2">Pending Application</h3>
+          <div className="mb-1 sm:mb-2 text-center">
+            <span className="font-semibold text-[#002B5C] text-base sm:text-lg block">{pendingModal.name}</span>
+            <span className="block text-xs sm:text-sm text-gray-500">{pendingModal.email}</span>
           </div>
-          <div className="mb-2 flex flex-col gap-1">
+          <div className="mb-1 sm:mb-2 flex flex-col gap-1">
             <span className="text-xs text-gray-700">Program: <span className="font-semibold text-[#002B5C]">{pendingModal.program}</span></span>
             <span className="text-xs text-gray-700">Payment: <span className="font-semibold text-[#002B5C]">{pendingModal.paymentType}</span></span>
           </div>
-          <div className="mb-2 flex justify-center">
+          <div className="mb-1 sm:mb-2 flex justify-center">
             <button
               className="text-[#002B5C] underline text-xs mb-2 hover:text-[#1a3d7c]"
               onClick={() => onViewReceipt(pendingModal.receiptUrl)}
@@ -59,7 +59,7 @@ const PendingModal: React.FC<PendingModalProps> = ({
             </button>
           </div>
           <button
-            className="w-full bg-[#92D0D3] text-white py-2 rounded hover:bg-[#6bb7bb] transition font-semibold"
+            className="w-full bg-[#92D0D3] text-white py-2 rounded hover:bg-[#6bb7bb] transition font-semibold text-xs sm:text-base"
             onClick={() => setShowValidation(true)}
           >
             Confirm Enrollment
@@ -67,8 +67,8 @@ const PendingModal: React.FC<PendingModalProps> = ({
         </div>
         {/* Validation Modal */}
         {showValidation && (
-          <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-xs flex flex-col gap-4 relative">
+          <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-2 sm:px-0">
+            <div className="bg-white p-4 sm:p-6 rounded-lg shadow-xl w-full max-w-xs flex flex-col gap-3 sm:gap-4 relative">
               <button
                 className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
                 onClick={() => setShowValidation(false)}
@@ -76,13 +76,13 @@ const PendingModal: React.FC<PendingModalProps> = ({
               >
                 ✕
               </button>
-              <h4 className="text-md font-bold text-[#002B5C] mb-2">Confirm Enrollment</h4>
-              <p className="text-gray-700 mb-4 text-center">
+              <h4 className="text-sm sm:text-md font-bold text-[#002B5C] mb-1 sm:mb-2">Confirm Enrollment</h4>
+              <p className="text-gray-700 mb-2 sm:mb-4 text-center text-xs sm:text-base">
                 Do you want to confirm the enrollment of Mr./Ms {pendingModal.name}?
               </p>
-              <div className="flex gap-4 justify-center">
+              <div className="flex gap-2 sm:gap-4 justify-center">
                 <button
-                  className="bg-[#92D0D3] text-white px-4 py-2 rounded hover:bg-[#6bb7bb] font-semibold"
+                  className="bg-[#92D0D3] text-white px-3 sm:px-4 py-2 rounded hover:bg-[#6bb7bb] font-semibold text-xs sm:text-base"
                   onClick={() => {
                     setShowValidation(false);
                     onConfirm(pendingModal.email);
@@ -91,7 +91,7 @@ const PendingModal: React.FC<PendingModalProps> = ({
                   Yes
                 </button>
                 <button
-                  className="bg-gray-200 text-[#002B5C] px-4 py-2 rounded hover:bg-gray-300 font-semibold"
+                  className="bg-gray-200 text-[#002B5C] px-3 sm:px-4 py-2 rounded hover:bg-gray-300 font-semibold text-xs sm:text-base"
                   onClick={() => setShowValidation(false)}
                 >
                   No
@@ -102,8 +102,8 @@ const PendingModal: React.FC<PendingModalProps> = ({
         )}
         {/* Receipt Modal */}
         {viewedReceipt && (
-          <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
-            <div className="bg-white rounded-lg shadow-xl p-6 max-w-xs w-full relative">
+          <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-2 sm:px-0">
+            <div className="bg-white rounded-lg shadow-xl p-4 sm:p-6 max-w-xs w-full relative">
               <button
                 className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
                 onClick={onCloseReceipt}

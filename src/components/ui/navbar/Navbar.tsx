@@ -27,17 +27,21 @@ export default function Navbar({ admin }: NavbarProps) {
   const isTeacherView = pathname?.startsWith('/teacherview') || pathname?.startsWith('/programview') || pathname?.startsWith('/studentList') || pathname?.startsWith('/editcourseoutline');
   const isAdminView = pathname?.startsWith('/admin') || admin;
 
-  if (isSuperAdminView) {
-    return <NavbarSuperAdmin />;
-  }
-  if (isAdminView) {
-    return <NavbarAdmin />;
-  }
-  if (isStudentView) {
-    return <NavbarStudent />;
-  }
-  if (isTeacherView) {
-    return <NavbarTeacher />;
-  }
-  return <NavbarDefault />;
+  // Responsive wrapper: just ensure the navbar components fill width and don't overflow
+  // All Navbar* components should already be responsive, but we add a wrapper for safety
+  return (
+    <div className="w-full">
+      {isSuperAdminView ? (
+        <NavbarSuperAdmin />
+      ) : isAdminView ? (
+        <NavbarAdmin />
+      ) : isStudentView ? (
+        <NavbarStudent />
+      ) : isTeacherView ? (
+        <NavbarTeacher />
+      ) : (
+        <NavbarDefault />
+      )}
+    </div>
+  );
 }

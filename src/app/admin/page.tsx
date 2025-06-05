@@ -11,6 +11,7 @@ import StatusModal from '@/components/ui/statusModal';
 import Profile from '@/components/ui/profileview';
 import AddProgramModal from '@/components/ui/addprogramModal';
 import AddInstructorModal from '@/components/ui/addinstructorModal';
+import ArchiveModal from '@/components/ui/archiveModal';
 
 interface PendingApplication {
   name: string;
@@ -70,6 +71,10 @@ export default function AdminPage() {
   const [showAddInstructorModal, setShowAddInstructorModal] = useState(false);
   const [instructorsList, setInstructorsList] = useState(instructors);
 
+  // Archive state
+  const [archivedPrograms, setArchivedPrograms] = useState<string[]>([]);
+  const [archivePrompt, setArchivePrompt] = useState<{ open: boolean; program: string } | null>(null);
+
   // Fix: Normalize adminPrograms to always have all fields (for both default and added programs)
   const normalizedAdminPrograms = adminPrograms.map((p) => ({
     program: p.program,
@@ -122,56 +127,73 @@ export default function AdminPage() {
     setShowAddInstructorModal(false);
   };
 
+  // Archive program handler
+  const handleArchiveProgram = (program: string) => {
+    setArchivedPrograms((prev) => [...prev, program]);
+    setArchivePrompt(null);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar admin />
-      <div className="px-6 py-10 max-w-5xl mx-auto">
+      <div className="px-2 sm:px-4 py-6 sm:py-10 w-full max-w-auto">
         {tab === 'programs' && (
           <div>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-[#002B5C]">Programs List</h2>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+              <h2 className="text-lg sm:text-xl font-bold text-[#002B5C]">Programs List</h2>
               <button
-                className="bg-[#002B5C] text-white px-4 py-2 rounded hover:bg-[#1a3d7c]"
+                className="bg-[#002B5C] text-white px-3 py-2 sm:px-4 sm:py-2 rounded hover:bg-[#1a3d7c] w-full sm:w-auto"
                 onClick={() => setShowAddProgramModal(true)}
               >
                 + Add Program
               </button>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {normalizedAdminPrograms.map((p, idx) => (
-                <div
-                  key={idx}
-                  className="bg-white p-6 rounded-xl shadow-md flex flex-col justify-between"
-                >
-                  <div className="flex-1">
-                    <div className="w-full h-32 bg-gray-300 rounded-md mb-3 flex items-center justify-center text-gray-600">
+            <div className="overflow-x-auto">
+              <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 min-w-[320px]">
+                {normalizedAdminPrograms.filter(p => !archivedPrograms.includes(p.program)).map((p, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-white p-3 sm:p-4 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition flex flex-col h-full min-h-[340px] sm:min-h-[420px] w-full"
+                    style={{ minWidth: 0 }}
+                  >
+                    <div className="w-full h-32 sm:h-40 bg-gray-300 rounded-md mb-2 sm:mb-3 flex items-center justify-center text-gray-600 overflow-hidden">
                       {p.thumbnail && typeof p.thumbnail === 'string' ? (
                         <img
                           src={p.thumbnail}
                           alt="Program Thumbnail"
-                          className="object-cover rounded-md w-full h-32"
+                          className="object-cover rounded-md w-full h-full"
                         />
                       ) : (
                         <Image
                           src="/thumbnail.png"
                           alt="Program Thumbnail"
-                          width={120}
-                          height={80}
-                          className="object-cover rounded-md"
+                          width={320}
+                          height={160}
+                          className="object-cover rounded-md w-full h-full"
                         />
                       )}
                     </div>
-                    <h3 className="text-lg font-semibold text-[#002B5C]">{p.program}</h3>
-                    <p className="text-sm text-gray-500 italic">{p.category}</p>
-                    <p className="text-gray-700 mt-2">{String(p.description) || dummyDetails.description}</p>
-                    <div className="text-xs text-gray-600 mt-2">
-                      <div><strong>Time & Sessions:</strong> {String(p.time) || dummyDetails.timeAndSessions} {p.sessions ? `| ${String(p.sessions)} Sessions` : ''}</div>
-                      <div><strong>Date:</strong> {String(p.date) || dummyDetails.date}</div>
-                      <div><strong>Instructor:</strong> {String(p.instructor) || dummyDetails.instructor}</div>
+                    <div className="flex-1 flex flex-col">
+                      <h3 className="text-base sm:text-lg font-semibold text-[#002B5C] mb-1">{p.program}</h3>
+                      <p className="text-xs sm:text-sm text-gray-500 italic mb-2">{p.category}</p>
+                      <p className="text-gray-700 mb-2 sm:mb-3 flex-1 text-xs sm:text-base">{String(p.description) || dummyDetails.description}</p>
+                      <div className="text-xs text-gray-600 mt-auto mb-1 sm:mb-2">
+                        <div><strong>Time & Sessions:</strong> {String(p.time) || dummyDetails.timeAndSessions} {p.sessions ? `| ${String(p.sessions)} Sessions` : ''}</div>
+                        <div><strong>Date:</strong> {String(p.date) || dummyDetails.date}</div>
+                        <div><strong>Instructor:</strong> {String(p.instructor) || dummyDetails.instructor}</div>
+                      </div>
+                      <div className="flex gap-2 mt-2">
+                        <button
+                          className="flex-1 bg-red-500 text-white py-2 rounded hover:bg-red-700 transition font-semibold text-xs sm:text-base"
+                          onClick={() => setArchivePrompt({ open: true, program: p.program })}
+                        >
+                          Archive
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
             {/* Add Program Modal */}
             <AddProgramModal
@@ -184,29 +206,39 @@ export default function AdminPage() {
               onAdd={handleAddProgram}
               canAdd={!!newProgram.program && !!newProgram.category && !!newProgram.instructor}
             />
+            {/* Archive Prompt Modal */}
+            {archivePrompt && (
+              <ArchiveModal
+                isOpen={!!archivePrompt.open}
+                type="program"
+                name={archivePrompt.program}
+                onConfirm={() => handleArchiveProgram(archivePrompt.program)}
+                onCancel={() => setArchivePrompt(null)}
+              />
+            )}
           </div>
         )}
 
         {tab === 'instructors' && (
           <div>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold mb-0 text-[#002B5C]">Instructors</h2>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+              <h2 className="text-lg sm:text-xl font-bold mb-0 text-[#002B5C]">Instructors</h2>
               <button
-                className="bg-[#002B5C] text-white px-4 py-2 rounded hover:bg-[#1a3d7c]"
+                className="bg-[#002B5C] text-white px-3 py-2 sm:px-4 sm:py-2 rounded hover:bg-[#1a3d7c] w-full sm:w-auto"
                 onClick={() => setShowAddInstructorModal(true)}
               >
                 + Add Instructor
               </button>
             </div>
-            <ul className="space-y-3">
+            <ul className="space-y-2 sm:space-y-3">
               {instructorsList.map((inst, idx) => (
                 <li
                   key={idx}
-                  className="bg-white rounded shadow p-4 flex items-center gap-4 cursor-pointer hover:bg-gray-100 transition"
+                  className="bg-white rounded shadow p-3 sm:p-4 flex items-center gap-3 sm:gap-4 cursor-pointer hover:bg-gray-100 transition"
                   onClick={() => setProfileModal({ ...inst, type: 'instructor' })}
                   aria-label={`View profile of ${inst.name}`}
                 >
-                  <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#002B5C] flex-shrink-0">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-[#002B5C] flex-shrink-0">
                     <Image
                       src={inst.img}
                       alt={inst.name}
@@ -216,8 +248,8 @@ export default function AdminPage() {
                     />
                   </div>
                   <div className="flex-1">
-                    <span className="font-semibold text-[#002B5C]">{inst.name}</span>
-                    <span className="block text-gray-500 text-sm">{inst.email}</span>
+                    <span className="font-semibold text-[#002B5C] text-sm sm:text-base">{inst.name}</span>
+                    <span className="block text-gray-500 text-xs sm:text-sm">{inst.email}</span>
                   </div>
                   <span className={`ml-auto px-2 py-1 rounded text-xs font-semibold ${instructorStatus[inst.email] === 'active' ? 'bg-green-200 text-green-800' : 'bg-gray-200 text-gray-600'}`}>{instructorStatus[inst.email]}</span>
                 </li>
@@ -233,8 +265,8 @@ export default function AdminPage() {
 
         {tab === 'students' && (
           <div>
-            <h2 className="text-xl font-bold mb-4 text-[#002B5C]">Students</h2>
-            <ul className="space-y-3">
+            <h2 className="text-lg sm:text-xl font-bold mb-4 text-[#002B5C]">Students</h2>
+            <ul className="space-y-2 sm:space-y-3">
               {students.map((stud, idx) => {
                 const pendingApp = pendingApps.find(
                   (app) => app.email === stud.email && app.status === 'pending'
@@ -245,11 +277,11 @@ export default function AdminPage() {
                 return (
                   <li
                     key={idx}
-                    className="bg-white rounded shadow p-4 flex items-center gap-4 cursor-pointer hover:bg-gray-100 transition"
+                    className="bg-white rounded shadow p-3 sm:p-4 flex items-center gap-3 sm:gap-4 cursor-pointer hover:bg-gray-100 transition"
                     onClick={() => setProfileModal({ ...stud, type: 'student' })}
                     aria-label={`View profile of ${stud.name}`}
                   >
-                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#002B5C] flex-shrink-0">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-[#002B5C] flex-shrink-0">
                       <Image
                         src={stud.img}
                         alt={stud.name}
@@ -259,12 +291,12 @@ export default function AdminPage() {
                       />
                     </div>
                     <div className="flex-1">
-                      <span className="font-semibold text-[#002B5C]">{stud.name}</span>
-                      <span className="block text-gray-500 text-sm">{stud.email}</span>
+                      <span className="font-semibold text-[#002B5C] text-sm sm:text-base">{stud.name}</span>
+                      <span className="block text-gray-500 text-xs sm:text-sm">{stud.email}</span>
                     </div>
                     {pendingApp && (
                       <button
-                        className="ml-auto bg-yellow-400 text-white px-3 py-1 rounded text-xs font-semibold hover:bg-yellow-500"
+                        className="ml-auto bg-yellow-400 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-yellow-500"
                         onClick={e => {
                           e.stopPropagation();
                           setPendingModal(pendingApp);
@@ -274,7 +306,7 @@ export default function AdminPage() {
                       </button>
                     )}
                     {!pendingApp && enrolledApp && (
-                      <span className="ml-auto bg-green-500 text-white px-3 py-1 rounded text-xs font-semibold">Enrolled</span>
+                      <span className="ml-auto bg-green-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold">Enrolled</span>
                     )}
                   </li>
                 );
@@ -301,6 +333,7 @@ export default function AdminPage() {
           isAdmin={true}
           instructorStatus={instructorStatus}
           onStatusChange={(instructorName: string, instructorEmail: string, statusToSet: 'active' | 'inactive') => setStatusModal({ isOpen: true, instructorName, instructorEmail, statusToSet })}
+          hideLogout={true}
         />
       )}
       <StatusModal

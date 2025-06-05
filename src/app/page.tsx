@@ -9,7 +9,7 @@ export default function Page() {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 
   return (
-    <main>
+    <main className="min-h-screen w-full bg-gray-50">
       <Navbar />
       <HeroSection
         isRegisterOpen={isRegisterOpen}
@@ -19,7 +19,9 @@ export default function Page() {
         isOpen={isRegisterOpen}
         onClose={() => setIsRegisterOpen(false)}
       />
-      <ProgramsPage />
+      <div className="px-2 sm:px-0">
+        <ProgramsPage />
+      </div>
     </main>
   );
 }

@@ -30,21 +30,24 @@ const StudentListPage = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
-      <div className="max-w-2xl mx-auto bg-white p-8 mt-8 rounded-xl shadow">
-        <h2 className="text-2xl font-bold text-[#002B5C] mb-6 text-center">
+      <div className="max-w-2xl mx-auto bg-white p-4 sm:p-8 mt-4 sm:mt-8 rounded-xl shadow">
+        <h2 className="text-xl sm:text-2xl font-bold text-[#002B5C] mb-4 sm:mb-6 text-center">
           Enrolled Students{programName ? ` for ${programName}` : ""}
         </h2>
         {students.length === 0 ? (
-          <div className="text-center text-gray-500 italic">No students enrolled yet.</div>
+          <div className="text-center text-gray-500 italic text-sm sm:text-base">No students enrolled yet.</div>
         ) : (
           <ul className="divide-y divide-gray-200">
             {students.map((student, idx) => (
-              <li key={idx} className="py-4 flex flex-col md:flex-row md:items-center md:justify-between">
+              <li
+                key={idx}
+                className="py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between"
+              >
                 <div>
-                  <span className="font-semibold text-[#002B5C]">{student.name}</span>
-                  <span className="ml-2 text-gray-500 text-sm">{student.email}</span>
+                  <span className="font-semibold text-[#002B5C] text-sm sm:text-base">{student.name}</span>
+                  <span className="block sm:inline ml-0 sm:ml-2 text-gray-500 text-xs sm:text-sm">{student.email}</span>
                 </div>
-                <div className="mt-2 md:mt-0">
+                <div className="mt-2 sm:mt-0">
                   <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">Enrolled</span>
                 </div>
               </li>

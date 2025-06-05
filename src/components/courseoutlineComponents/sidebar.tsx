@@ -95,34 +95,62 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   return (
-    <div className="w-full md:w-1/3 bg-white p-6 shadow-lg md:min-h-screen">
-      <h2 className="text-xl font-bold text-[#002B5C] mb-4">Edit Course Outline</h2>
-      <button
-        className="w-full mb-4 px-4 py-2 bg-blue-700 text-white rounded-lg font-semibold shadow hover:bg-blue-800 transition"
-        onClick={() => {
-          // Handler to add a new module with blank details
-          const newId = filteredModules.length > 0 ? Math.max(...filteredModules.map(m => m.id)) + 1 : 1;
-          setCourseOutline((prev: Module[]) => [
-            ...prev,
-            { id: newId, title: '', content: '', subsections: [] }
-          ]);
-          setSelectedModule(newId);
-          setExpandedModule(newId);
-          startEditModule({ id: newId, title: '', content: '', subsections: [] });
-        }}
-      >
-        + Add Module
-      </button>
-      <input
-        type="text"
-        placeholder="Search modules..."
-        value={search}
-        onChange={e => setSearch(e.target.value)}
-        className="w-full mb-4 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#92D0D3] placeholder-gray-900 text-gray-900"
-      />
+    <div className="w-full md:w-1/3 bg-white p-2 sm:p-6 shadow-lg md:min-h-screen relative">
+      {/* Mobile: sticky header for sidebar title and add button */}
+      <div className="block md:hidden sticky top-0 z-20 bg-white pb-2">
+        <h2 className="text-base font-bold text-[#002B5C] mb-2">Edit Course Outline</h2>
+        <button
+          className="w-full mb-2 px-3 py-2 bg-blue-700 text-white rounded-lg font-semibold shadow hover:bg-blue-800 transition text-xs"
+          onClick={() => {
+            const newId = filteredModules.length > 0 ? Math.max(...filteredModules.map(m => m.id)) + 1 : 1;
+            setCourseOutline((prev: Module[]) => [
+              ...prev,
+              { id: newId, title: '', content: '', subsections: [] }
+            ]);
+            setSelectedModule(newId);
+            setExpandedModule(newId);
+            startEditModule({ id: newId, title: '', content: '', subsections: [] });
+          }}
+        >
+          + Add Module
+        </button>
+        <input
+          type="text"
+          placeholder="Search modules..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="w-full mb-2 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#92D0D3] placeholder-gray-900 text-gray-900 text-xs"
+        />
+      </div>
+      {/* Desktop: normal header and add button */}
+      <div className="hidden md:block">
+        <h2 className="text-lg sm:text-xl font-bold text-[#002B5C] mb-3 sm:mb-4">Edit Course Outline</h2>
+        <button
+          className="w-full mb-3 sm:mb-4 px-3 sm:px-4 py-2 bg-blue-700 text-white rounded-lg font-semibold shadow hover:bg-blue-800 transition text-sm sm:text-base"
+          onClick={() => {
+            const newId = filteredModules.length > 0 ? Math.max(...filteredModules.map(m => m.id)) + 1 : 1;
+            setCourseOutline((prev: Module[]) => [
+              ...prev,
+              { id: newId, title: '', content: '', subsections: [] }
+            ]);
+            setSelectedModule(newId);
+            setExpandedModule(newId);
+            startEditModule({ id: newId, title: '', content: '', subsections: [] });
+          }}
+        >
+          + Add Module
+        </button>
+        <input
+          type="text"
+          placeholder="Search modules..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="w-full mb-3 sm:mb-4 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#92D0D3] placeholder-gray-900 text-gray-900 text-sm sm:text-base"
+        />
+      </div>
       <ul className="space-y-2">
         {filteredModules.length === 0 && (
-          <li className="text-gray-400 italic">No modules found.</li>
+          <li className="text-gray-400 italic text-xs sm:text-base">No modules found.</li>
         )}
         {filteredModules.map((mod) => (
           <li key={mod.id} className="flex items-center gap-2">
@@ -143,19 +171,19 @@ const Sidebar: React.FC<SidebarProps> = ({
               {localEditModuleId === mod.id ? (
                 <div className="mb-2">
                   <input
-                    className="w-full mb-1 px-2 py-1 border rounded"
+                    className="w-full mb-1 px-2 py-1 border rounded text-xs sm:text-base"
                     value={localEditModuleTitle}
                     onChange={e => setLocalEditModuleTitle(e.target.value)}
                   />
                   <div className="flex gap-2 mt-1">
                     <button
-                      className="bg-[#92D0D3] text-white px-2 py-1 rounded"
+                      className="bg-[#92D0D3] text-white px-2 py-1 rounded text-xs sm:text-base"
                       onClick={() => saveSidebarEditModule(mod.id)}
                     >
                       Save
                     </button>
                     <button
-                      className="bg-gray-300 text-[#002B5C] px-2 py-1 rounded"
+                      className="bg-gray-300 text-[#002B5C] px-2 py-1 rounded text-xs sm:text-base"
                       onClick={cancelSidebarEditModule}
                     >
                       Cancel
@@ -165,7 +193,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               ) : (
                 <>
                   <button
-                    className={`w-full text-left px-3 py-2 rounded font-semibold transition ${selectedModule === mod.id ? 'bg-[#92D0D3] text-white' : 'hover:bg-gray-100 text-[#002B5C]'}`}
+                    className={`w-full text-left px-3 py-2 rounded font-semibold transition text-xs sm:text-base ${selectedModule === mod.id ? 'bg-[#92D0D3] text-white' : 'hover:bg-gray-100 text-[#002B5C]'}`}
                     onClick={() => {
                       setExpandedModule(expandedModule === mod.id ? null : mod.id);
                       setSelectedModule(mod.id);
@@ -193,9 +221,9 @@ const Sidebar: React.FC<SidebarProps> = ({
               </div>
               {expandedModule === mod.id && (
                 <>
-                  <ul className="ml-4 mt-1 space-y-1">
+                  <ul className="ml-2 sm:ml-4 mt-1 space-y-1">
                     {mod.subsections.map((sub) => (
-                      <li key={sub.id} className={`text-sm flex items-center gap-2 ${selectedSubsection && selectedSubsection.modId === mod.id && selectedSubsection.subId === sub.id ? 'bg-[#e6f7f8] rounded' : ''}`}
+                      <li key={sub.id} className={`text-xs sm:text-sm flex items-center gap-2 ${selectedSubsection && selectedSubsection.modId === mod.id && selectedSubsection.subId === sub.id ? 'bg-[#e6f7f8] rounded' : ''}`}
                         style={{ cursor: 'pointer' }}
                         onClick={() => setSelectedSubsection({ modId: mod.id, subId: sub.id })}
                       >
@@ -204,7 +232,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                         {editingSubId === sub.id ? (
                           <>
                             <input
-                              className="px-1 py-0.5 border rounded text-sm text-gray-900 placeholder-gray-700"
+                              className="px-1 py-0.5 border rounded text-xs sm:text-sm text-gray-900 placeholder-gray-700"
                               value={editSubTitle}
                               onChange={e => setEditSubTitle(e.target.value)}
                             />
@@ -236,7 +264,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     ))}
                   </ul>
                   <button
-                    className="ml-4 mt-2 px-3 py-1 bg-[#92D0D3] text-white rounded text-xs font-semibold hover:bg-[#6bb7b9] transition"
+                    className="ml-2 sm:ml-4 mt-2 px-3 py-1 bg-[#92D0D3] text-white rounded text-xs font-semibold hover:bg-[#6bb7b9] transition"
                     onClick={() => {
                       // Add new subsection to this module
                       const newSubId = mod.subsections.length > 0 ? Math.max(...mod.subsections.map(s => s.id)) + 1 : mod.id * 10 + 1;
