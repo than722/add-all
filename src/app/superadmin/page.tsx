@@ -176,7 +176,7 @@ export default function SuperAdminPage() {
                 className="bg-[#002B5C] text-white px-3 py-2 sm:px-4 sm:py-2 rounded hover:bg-[#1a3d7c] w-full sm:w-auto"
                 onClick={() => setShowAddAdminModal(true)}
               >
-                + Add Admin
+                + Add Employee
               </button>
             </div>
             {/* Responsive Table/List */}

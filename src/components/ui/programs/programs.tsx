@@ -1,6 +1,8 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
+import FeaturedProgramViewModal from '../featuredprogramviewModal';
 
 const programCategories = [
   {
@@ -60,6 +62,14 @@ const photosAndReviews = [
 ];
 
 export default function ProgramsPage() {
+  const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
+  const [modalProgram, setModalProgram] = React.useState<{ program: string; category: string } | null>(null);
+  const categories = programCategories.map((cat) => cat.category);
+  const filteredPrograms = selectedCategory
+    ? programsList.filter((p) => p.category === selectedCategory)
+    : programsList;
+  const router = useRouter();
+
   return (
     <div 
         id="programs"
@@ -70,11 +80,32 @@ export default function ProgramsPage() {
         Featured Programs
       </h1>
 
+      {/* Category Pills */}
+      <div className="flex flex-wrap justify-center gap-3 mb-6">
+        <button
+          className={`px-4 py-2 rounded-full border font-semibold transition text-sm ${selectedCategory === null ? 'bg-[#002B5C] text-white border-[#002B5C]' : 'bg-white text-[#002B5C] border-[#002B5C] hover:bg-[#002B5C] hover:text-white'}`}
+          onClick={() => setSelectedCategory(null)}
+        >
+          All
+        </button>
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            className={`px-4 py-2 rounded-full border font-semibold transition text-sm ${selectedCategory === cat ? 'bg-[#002B5C] text-white border-[#002B5C]' : 'bg-white text-[#002B5C] border-[#002B5C] hover:bg-[#002B5C] hover:text-white'}`}
+            onClick={() => setSelectedCategory(cat)}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
       <div className="flex space-x-6 overflow-x-auto px-2 py-4 scrollbar-thin scrollbar-thumb-[#002B5C]/70 scrollbar-track-gray-200 mb-16">
-        {programsList.map(({ program, category }, idx) => (
+        {filteredPrograms.map(({ program, category }, idx) => (
           <div
             key={idx}
-            className="flex-shrink-0 w-64 bg-white rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition duration-300 flex flex-col items-center p-6"
+            className="flex-shrink-0 w-64 bg-white rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition duration-300 flex flex-col items-center p-6 cursor-pointer"
+            onClick={() => setModalProgram({ program, category })}
+            title={`View details for ${program}`}
           >
             {/* Placeholder Thumbnail */}
             <div className="w-full h-40 bg-gray-300 rounded-lg mb-4 flex items-center justify-center text-gray-500 text-lg select-none">
@@ -88,6 +119,16 @@ export default function ProgramsPage() {
 
             {/* Category */}
             <p className="text-sm text-gray-600 text-center italic">{category}</p>
+
+            <button
+              className="mt-4 bg-[#002B5C] text-white px-4 py-2 rounded-full font-semibold text-xs hover:bg-[#001f40] transition"
+              onClick={e => {
+                e.stopPropagation();
+                setModalProgram({ program, category });
+              }}
+            >
+              View Program
+            </button>
           </div>
         ))}
       </div>
@@ -116,6 +157,14 @@ export default function ProgramsPage() {
           </div>
         ))}
       </div>
+
+      {modalProgram && (
+        <FeaturedProgramViewModal
+          program={modalProgram.program}
+          category={modalProgram.category}
+          onClose={() => setModalProgram(null)}
+        />
+      )}
     </div>
   );
 }

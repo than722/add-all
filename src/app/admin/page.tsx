@@ -334,6 +334,7 @@ export default function AdminPage() {
           instructorStatus={instructorStatus}
           onStatusChange={(instructorName: string, instructorEmail: string, statusToSet: 'active' | 'inactive') => setStatusModal({ isOpen: true, instructorName, instructorEmail, statusToSet })}
           hideLogout={true}
+          hideNotifications={true}
         />
       )}
       <StatusModal
