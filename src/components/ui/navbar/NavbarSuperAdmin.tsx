@@ -8,7 +8,7 @@ export default function NavbarSuperAdmin() {
   const [navOpen, setNavOpen] = useState(false);
   return (
     <>
-      <nav className="relative w-full shadow-md" style={{ backgroundColor: '#002B5C' }}>
+      <nav className="relative w-full shadow-md" style={{ backgroundColor: '#08228d' }}>
         {/* Desktop Layout */}
         <div className="hidden sm:flex items-center justify-between w-full px-10 py-4 relative">
           {/* Left: Logo and School Name */}
@@ -69,7 +69,7 @@ export default function NavbarSuperAdmin() {
           </div>
           {/* Mobile Nav Links Dropdown */}
           {navOpen && (
-            <div className="flex flex-col w-full mt-2 gap-2 bg-[#002B5C] rounded shadow-md z-20 text-white font-extrabold text-base">
+            <div className="flex flex-col w-full mt-2 gap-2 bg-[#08228d] rounded shadow-md z-20 text-white font-extrabold text-base">
               <Link href="/" className="hover:text-[#FFC72C]" onClick={() => setNavOpen(false)}>Home</Link>
               <a href="#instructors" className="hover:text-[#FFC72C]" onClick={() => setNavOpen(false)}>Instructors</a>
               <a href="#students" className="hover:text-[#FFC72C]" onClick={() => setNavOpen(false)}>Students</a>

@@ -51,7 +51,7 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
         {/* Profile Info */}
         <div className={isAdminProfileView ? "w-full flex flex-col items-center" : "w-full md:w-1/2"}>
           <div className="flex justify-between items-center mb-3 sm:mb-4 w-full">
-            <h2 className="text-base sm:text-lg font-bold text-[#002B5C]">User Profile</h2>
+            <h2 className="text-base sm:text-lg font-bold text-[#08228d]">User Profile</h2>
           </div>
           <div className="text-center mb-3 sm:mb-4 w-full flex flex-col items-center">
             <Image
@@ -61,7 +61,7 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
               height={100}
               className="mx-auto rounded-full mb-2 w-24 h-24 object-cover"
             />
-            <p className="font-semibold text-[#002B5C] text-lg sm:text-xl break-words w-full">{profileState.name}</p>
+            <p className="font-semibold text-[#08228d] text-lg sm:text-xl break-words w-full">{profileState.name}</p>
             <p className="text-xs sm:text-sm text-gray-500 break-words w-full">{profile.email}</p>
             {profileState.contactNo && (
               <p className="text-xs sm:text-sm text-gray-500 break-words w-full">{profileState.contactNo}</p>
@@ -70,14 +70,14 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
           {isAdminProfileView && profile.type === 'instructor' && instructorStatus && onStatusChange && (
             <div className="flex gap-2 mb-2 w-full">
               <button
-                className={`flex-1 py-2 rounded text-xs sm:text-base ${instructorStatus[profile.email] === 'active' ? 'bg-green-600 text-white' : 'bg-gray-200 text-[#002B5C]'} font-semibold`}
+                className={`flex-1 py-2 rounded text-xs sm:text-base ${instructorStatus[profile.email] === 'active' ? 'bg-green-600 text-white' : 'bg-gray-200 text-[#08228d]'} font-semibold`}
                 onClick={() => onStatusChange(profile.name, profile.email, 'active')}
                 disabled={instructorStatus[profile.email] === 'active'}
               >
                 Active
               </button>
               <button
-                className={`flex-1 py-2 rounded text-xs sm:text-base ${instructorStatus[profile.email] === 'inactive' ? 'bg-red-600 text-white' : 'bg-gray-200 text-[#002B5C]'} font-semibold`}
+                className={`flex-1 py-2 rounded text-xs sm:text-base ${instructorStatus[profile.email] === 'inactive' ? 'bg-red-600 text-white' : 'bg-gray-200 text-[#08228d]'} font-semibold`}
                 onClick={() => onStatusChange(profile.name, profile.email, 'inactive')}
                 disabled={instructorStatus[profile.email] === 'inactive'}
               >
@@ -86,7 +86,7 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
             </div>
           )}
           {isAdminProfileView && (
-            <button className="w-full bg-[#002B5C] text-white py-2 rounded hover:bg-[#1a3d7c] transition text-xs sm:text-base mt-2" onClick={() => setShowEditModal(true)}>
+            <button className="w-full bg-[#08228d] text-white py-2 rounded hover:bg-[#1a3d7c] transition text-xs sm:text-base mt-2" onClick={() => setShowEditModal(true)}>
               Edit Profile
             </button>
           )}
@@ -96,14 +96,14 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
               {isAdmin && profile.type === 'instructor' && instructorStatus && onStatusChange && (
                 <div className="flex gap-2 mb-2">
                   <button
-                    className={`flex-1 py-2 rounded text-xs sm:text-base ${instructorStatus[profile.email] === 'active' ? 'bg-green-600 text-white' : 'bg-gray-200 text-[#002B5C]'} font-semibold`}
+                    className={`flex-1 py-2 rounded text-xs sm:text-base ${instructorStatus[profile.email] === 'active' ? 'bg-green-600 text-white' : 'bg-gray-200 text-[#08228d]'} font-semibold`}
                     onClick={() => onStatusChange(profile.name, profile.email, 'active')}
                     disabled={instructorStatus[profile.email] === 'active'}
                   >
                     Active
                   </button>
                   <button
-                    className={`flex-1 py-2 rounded text-xs sm:text-base ${instructorStatus[profile.email] === 'inactive' ? 'bg-red-600 text-white' : 'bg-gray-200 text-[#002B5C]'} font-semibold`}
+                    className={`flex-1 py-2 rounded text-xs sm:text-base ${instructorStatus[profile.email] === 'inactive' ? 'bg-red-600 text-white' : 'bg-gray-200 text-[#08228d]'} font-semibold`}
                     onClick={() => onStatusChange(profile.name, profile.email, 'inactive')}
                     disabled={instructorStatus[profile.email] === 'inactive'}
                   >
@@ -111,12 +111,12 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
                   </button>
                 </div>
               )}
-              <button className="w-full bg-[#002B5C] text-white py-2 rounded hover:bg-[#1a3d7c] transition text-xs sm:text-base" onClick={() => setShowEditModal(true)}>
+              <button className="w-full bg-[#08228d] text-white py-2 rounded hover:bg-[#1a3d7c] transition text-xs sm:text-base" onClick={() => setShowEditModal(true)}>
                 Edit Profile
               </button>
               {!hideLogout && (
                 <button
-                  className="w-full bg-gray-200 text-[#002B5C] py-2 rounded hover:bg-gray-300 transition text-xs sm:text-base"
+                  className="w-full bg-gray-200 text-[#08228d] py-2 rounded hover:bg-gray-300 transition text-xs sm:text-base"
                   onClick={() => {
                     if (typeof window !== 'undefined') {
                       localStorage.clear();
@@ -135,7 +135,7 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
         {/* Notifications Panel */}
         {!hideNotifications && !isAdminProfileView && (
           <div className="w-full md:w-1/2 border-t md:border-t-0 md:border-l md:pl-6 mt-4 md:mt-0 relative pt-4 md:pt-0">
-            <h3 className="text-sm sm:text-md font-bold text-[#002B5C] mb-2 sm:mb-3">Notifications</h3>
+            <h3 className="text-sm sm:text-md font-bold text-[#08228d] mb-2 sm:mb-3">Notifications</h3>
             <ul className="space-y-2 sm:space-y-3 max-h-40 sm:max-h-64 overflow-y-auto pr-1 sm:pr-2">
               {notifications.length === 0 ? (
                 <li className="text-gray-400 text-xs sm:text-sm">No notifications.</li>

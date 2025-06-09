@@ -41,18 +41,18 @@ const PendingModal: React.FC<PendingModalProps> = ({
           >
             ✕
           </button>
-          <h3 className="text-base sm:text-lg font-bold text-[#002B5C] mb-1 sm:mb-2">Pending Application</h3>
+          <h3 className="text-base sm:text-lg font-bold text-[#08228d] mb-1 sm:mb-2">Pending Application</h3>
           <div className="mb-1 sm:mb-2 text-center">
-            <span className="font-semibold text-[#002B5C] text-base sm:text-lg block">{pendingModal.name}</span>
+            <span className="font-semibold text-[#08228d] text-base sm:text-lg block">{pendingModal.name}</span>
             <span className="block text-xs sm:text-sm text-gray-500">{pendingModal.email}</span>
           </div>
           <div className="mb-1 sm:mb-2 flex flex-col gap-1">
-            <span className="text-xs text-gray-700">Program: <span className="font-semibold text-[#002B5C]">{pendingModal.program}</span></span>
-            <span className="text-xs text-gray-700">Payment: <span className="font-semibold text-[#002B5C]">{pendingModal.paymentType}</span></span>
+            <span className="text-xs text-gray-700">Program: <span className="font-semibold text-[#08228d]">{pendingModal.program}</span></span>
+            <span className="text-xs text-gray-700">Payment: <span className="font-semibold text-[#08228d]">{pendingModal.paymentType}</span></span>
           </div>
           <div className="mb-1 sm:mb-2 flex justify-center">
             <button
-              className="text-[#002B5C] underline text-xs mb-2 hover:text-[#1a3d7c]"
+              className="text-[#08228d] underline text-xs mb-2 hover:text-[#1a3d7c]"
               onClick={() => onViewReceipt(pendingModal.receiptUrl)}
             >
               View Receipt
@@ -76,7 +76,7 @@ const PendingModal: React.FC<PendingModalProps> = ({
               >
                 ✕
               </button>
-              <h4 className="text-sm sm:text-md font-bold text-[#002B5C] mb-1 sm:mb-2">Confirm Enrollment</h4>
+              <h4 className="text-sm sm:text-md font-bold text-[#08228d] mb-1 sm:mb-2">Confirm Enrollment</h4>
               <p className="text-gray-700 mb-2 sm:mb-4 text-center text-xs sm:text-base">
                 Do you want to confirm the enrollment of Mr./Ms {pendingModal.name}?
               </p>
@@ -91,7 +91,7 @@ const PendingModal: React.FC<PendingModalProps> = ({
                   Yes
                 </button>
                 <button
-                  className="bg-gray-200 text-[#002B5C] px-3 sm:px-4 py-2 rounded hover:bg-gray-300 font-semibold text-xs sm:text-base"
+                  className="bg-gray-200 text-[#08228d] px-3 sm:px-4 py-2 rounded hover:bg-gray-300 font-semibold text-xs sm:text-base"
                   onClick={() => setShowValidation(false)}
                 >
                   No

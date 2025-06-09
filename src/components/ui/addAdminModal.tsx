@@ -57,7 +57,7 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({ isOpen, onClose, onAdd })
           &times;
         </button>
         <div
-          className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden border-2 border-[#002B5C] mb-2 cursor-pointer mt-2"
+          className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden border-2 border-[#08228d] mb-2 cursor-pointer mt-2"
           onClick={() => fileInputRef.current?.click()}
           title="Upload profile picture"
         >
@@ -75,42 +75,42 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({ isOpen, onClose, onAdd })
           onChange={handleImageChange}
         />
         <span className="text-xs text-gray-500 mb-3 sm:mb-4">Click to upload profile picture</span>
-        <h2 className="text-base sm:text-lg font-bold text-[#002B5C] mb-2 mt-2">Employee</h2>
+        <h2 className="text-base sm:text-lg font-bold text-[#08228d] mb-2 mt-2">Employee</h2>
         <div className="w-full max-w-xs mx-auto mt-2 sm:mt-4 space-y-3 sm:space-y-4">
-          <label className="block text-xs sm:text-sm font-semibold text-[#002B5C]">Full Name</label>
+          <label className="block text-xs sm:text-sm font-semibold text-[#08228d]">Full Name</label>
           <input
             type="text"
             placeholder="Full Name"
-            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#002B5C] text-gray-900 text-xs sm:text-base"
+            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#08228d] text-gray-900 text-xs sm:text-base"
             value={name}
             onChange={e => setName(e.target.value)}
           />
-          <label className="block text-xs sm:text-sm font-semibold text-[#002B5C]">Email</label>
+          <label className="block text-xs sm:text-sm font-semibold text-[#08228d]">Email</label>
           <input
             type="email"
             placeholder="Email"
-            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#002B5C] text-gray-900 text-xs sm:text-base"
+            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#08228d] text-gray-900 text-xs sm:text-base"
             value={email}
             onChange={e => setEmail(e.target.value)}
           />
-          <label className="block text-xs sm:text-sm font-semibold text-[#002B5C]">Contact Info</label>
+          <label className="block text-xs sm:text-sm font-semibold text-[#08228d]">Contact Info</label>
           <input
             type="text"
             placeholder="Contact Number"
-            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#002B5C] text-gray-900 text-xs sm:text-base"
+            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#08228d] text-gray-900 text-xs sm:text-base"
             value={contact}
             onChange={e => setContact(e.target.value)}
           />
-          <label className="block text-xs sm:text-sm font-semibold text-[#002B5C]">Position</label>
+          <label className="block text-xs sm:text-sm font-semibold text-[#08228d]">Position</label>
           <input
             type="text"
             placeholder="Position (e.g. Employee, Manager)"
-            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#002B5C] text-gray-900 text-xs sm:text-base"
+            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#08228d] text-gray-900 text-xs sm:text-base"
             value={position}
             onChange={e => setPosition(e.target.value)}
           />
           <button
-            className="mt-3 sm:mt-4 w-full bg-[#002B5C] text-white py-2 rounded hover:bg-[#1a3d7c] font-semibold disabled:opacity-50 text-xs sm:text-base"
+            className="mt-3 sm:mt-4 w-full bg-[#08228d] text-white py-2 rounded hover:bg-[#1a3d7c] font-semibold disabled:opacity-50 text-xs sm:text-base"
             onClick={handleAdd}
             disabled={!name || !email || !contact || !position}
           >

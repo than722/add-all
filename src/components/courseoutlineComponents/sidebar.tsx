@@ -98,7 +98,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     <div className="w-full md:w-1/3 bg-white p-2 sm:p-6 shadow-lg md:min-h-screen relative">
       {/* Mobile: sticky header for sidebar title and add button */}
       <div className="block md:hidden sticky top-0 z-20 bg-white pb-2">
-        <h2 className="text-base font-bold text-[#002B5C] mb-2">Edit Course Outline</h2>
+        <h2 className="text-base font-bold text-[#08228d] mb-2">Edit Course Outline</h2>
         <button
           className="w-full mb-2 px-3 py-2 bg-blue-700 text-white rounded-lg font-semibold shadow hover:bg-blue-800 transition text-xs"
           onClick={() => {
@@ -124,7 +124,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       </div>
       {/* Desktop: normal header and add button */}
       <div className="hidden md:block">
-        <h2 className="text-lg sm:text-xl font-bold text-[#002B5C] mb-3 sm:mb-4">Edit Course Outline</h2>
+        <h2 className="text-lg sm:text-xl font-bold text-[#08228d] mb-3 sm:mb-4">Edit Course Outline</h2>
         <button
           className="w-full mb-3 sm:mb-4 px-3 sm:px-4 py-2 bg-blue-700 text-white rounded-lg font-semibold shadow hover:bg-blue-800 transition text-sm sm:text-base"
           onClick={() => {
@@ -183,7 +183,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                       Save
                     </button>
                     <button
-                      className="bg-gray-300 text-[#002B5C] px-2 py-1 rounded text-xs sm:text-base"
+                      className="bg-gray-300 text-[#08228d] px-2 py-1 rounded text-xs sm:text-base"
                       onClick={cancelSidebarEditModule}
                     >
                       Cancel
@@ -193,7 +193,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               ) : (
                 <>
                   <button
-                    className={`w-full text-left px-3 py-2 rounded font-semibold transition text-xs sm:text-base ${selectedModule === mod.id ? 'bg-[#92D0D3] text-white' : 'hover:bg-gray-100 text-[#002B5C]'}`}
+                    className={`w-full text-left px-3 py-2 rounded font-semibold transition text-xs sm:text-base ${selectedModule === mod.id ? 'bg-[#92D0D3] text-white' : 'hover:bg-gray-100 text-[#08228d]'}`}
                     onClick={() => {
                       setExpandedModule(expandedModule === mod.id ? null : mod.id);
                       setSelectedModule(mod.id);
@@ -203,7 +203,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     {mod.title}
                   </button>
                   <button
-                    className="text-xs text-[#002B5C] underline ml-2"
+                    className="text-xs text-[#08228d] underline ml-2"
                     onClick={() => startSidebarEditModule(mod)}
                   >
                     Edit
@@ -252,7 +252,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                         ) : (
                           <>
                             <button
-                              className="text-xs text-[#002B5C] underline ml-1"
+                              className="text-xs text-[#08228d] underline ml-1"
                               onClick={e => { e.stopPropagation(); startEditSub(sub); }}
                             >
                               Edit

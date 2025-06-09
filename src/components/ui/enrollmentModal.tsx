@@ -54,7 +54,7 @@ const EnrollModal: React.FC<EnrollModalProps> = ({ isOpen, onClose, program, pri
         <form className="space-y-3 sm:space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-gray-700 mb-1 font-semibold text-sm">Program Price</label>
-            <div className="text-base sm:text-lg font-bold text-[#002B5C] mb-2">₱{price.toLocaleString()}</div>
+            <div className="text-base sm:text-lg font-bold text-[#08228d] mb-2">₱{price.toLocaleString()}</div>
           </div>
           <div>
             <label className="block text-gray-700 mb-1 font-semibold text-sm">Upload Receipt</label>

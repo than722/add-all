@@ -92,7 +92,7 @@ const ProgramView = () => {
         <div className="flex flex-col md:flex-row items-start gap-4 sm:gap-6">
           {/* Left Details */}
           <div className="flex-1">
-            <h1 className="text-xl sm:text-2xl font-bold text-[#002B5C]">{programData.program}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-[#08228d]">{programData.program}</h1>
             <p className="text-gray-600 mt-2 mb-4 italic text-sm sm:text-base">{programData.category}</p>
 
             <p className="mb-4 text-sm sm:text-base">
@@ -123,7 +123,7 @@ const ProgramView = () => {
 
       {/* About This Program Section */}
       <div className="max-w-4xl mx-auto bg-white p-4 sm:p-8 mt-4 sm:mt-6 rounded-xl shadow">
-        <h2 className="text-lg sm:text-xl font-bold text-[#002B5C] mb-3 sm:mb-4">About This Program</h2>
+        <h2 className="text-lg sm:text-xl font-bold text-[#08228d] mb-3 sm:mb-4">About This Program</h2>
         <p className="text-gray-700 text-sm sm:text-base">
           This program is designed to provide learners with essential skills and knowledge in
           their chosen area. You’ll engage in hands-on sessions, lectures, and group activities to
@@ -133,7 +133,7 @@ const ProgramView = () => {
 
       {/* Program Curriculum Section */}
       <div className="max-w-4xl mx-auto bg-white p-4 sm:p-8 mt-4 sm:mt-6 rounded-xl shadow">
-        <h2 className="text-lg sm:text-xl font-bold text-[#002B5C] mb-3 sm:mb-4">Program Curriculum</h2>
+        <h2 className="text-lg sm:text-xl font-bold text-[#08228d] mb-3 sm:mb-4">Program Curriculum</h2>
         <ul className="list-disc list-inside text-gray-700 space-y-1 sm:space-y-2 text-sm sm:text-base">
           <li>Session 1: Introduction to the Program</li>
           <li>Session 2: Core Concepts and Tools</li>
@@ -156,7 +156,7 @@ const ProgramView = () => {
             </Link>
             <Link
               href="/editcourseoutline"
-              className="inline-block bg-[#002B5C] text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full hover:bg-[#001f40] transition text-sm sm:text-base"
+              className="inline-block bg-[#08228d] text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full hover:bg-[#001f40] transition text-sm sm:text-base"
             >
               Edit Course Outline
             </Link>
@@ -172,7 +172,7 @@ const ProgramView = () => {
             </span>
           ) : (
             <button
-              className="bg-[#002B5C] text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full hover:bg-[#001f40] transition duration-300 text-sm sm:text-base"
+              className="bg-[#08228d] text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full hover:bg-[#001f40] transition duration-300 text-sm sm:text-base"
               onClick={() => setIsEnrollOpen(true)}
             >
               Enroll Now

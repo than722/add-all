@@ -35,7 +35,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose, pr
         >
           ✕
         </button>
-        <h2 className="text-lg sm:text-xl font-bold text-[#002B5C] mb-3 sm:mb-4 text-center">Edit Profile</h2>
+        <h2 className="text-lg sm:text-xl font-bold text-[#08228d] mb-3 sm:mb-4 text-center">Edit Profile</h2>
         <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
           <div>
             <label className="block text-gray-700 mb-1 font-semibold text-sm">Name</label>
@@ -61,14 +61,14 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose, pr
           <div className="flex gap-2 mt-3 sm:mt-4">
             <button
               type="button"
-              className="flex-1 bg-gray-200 text-[#002B5C] py-2 rounded hover:bg-gray-300 transition text-sm"
+              className="flex-1 bg-gray-200 text-[#08228d] py-2 rounded hover:bg-gray-300 transition text-sm"
               onClick={onClose}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 bg-[#002B5C] text-white py-2 rounded hover:bg-[#1a3d7c] transition text-sm"
+              className="flex-1 bg-[#08228d] text-white py-2 rounded hover:bg-[#1a3d7c] transition text-sm"
             >
               Save
             </button>

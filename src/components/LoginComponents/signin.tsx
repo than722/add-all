@@ -32,7 +32,7 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
     <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-2 sm:px-0">
       <div className="absolute inset-0" onClick={onClose}></div>
       <div className="relative bg-white rounded-2xl max-w-xs sm:max-w-md w-full p-4 sm:p-8 shadow-xl z-10">
-        <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 text-[#002B5C] text-center">Sign In As</h3>
+        <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 text-[#08228d] text-center">Sign In As</h3>
         <div className="flex flex-col gap-3 sm:gap-4">
           <button
             className="bg-[#92D0D3] text-white px-4 py-2 rounded hover:bg-[#6bb7bb] transition font-semibold text-sm sm:text-base"
@@ -41,13 +41,13 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
             Student
           </button>
           <button
-            className="bg-[#002B5C] text-white px-4 py-2 rounded hover:bg-[#001f40] transition font-semibold text-sm sm:text-base"
+            className="bg-[#08228d] text-white px-4 py-2 rounded hover:bg-[#001f40] transition font-semibold text-sm sm:text-base"
             onClick={() => handleSignIn(2)}
           >
             Teacher
           </button>
           <button
-            className="bg-[#FFC72C] text-[#002B5C] px-4 py-2 rounded hover:bg-yellow-400 transition font-semibold text-sm sm:text-base"
+            className="bg-[#FFC72C] text-[#08228d] px-4 py-2 rounded hover:bg-yellow-400 transition font-semibold text-sm sm:text-base"
             onClick={() => handleSignIn(3)}
           >
             Admin
@@ -63,7 +63,7 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
           </button>
         </div>
         <button
-          className="mt-4 sm:mt-6 text-[#002B5C] font-bold w-full text-sm sm:text-base"
+          className="mt-4 sm:mt-6 text-[#08228d] font-bold w-full text-sm sm:text-base"
           onClick={onClose}
         >
           Cancel

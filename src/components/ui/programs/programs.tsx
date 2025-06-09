@@ -76,14 +76,14 @@ export default function ProgramsPage() {
         className="min-h-screen px-6 py-12 bg-gray-100"
         >
       {/* Featured Programs */}
-      <h1 className="text-3xl font-bold text-center text-[#002B5C] mb-6">
+      <h1 className="text-3xl font-bold text-center text-[#08228d] mb-6">
         Featured Programs
       </h1>
 
       {/* Category Pills */}
       <div className="flex flex-wrap justify-center gap-3 mb-6">
         <button
-          className={`px-4 py-2 rounded-full border font-semibold transition text-sm ${selectedCategory === null ? 'bg-[#002B5C] text-white border-[#002B5C]' : 'bg-white text-[#002B5C] border-[#002B5C] hover:bg-[#002B5C] hover:text-white'}`}
+          className={`px-4 py-2 rounded-full border font-semibold transition text-sm ${selectedCategory === null ? 'bg-[#08228d] text-white border-[#08228d]' : 'bg-white text-[#08228d] border-[#08228d] hover:bg-[#08228d] hover:text-white'}`}
           onClick={() => setSelectedCategory(null)}
         >
           All
@@ -91,7 +91,7 @@ export default function ProgramsPage() {
         {categories.map((cat) => (
           <button
             key={cat}
-            className={`px-4 py-2 rounded-full border font-semibold transition text-sm ${selectedCategory === cat ? 'bg-[#002B5C] text-white border-[#002B5C]' : 'bg-white text-[#002B5C] border-[#002B5C] hover:bg-[#002B5C] hover:text-white'}`}
+            className={`px-4 py-2 rounded-full border font-semibold transition text-sm ${selectedCategory === cat ? 'bg-[#08228d] text-white border-[#08228d]' : 'bg-white text-[#08228d] border-[#08228d] hover:bg-[#08228d] hover:text-white'}`}
             onClick={() => setSelectedCategory(cat)}
           >
             {cat}
@@ -99,7 +99,7 @@ export default function ProgramsPage() {
         ))}
       </div>
 
-      <div className="flex space-x-6 overflow-x-auto px-2 py-4 scrollbar-thin scrollbar-thumb-[#002B5C]/70 scrollbar-track-gray-200 mb-16">
+      <div className="flex space-x-6 overflow-x-auto px-2 py-4 scrollbar-thin scrollbar-thumb-[#08228d]/70 scrollbar-track-gray-200 mb-16">
         {filteredPrograms.map(({ program, category }, idx) => (
           <div
             key={idx}
@@ -113,7 +113,7 @@ export default function ProgramsPage() {
             </div>
 
             {/* Program Name */}
-            <h3 className="text-lg font-semibold text-[#002B5C] text-center mb-2">
+            <h3 className="text-lg font-semibold text-[#08228d] text-center mb-2">
               {program}
             </h3>
 
@@ -121,7 +121,7 @@ export default function ProgramsPage() {
             <p className="text-sm text-gray-600 text-center italic">{category}</p>
 
             <button
-              className="mt-4 bg-[#002B5C] text-white px-4 py-2 rounded-full font-semibold text-xs hover:bg-[#001f40] transition"
+              className="mt-4 bg-[#08228d] text-white px-4 py-2 rounded-full font-semibold text-xs hover:bg-[#001f40] transition"
               onClick={e => {
                 e.stopPropagation();
                 setModalProgram({ program, category });
@@ -134,11 +134,11 @@ export default function ProgramsPage() {
       </div>
 
       {/* Photos and Reviews */}
-      <h1 className="text-3xl font-bold text-center text-[#002B5C] mb-6">
+      <h1 className="text-3xl font-bold text-center text-[#08228d] mb-6">
         Featured Photos
       </h1>
 
-      <div className="flex space-x-6 overflow-x-auto px-2 py-4 scrollbar-thin scrollbar-thumb-[#002B5C]/70 scrollbar-track-gray-200">
+      <div className="flex space-x-6 overflow-x-auto px-2 py-4 scrollbar-thin scrollbar-thumb-[#08228d]/70 scrollbar-track-gray-200">
         {photosAndReviews.map(({ title, text }, idx) => (
           <div
             key={idx}
@@ -150,7 +150,7 @@ export default function ProgramsPage() {
             </div>
 
             {/* Review Title */}
-            <h3 className="text-lg font-semibold text-[#002B5C] mb-2">{title}</h3>
+            <h3 className="text-lg font-semibold text-[#08228d] mb-2">{title}</h3>
 
             {/* Review Text */}
             <p className="text-gray-600 text-sm">{text}</p>

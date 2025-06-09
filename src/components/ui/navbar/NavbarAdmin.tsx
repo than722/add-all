@@ -10,7 +10,7 @@ export default function NavbarAdmin() {
   const router = useRouter();
   return (
     <>
-      <nav className="relative w-full shadow-md" style={{ backgroundColor: '#002B5C' }}>
+      <nav className="relative w-full shadow-md" style={{ backgroundColor: '#08228d' }}>
         {/* Desktop Layout */}
         <div className="hidden sm:flex items-center justify-between w-full px-6 py-4 relative">
           {/* Left: Logo and School Name */}
@@ -70,7 +70,7 @@ export default function NavbarAdmin() {
           </div>
           {/* Mobile Nav Links Dropdown */}
           {navOpen && (
-            <div className="flex flex-col w-full mt-2 gap-2 bg-[#002B5C] rounded shadow-md z-20">
+            <div className="flex flex-col w-full mt-2 gap-2 bg-[#08228d] rounded shadow-md z-20">
               <Link href="/" className="text-white font-extrabold hover:text-[#FFC72C] text-base py-1 px-2">Home</Link>
               <button onClick={() => { setNavOpen(false); router.push('/admin?tab=programs'); }} className="text-white font-extrabold hover:text-[#FFC72C] text-base py-1 px-2 text-left">Programs List</button>
               <button onClick={() => { setNavOpen(false); router.push('/admin?tab=instructors'); }} className="text-white font-extrabold hover:text-[#FFC72C] text-base py-1 px-2 text-left">Instructors</button>

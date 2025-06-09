@@ -71,7 +71,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
       {/* Save button at top right when editing a module */}
       {selected && editingModuleId === selected.id && (
         <button
-          className="fixed top-16 right-2 sm:top-24 sm:right-16 bg-[#002B5C] text-white font-bold py-2 px-4 sm:px-6 rounded-full hover:bg-[#001f40] transition z-50 text-xs sm:text-base"
+          className="fixed top-16 right-2 sm:top-24 sm:right-16 bg-[#08228d] text-white font-bold py-2 px-4 sm:px-6 rounded-full hover:bg-[#001f40] transition z-50 text-xs sm:text-base"
           onClick={() => saveEditModule(selected.id)}
         >
           Save
@@ -81,7 +81,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
         <div className="bg-white rounded-xl shadow p-2 sm:p-6 flex flex-col sm:flex-row gap-4">
           {/* Mobile: Subsection title and content stacked, video below; Desktop: side-by-side */}
           <div className="flex-1">
-            <h3 className="text-base sm:text-2xl font-bold text-[#002B5C] mb-2">{selectedSub.title}</h3>
+            <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2">{selectedSub.title}</h3>
             <p className="text-gray-700 mb-4 text-xs sm:text-base">{selectedSub.content}</p>
             <button
               className="text-[#92D0D3] underline text-xs sm:text-sm mb-2"
@@ -125,7 +125,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
           <div className="flex-1">
             {editingModuleId === selected.id ? (
               <>
-                <h3 className="text-base sm:text-2xl font-bold text-[#002B5C] mb-2">
+                <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2">
                   <input
                     className="w-full px-2 py-1 border rounded text-xs sm:text-base"
                     value={editModuleTitle}
@@ -139,7 +139,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
                 />
                 <div className="flex gap-2 mb-4 mt-2">
                   <button
-                    className="bg-gray-300 text-[#002B5C] px-2 py-1 rounded text-xs sm:text-base"
+                    className="bg-gray-300 text-[#08228d] px-2 py-1 rounded text-xs sm:text-base"
                     onClick={cancelEditModule}
                   >
                     Cancel
@@ -148,11 +148,11 @@ const ContentArea: React.FC<ContentAreaProps> = ({
               </>
             ) : (
               <>
-                <h3 className="text-base sm:text-2xl font-bold text-[#002B5C] mb-2">{selected.title}</h3>
+                <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2">{selected.title}</h3>
                 <p className="text-gray-900 mb-4 text-xs sm:text-base">{selected.content}</p>
               </>
             )}
-            <h4 className="text-xs sm:text-lg font-semibold text-[#002B5C] mb-2">Subsections</h4>
+            <h4 className="text-xs sm:text-lg font-semibold text-[#08228d] mb-2">Subsections</h4>
             <ul className="list-disc list-inside text-gray-700 space-y-1 text-xs sm:text-base">
               {selected.subsections.map((sub) => (
                 <li key={sub.id} className="flex items-center gap-2">

@@ -46,7 +46,7 @@ const StudentListPage = () => {
     <div className="min-h-screen bg-gray-100">
       <Navbar />
       <div className="max-w-2xl mx-auto bg-white p-4 sm:p-8 mt-4 sm:mt-8 rounded-xl shadow">
-        <h2 className="text-xl sm:text-2xl font-bold text-[#002B5C] mb-4 sm:mb-6 text-center">
+        <h2 className="text-xl sm:text-2xl font-bold text-[#08228d] mb-4 sm:mb-6 text-center">
           Enrolled Students{programName ? ` for ${programName}` : ""}
         </h2>
         {students.length === 0 ? (
@@ -59,7 +59,7 @@ const StudentListPage = () => {
                 className="py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between"
               >
                 <div>
-                  <span className="font-semibold text-[#002B5C] text-sm sm:text-base">{student.name}</span>
+                  <span className="font-semibold text-[#08228d] text-sm sm:text-base">{student.name}</span>
                   <span className="block sm:inline ml-0 sm:ml-2 text-gray-500 text-xs sm:text-sm">{student.email}</span>
                 </div>
                 <div className="mt-2 sm:mt-0 flex gap-2 items-center">
@@ -95,7 +95,7 @@ const StudentListPage = () => {
               height={120}
               className="mx-auto rounded-full mb-2 w-28 h-28 object-cover"
             />
-            <p className="font-semibold text-[#002B5C] text-lg sm:text-xl mb-1">{selectedStudent.name}</p>
+            <p className="font-semibold text-[#08228d] text-lg sm:text-xl mb-1">{selectedStudent.name}</p>
             <p className="text-xs sm:text-sm text-gray-500 mb-1">{selectedStudent.email}</p>
             {selectedStudent.contactNo && (
               <p className="text-xs sm:text-sm text-gray-500 mb-1">{selectedStudent.contactNo}</p>

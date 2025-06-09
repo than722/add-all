@@ -8,7 +8,6 @@ export default function VisionPage() {
       <div className="absolute inset-0 bg-[url('/landingpagebg.png')] bg-cover bg-center z-0" />
       <div className="absolute inset-0 bg-black/50 z-10" />
       <div className="relative z-20 min-h-screen">
-        <NavbarDefault />
         <div className="flex flex-col items-center justify-center min-h-[80vh] px-2 sm:px-4 pt-12 sm:pt-16 pb-6 sm:pb-8">
           {/* Responsive max-width and gap */}
           <div className="w-full max-w-2xl sm:max-w-5xl flex flex-col md:flex-row items-center md:items-stretch gap-6 sm:gap-10 md:gap-16">

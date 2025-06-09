@@ -37,7 +37,7 @@ const FeaturedProgramViewModal: React.FC<FeaturedProgramViewModalProps> = ({ pro
           <div className="rounded-xl mb-4 w-28 h-28 bg-gray-300 flex items-center justify-center text-gray-500 text-2xl select-none shadow">
             <span>📷</span>
           </div>
-          <h2 className="text-xl font-extrabold text-[#002B5C] mb-1 text-center">{program}</h2>
+          <h2 className="text-xl font-extrabold text-[#08228d] mb-1 text-center">{program}</h2>
           <p className="text-xs font-semibold text-[#92D0D3] text-center mb-2 uppercase tracking-widest">{category}</p>
           <div className="flex flex-col gap-1 mt-2 w-full">
             <div className="flex items-center gap-2 text-xs text-gray-700"><span className="font-bold">Instructor:</span> {details.instructor}</div>
@@ -49,9 +49,9 @@ const FeaturedProgramViewModal: React.FC<FeaturedProgramViewModalProps> = ({ pro
         </div>
         {/* Right: Description and Curriculum */}
         <div className="w-full md:w-3/5 p-6 flex flex-col justify-center">
-          <h3 className="text-lg font-bold text-[#002B5C] mb-2">Description</h3>
+          <h3 className="text-lg font-bold text-[#08228d] mb-2">Description</h3>
           <p className="text-gray-700 text-sm mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vehicula.</p>
-          <h3 className="text-lg font-bold text-[#002B5C] mb-2">Sample Curriculum</h3>
+          <h3 className="text-lg font-bold text-[#08228d] mb-2">Sample Curriculum</h3>
           <ul className="list-disc list-inside text-gray-700 space-y-1 text-sm mb-2">
             <li>Session 1: Introduction to the Program</li>
             <li>Session 2: Core Concepts and Tools</li>
