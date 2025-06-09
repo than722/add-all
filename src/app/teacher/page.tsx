@@ -1,12 +1,12 @@
 import React from 'react';
 import Navbar from '@/components/ui/navbar/Navbar';
-import StudentListClient from '@/components/studentlistClient/studentlistClient';
+import TeacherClient from '@/components/teacherClient/teacherClient';
 
-export default function StudentListClientPage() {
+export default function TeacherClientPage() {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <Navbar />
-      <StudentListClient />
+      <TeacherClient />
     </div>
   );
 }

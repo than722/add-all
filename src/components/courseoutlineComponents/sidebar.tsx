@@ -231,32 +231,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                         <span className="font-bold text-gray-900">• {sub.title}</span>
                         {editingSubId === sub.id ? (
                           <>
-                            <input
-                              className="px-1 py-0.5 border rounded text-xs sm:text-sm text-gray-900 placeholder-gray-700"
-                              value={editSubTitle}
-                              onChange={e => setEditSubTitle(e.target.value)}
-                            />
-                            <button
-                              className="text-xs text-[#92D0D3] underline"
-                              onClick={() => saveEditSub(mod.id, sub.id)}
-                            >
-                              Save
-                            </button>
-                            <button
-                              className="text-xs text-gray-400 underline"
-                              onClick={cancelEditSub}
-                            >
-                              Cancel
-                            </button>
+                            {/* Removed input and Save/Cancel buttons for editing subsections */}
                           </>
                         ) : (
                           <>
-                            <button
-                              className="text-xs text-[#08228d] underline ml-1"
-                              onClick={e => { e.stopPropagation(); startEditSub(sub); }}
-                            >
-                              Edit
-                            </button>
                           </>
                         )}
                         <span className="text-xs text-gray-400 ml-1">{subsectionProgress[sub.id] || 0}%</span>

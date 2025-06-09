@@ -31,6 +31,9 @@ interface ContentAreaProps {
   startEditSub: (sub: Subsection) => void;
   setSelectedSubsection: (sel: { modId: number; subId: number } | null) => void;
   lockedModules: number[];
+  startEditModule: (mod: Module) => void;
+  setCourseOutline: React.Dispatch<React.SetStateAction<Module[]>>;
+  setSelectedModule: (id: number) => void;
 }
 
 const ContentArea: React.FC<ContentAreaProps> = ({
@@ -51,6 +54,9 @@ const ContentArea: React.FC<ContentAreaProps> = ({
   startEditSub,
   setSelectedSubsection,
   lockedModules,
+  startEditModule,
+  setCourseOutline,
+  setSelectedModule,
 }) => {
   // If the selected module is locked, show a message (for students)
   if (selected && lockedModules.includes(selected.id)) {
@@ -78,109 +84,80 @@ const ContentArea: React.FC<ContentAreaProps> = ({
         </button>
       )}
       {selectedSub ? (
-        <div className="bg-white rounded-xl shadow p-2 sm:p-6 flex flex-col sm:flex-row gap-4">
-          {/* Mobile: Subsection title and content stacked, video below; Desktop: side-by-side */}
-          <div className="flex-1">
-            <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2">{selectedSub.title}</h3>
-            <p className="text-gray-700 mb-4 text-xs sm:text-base">{selectedSub.content}</p>
-            <button
-              className="text-[#92D0D3] underline text-xs sm:text-sm mb-2"
-              onClick={() => setSelectedSubsection(null)}
-            >
-              ← Back to module
-            </button>
-          </div>
-          <div className="flex-1 flex flex-col items-center justify-center">
-            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-0 w-full">
-              {videoUrl ? (
-                <div className="w-full">
-                  <iframe
-                    src={videoUrl}
-                    title="Video"
-                    className="w-full h-32 sm:w-64 sm:h-36 rounded shadow"
-                    allowFullScreen
+        <>
+          <div className="bg-white rounded-xl shadow p-2 sm:p-6 flex flex-col sm:flex-row gap-4">
+            {/* Mobile: Subsection title and content stacked, video below; Desktop: side-by-side */}  
+            <div className="flex-1">
+              {editingSubId === selectedSub.id ? (
+                <>
+                  <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2">
+                    <input
+                      className="w-full px-2 py-1 border rounded text-xs sm:text-base"
+                      value={editSubTitle}
+                      onChange={e => setEditSubTitle(e.target.value)}
+                    />
+                  </h3>
+                  <textarea
+                    className="w-full mb-4 px-2 py-1 border rounded text-gray-900 text-xs sm:text-base"
+                    value={selectedSub.content}
+                    onChange={e => setEditSubTitle(e.target.value)}
+                    // This should be setEditSubContent if you want to edit content separately
                   />
-                </div>
+                  <div className="flex gap-2 mb-4 mt-2">
+                    <button
+                      className="bg-[#08228d] text-white px-2 py-1 rounded text-xs sm:text-base"
+                      onClick={() => selected && saveEditSub(selected.id, selectedSub.id)}
+                    >
+                      Save
+                    </button>
+                    <button
+                      className="bg-gray-300 text-[#08228d] px-2 py-1 rounded text-xs sm:text-base"
+                      onClick={cancelEditSub}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </>
               ) : (
-                <div className="w-full h-32 sm:w-64 sm:h-36 bg-gray-200 rounded flex items-center justify-center text-gray-400">
-                  No video linked
-                </div>
-              )}
-            </label>
-            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-0 w-full mt-2">
-              <span className="inline-block mb-1">Paste Video Link (Subsection)</span>
-              <input
-                type="url"
-                placeholder="https://youtube.com/embed/..."
-                value={videoUrl}
-                onChange={e => setVideoUrl(e.target.value)}
-                className="block w-full border rounded px-2 py-1 text-xs sm:text-sm"
-              />
-            </label>
-          </div>
-        </div>
-      ) : selected ? (
-        <div className="bg-white rounded-xl shadow p-2 sm:p-6 flex flex-col sm:flex-row gap-4">
-          {/* Mobile: Module info and video stacked; Desktop: side-by-side */}
-          <div className="flex-1">
-            {editingModuleId === selected.id ? (
-              <>
-                <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2">
-                  <input
-                    className="w-full px-2 py-1 border rounded text-xs sm:text-base"
-                    value={editModuleTitle}
-                    onChange={e => setEditModuleTitle(e.target.value)}
-                  />
-                </h3>
-                <textarea
-                  className="w-full mb-4 px-2 py-1 border rounded text-gray-900 text-xs sm:text-base"
-                  value={editModuleContent}
-                  onChange={e => setEditModuleContent(e.target.value)}
-                />
-                <div className="flex gap-2 mb-4 mt-2">
+                <>
+                  <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2 flex items-center justify-between">
+                    {selectedSub.title}
+                    <button
+                      className="ml-2 text-xs sm:text-sm text-[#08228d] underline hover:text-[#001f40]"
+                      onClick={() => startEditSub(selectedSub)}
+                    >
+                      Edit
+                    </button>
+                  </h3>
+                  <p className="text-gray-700 mb-4 text-xs sm:text-base">{selectedSub.content}</p>
                   <button
-                    className="bg-gray-300 text-[#08228d] px-2 py-1 rounded text-xs sm:text-base"
-                    onClick={cancelEditModule}
+                    className="text-[#92D0D3] underline text-xs sm:text-sm mb-2"
+                    onClick={() => setSelectedSubsection(null)}
                   >
-                    Cancel
+                    ← Back to module
                   </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2">{selected.title}</h3>
-                <p className="text-gray-900 mb-4 text-xs sm:text-base">{selected.content}</p>
-              </>
-            )}
-            <h4 className="text-xs sm:text-lg font-semibold text-[#08228d] mb-2">Subsections</h4>
-            <ul className="list-disc list-inside text-gray-700 space-y-1 text-xs sm:text-base">
-              {selected.subsections.map((sub) => (
-                <li key={sub.id} className="flex items-center gap-2">
-                  {sub.title}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="flex-1 flex flex-col items-center justify-center">
-            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-0 w-full">
-              {videoUrl ? (
-                <div className="w-full">
-                  <iframe
-                    src={videoUrl}
-                    title="Video"
-                    className="w-full h-32 sm:w-64 sm:h-36 rounded shadow"
-                    allowFullScreen
-                  />
-                </div>
-              ) : (
-                <div className="w-full h-32 sm:w-64 sm:h-36 bg-gray-200 rounded flex items-center justify-center text-gray-400">
-                  No video linked
-                </div>
+                </>
               )}
-            </label>
-            {editingModuleId === selected.id && (
+            </div>
+            <div className="flex-1 flex flex-col items-center justify-center">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-0 w-full">
+                {videoUrl ? (
+                  <div className="w-full">
+                    <iframe
+                      src={videoUrl}
+                      title="Video"
+                      className="w-full h-32 sm:w-64 sm:h-36 rounded shadow"
+                      allowFullScreen
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full h-32 sm:w-64 sm:h-36 bg-gray-200 rounded flex items-center justify-center text-gray-400">
+                    No video linked
+                  </div>
+                )}
+              </label>
               <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-0 w-full mt-2">
-                <span className="inline-block mb-1">Paste Video Link (Module)</span>
+                <span className="inline-block mb-1">Paste Video Link (Subsection)</span>
                 <input
                   type="url"
                   placeholder="https://youtube.com/embed/..."
@@ -189,9 +166,107 @@ const ContentArea: React.FC<ContentAreaProps> = ({
                   className="block w-full border rounded px-2 py-1 text-xs sm:text-sm"
                 />
               </label>
-            )}
+            </div>
           </div>
-        </div>
+        </>
+      ) : selected ? (
+        <>
+          <div className="bg-white rounded-xl shadow p-2 sm:p-6 flex flex-col sm:flex-row gap-4">
+            {/* Mobile: Module info and video stacked; Desktop: side-by-side */}
+            <div className="flex-1">
+              {editingModuleId === selected.id ? (
+                <>
+                  <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2">
+                    <input
+                      className="w-full px-2 py-1 border rounded text-xs sm:text-base"
+                      value={editModuleTitle}
+                      onChange={e => setEditModuleTitle(e.target.value)}
+                    />
+                  </h3>
+                  <textarea
+                    className="w-full mb-4 px-2 py-1 border rounded text-gray-900 text-xs sm:text-base"
+                    value={editModuleContent}
+                    onChange={e => setEditModuleContent(e.target.value)}
+                  />
+                  <div className="flex gap-2 mb-4 mt-2">
+                    <button
+                      className="bg-[#08228d] text-white px-2 py-1 rounded text-xs sm:text-base"
+                      onClick={() => saveEditModule(selected.id)}
+                    >
+                      Save
+                    </button>
+                    <button
+                      className="bg-gray-300 text-[#08228d] px-2 py-1 rounded text-xs sm:text-base"
+                      onClick={cancelEditModule}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2 flex items-center justify-between">
+                    {selected.title}
+                    <button
+                      className="ml-2 text-xs sm:text-sm text-[#08228d] underline hover:text-[#001f40]"
+                      onClick={() => startEditModule(selected)}
+                    >
+                      Edit
+                    </button>
+                  </h3>
+                  <p className="text-gray-900 mb-4 text-xs sm:text-base">{selected.content}</p>
+                </>
+              )}
+              <h4 className="text-xs sm:text-lg font-semibold text-[#08228d] mb-2">Subsections</h4>
+              <ul className="list-disc list-inside text-gray-700 space-y-1 text-xs sm:text-base">
+                {selected.subsections.map((sub) => (
+                  <li key={sub.id} className="flex items-center gap-2">
+                    {sub.title}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="flex-1 flex flex-col items-center justify-center">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-0 w-full">
+                {videoUrl ? (
+                  <div className="w-full">
+                    <iframe
+                      src={videoUrl}
+                      title="Video"
+                      className="w-full h-32 sm:w-64 sm:h-36 rounded shadow"
+                      allowFullScreen
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full h-32 sm:w-64 sm:h-36 bg-gray-200 rounded flex items-center justify-center text-gray-400">
+                    No video linked
+                  </div>
+                )}
+              </label>
+              {editingModuleId === selected.id && (
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-0 w-full mt-2">
+                  <span className="inline-block mb-1">Paste Video Link (Module)</span>
+                  <input
+                    type="url"
+                    placeholder="https://youtube.com/embed/..."
+                    value={videoUrl}
+                    onChange={e => setVideoUrl(e.target.value)}
+                    className="block w-full border rounded px-2 py-1 text-xs sm:text-sm"
+                  />
+                </label>
+              )}
+            </div>
+          </div>
+          {/* Add Content button outside the content box */}
+          <div className="mt-6 flex justify-start">
+            <button
+              className="bg-[#2d208a] text-white px-4 py-2 rounded font-semibold"
+              // onClick={...} // Add logic here if needed
+            >
+              + Add Content
+            </button>
+          </div>
+        </>
       ) : (
         <div className="text-gray-500 italic text-xs sm:text-base">Select a module to view its content.</div>
       )}

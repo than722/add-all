@@ -1,7 +1,6 @@
-import NavbarDefault from '@/components/ui/navbar/NavbarDefault';
 import Image from 'next/image';
 
-export default function VisionPage() {
+export default function Vision() {
   return (
     <div className="relative min-h-screen">
       {/* Background image and overlay, matching HeroSection */}

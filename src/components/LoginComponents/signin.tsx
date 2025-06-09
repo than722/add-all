@@ -20,9 +20,9 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
     }
     onClose();
     if (role === 'student') {
-      router.push('/studentview?tab=all');
+      router.push('/student?tab=all');
     } else if (role === 'teacher') {
-      router.push('/teacherview');
+      router.push('/teacher');
     } else if (role === 'admin') {
       router.push('/admin');
     }

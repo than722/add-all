@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { programsList } from '@/data/programsData';
 import Navbar from '@/components/ui/navbar/Navbar';
 
-const StudentView: React.FC = () => {
+const StudentClient: React.FC = () => {
   const searchParams = useSearchParams();
   const activeTab = (searchParams?.get('tab') as 'all' | 'mine') || 'all';
 
@@ -63,4 +63,4 @@ const StudentView: React.FC = () => {
   );
 };
 
-export default StudentView;
+export default StudentClient;

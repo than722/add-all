@@ -1,4 +1,4 @@
-export type UserRole = 'student' | 'teacher' | 'admin';
+export type UserRole = 'student' | 'teacher' | 'admin' | 'superadmin' | 'guest';
 
 export function getRole(roleNumber: number): UserRole | undefined {
   switch (roleNumber) {
@@ -8,6 +8,10 @@ export function getRole(roleNumber: number): UserRole | undefined {
       return 'teacher';
     case 3:
       return 'admin';
+    case 4:
+      return 'superadmin';
+    case 5:
+      return 'guest';
     default:
       return undefined;
   }

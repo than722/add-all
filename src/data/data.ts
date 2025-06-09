@@ -1,3 +1,12 @@
+export interface PendingApplication {
+  name: string;
+  email: string;
+  receiptUrl: string;
+  paymentType: string;
+  status: 'pending' | 'enrolled';
+  program: string;
+}
+
 export const instructors = [
   { name: 'John Doe', email: 'john@school.edu', img: '/profileicon.png', bio: 'Expert in Fine Arts. 10 years teaching experience.' },
   { name: 'Jane Smith', email: 'jane@school.edu', img: '/profileicon.png', bio: 'Specialist in Business and Finance.' },
@@ -171,3 +180,23 @@ export const demoStudentListData: Record<string, Array<{
     },
   ],
 };
+
+// Dummy pending applications for admin
+export const dummyPendingApps: PendingApplication[] = [
+  {
+    name: 'Alice Johnson',
+    email: 'alice@email.com',
+    receiptUrl: '/add-all image 1.jpg',
+    paymentType: 'cash',
+    status: 'pending',
+    program: 'Floristry',
+  },
+  {
+    name: 'Bob Smith',
+    email: 'bob@email.com',
+    receiptUrl: '/add-all image 2.jpg',
+    paymentType: 'online',
+    status: 'pending',
+    program: 'Investment Analysis',
+  },
+];

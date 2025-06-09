@@ -3,12 +3,10 @@
 import React from 'react';
 import Link from 'next/link';
 import { programsList } from '@/data/programsData';
-import Navbar from '@/components/ui/navbar/Navbar';
 
-const TeacherView: React.FC = () => {
+const teacherClient: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar />
 
       <div className="px-3 sm:px-6 py-6 sm:py-10">
         <h2 className="text-xl sm:text-2xl font-bold text-[#08228d] mb-4 sm:mb-6 text-left">
@@ -35,4 +33,4 @@ const TeacherView: React.FC = () => {
   );
 };
 
-export default TeacherView;
+export default teacherClient;

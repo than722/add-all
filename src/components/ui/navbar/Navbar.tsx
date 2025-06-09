@@ -1,47 +1,236 @@
 'use client';
-import { usePathname, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
-import NavbarSuperAdmin from './NavbarSuperAdmin';
-import NavbarAdmin from './NavbarAdmin';
-import NavbarStudent from './NavbarStudent';
-import NavbarTeacher from './NavbarTeacher';
-import NavbarDefault from './NavbarDefault';
 
-interface NavbarProps {
-  admin?: boolean;
+import Link from 'next/link';
+import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import Profile from '../Modals/profileview';
+import SignInModal from '../../LoginComponents/signin';
+import { getRole, UserRole } from '../../roles/role';
+
+// Define a consistent type for navigation links
+interface NavLink {
+  label: string;
+  href?: string;
+  onClick?: () => void;
+  scrollId?: string;
+  anchor?: boolean;
 }
 
-export default function Navbar({ admin }: NavbarProps) {
-  const router = useRouter();
+export default function Navbar() {
   const pathname = usePathname();
-  const [role, setRole] = useState<string | null>(null);
+  const router = useRouter();
+  const [role, setRole] = useState<UserRole | 'superadmin' | null>(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showSignInModal, setShowSignInModal] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setRole(localStorage.getItem('role'));
+      let storedRole = localStorage.getItem('role');
+      if (storedRole) {
+        // If storedRole is a number string, map to role
+        if (!isNaN(Number(storedRole))) {
+          const numericRole = parseInt(storedRole, 10);
+          const mappedRole = getRole(numericRole);
+          if (mappedRole) setRole(mappedRole);
+          else setRole('guest');
+        } else if (
+          storedRole === 'student' ||
+          storedRole === 'teacher' ||
+          storedRole === 'admin' ||
+          storedRole === 'superadmin' ||
+          storedRole === 'guest'
+        ) {
+          setRole(storedRole as UserRole);
+        } else {
+          setRole('guest');
+          localStorage.setItem('role', 'guest');
+        }
+      } else {
+        setRole('guest');
+        localStorage.setItem('role', 'guest');
+      }
     }
   }, []);
 
-  const isSuperAdminView = pathname === '/superadmin' || role === 'superadmin';
-  const isStudentView = pathname?.startsWith('/studentview');
-  const isTeacherView = pathname?.startsWith('/teacherview') || pathname?.startsWith('/programview') || pathname?.startsWith('/studentList') || pathname?.startsWith('/editcourseoutline');
-  const isAdminView = pathname?.startsWith('/admin') || admin;
+  // Navigation links config per role
+  const navLinks: Record<string, NavLink[]> = {
+    superadmin: [
+      { label: 'Home', href: '/' },
+      { label: 'Instructors', href: '#instructors', anchor: true },
+      { label: 'Students', href: '#students', anchor: true },
+      { label: 'Programs', href: '#programs', anchor: true },
+      { label: 'Administrators', href: '#administrators', anchor: true },
+    ],
+    admin: [
+      { label: 'Home', href: '/' },
+      { label: 'Programs List', onClick: () => router.push('/admin?tab=programs') },
+      { label: 'Instructors', onClick: () => router.push('/admin?tab=instructors') },
+      { label: 'Students', onClick: () => router.push('/admin?tab=students') },
+    ],
+    teacher: [
+      { label: 'Home', href: '/' },
+      { label: 'My Programs', onClick: () => router.push('/teacher') },
+    ],
+    student: [
+      { label: 'Home', href: '/' },
+      { label: 'All Programs', onClick: () => router.push('/student?tab=all') },
+      { label: 'My Programs', onClick: () => router.push('/student?tab=mine') },
+    ],
+    guest: [
+      { label: 'Home', href: '/' },
+      { label: 'Vision', scrollId: 'vision-section' },
+      { label: 'About Us', scrollId: 'aboutus-section' },
+    ],
+    default: [
+      { label: 'Home', href: '/' },
+      { label: 'Vision', scrollId: 'vision-section' },
+      { label: 'About Us', scrollId: 'aboutus-section' },
+    ],
+  };
 
-  // Responsive wrapper: just ensure the navbar components fill width and don't overflow
-  // All Navbar* components should already be responsive, but we add a wrapper for safety
+  // Profile modal config per role (isAdmin separated)
+  const profileConfig: Record<string, { profile: { name: string; email: string; img: string; bio: string; type?: 'student' | 'instructor' }, isAdmin: boolean }> = {
+    superadmin: { profile: { name: 'Super Admin', email: 'superadmin@example.com', img: '/profileicon.png', bio: 'Super Administrator' }, isAdmin: true },
+    admin: { profile: { name: 'Admin', email: 'admin@example.com', img: '/profileicon.png', bio: 'Admin at ADD-ALL' }, isAdmin: true },
+    teacher: { profile: { name: 'Teacher', email: 'teacher@example.com', img: '/profileicon.png', bio: 'Instructor at ADD-ALL', type: 'instructor' }, isAdmin: false },
+    student: { profile: { name: 'Juan Dela Cruz', email: 'student@example.com', img: '/profileicon.png', bio: 'Student at ADD-ALL', type: 'student' }, isAdmin: false },
+  };
+
+  // Handle scroll for default navbar
+  const handleScroll = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+      setNavOpen(false);
+    }
+  };
+
+  // Render navigation links
+  const renderLinks = (isMobile = false) => {
+    const links =
+      role === 'superadmin' ? navLinks.superadmin :
+      role === 'admin' ? navLinks.admin :
+      role === 'teacher' ? navLinks.teacher :
+      role === 'student' ? navLinks.student :
+      role === 'guest' ? navLinks.guest :
+      navLinks.default;
+    return links.map((link, i) => {
+      if (link.href && !link.anchor && !link.scrollId && !link.onClick) {
+        return <Link key={i} href={link.href} className="text-white font-extrabold hover:text-[#FFC72C] text-base py-1 px-2" onClick={isMobile ? () => setNavOpen(false) : undefined}>{link.label}</Link>;
+      }
+      if (link.anchor && link.href) {
+        return <a key={i} href={link.href} className="text-white font-extrabold hover:text-[#FFC72C] text-base py-1 px-2" onClick={isMobile ? () => setNavOpen(false) : undefined}>{link.label}</a>;
+      }
+      if (link.scrollId) {
+        return <button key={i} type="button" className="text-white font-extrabold hover:text-[#FFC72C] text-base py-1 px-2 bg-transparent border-none cursor-pointer text-left" onClick={() => handleScroll(link.scrollId!)}>{link.label}</button>;
+      }
+      if (link.onClick) {
+        return <button key={i} className="text-white font-extrabold hover:text-[#FFC72C] text-base py-1 px-2 text-left" onClick={() => { if (isMobile) setNavOpen(false); link.onClick && link.onClick(); }}>{link.label}</button>;
+      }
+      return null;
+    });
+  };
+
+  // Desktop breakpoint: md for default, sm for others
+  const isDefault = !role;
+  const desktopClass = isDefault ? 'md:flex hidden' : 'sm:flex hidden';
+  const mobileClass = isDefault ? 'md:hidden flex' : 'sm:hidden flex';
+
   return (
-    <div className="w-full">
-      {isSuperAdminView ? (
-        <NavbarSuperAdmin />
-      ) : isAdminView ? (
-        <NavbarAdmin />
-      ) : isStudentView ? (
-        <NavbarStudent />
-      ) : isTeacherView ? (
-        <NavbarTeacher />
-      ) : (
-        <NavbarDefault />
+    <>
+      <nav className="relative w-full shadow-md" style={{ backgroundColor: '#08228d' }}>
+        {/* Desktop Layout */}
+        <div className={`${desktopClass} items-center justify-between w-full px-6 py-4 relative`}>
+          {/* Left: Logo and School Name */}
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 overflow-hidden rounded-full">
+              <Image src="/add-all logo bg.png" alt="Logo" width={48} height={48} className="object-cover" />
+            </div>
+            <div className="leading-snug">
+              <h1 className="text-white font-extrabold tracking-wide text-lg">Ateneo de Davao</h1>
+              <h2 className="text-white font-bold text-sm uppercase tracking-widest">Academy of Lifelong Learning</h2>
+            </div>
+          </div>
+          {/* Center: Navigation Links (absolutely centered) */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-10">
+            {renderLinks(false)}
+          </div>
+          {/* Right: Profile or Sign In */}
+          <div className="flex items-center ml-auto">
+            {role ? (
+              <button
+                onClick={() => setShowProfileModal(true)}
+                className="w-10 h-10 rounded-full overflow-hidden border-2 border-white"
+                aria-label="Open profile modal"
+              >
+                <Image src="/profileicon.png" alt="Profile" width={40} height={40} className="object-cover" />
+              </button>
+            ) : (
+              <button
+                onClick={() => setShowSignInModal(true)}
+                className="bg-[#FFC72C] text-[#08228d] px-4 py-2 rounded-full font-bold hover:bg-yellow-400 transition duration-300 text-base"
+              >
+                Sign In
+              </button>
+            )}
+          </div>
+        </div>
+        {/* Mobile Layout */}
+        <div className={`${mobileClass} flex-col w-full px-3 py-3`}>
+          <div className="flex items-center w-full z-10">
+            <div className="w-10 h-10 overflow-hidden rounded-full">
+              <Image src="/add-all logo bg.png" alt="Logo" width={48} height={48} className="object-cover" />
+            </div>
+            <div className="leading-snug ml-3">
+              <h1 className="text-white font-extrabold tracking-wide text-sm">Ateneo de Davao</h1>
+              <h2 className="text-white font-bold text-xs uppercase tracking-widest">Academy of Lifelong Learning</h2>
+            </div>
+            <button
+              className="ml-auto p-2 focus:outline-none"
+              onClick={() => setNavOpen((v) => !v)}
+              aria-label="Toggle navigation"
+            >
+              <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d={navOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+              </svg>
+            </button>
+            {role ? (
+              <button
+                onClick={() => setShowProfileModal(true)}
+                className="ml-2 w-9 h-9 rounded-full overflow-hidden border-2 border-white"
+                aria-label="Open profile modal"
+              >
+                <Image src="/profileicon.png" alt="Profile" width={36} height={36} className="object-cover" />
+              </button>
+            ) : (
+              <button
+                onClick={() => setShowSignInModal(true)}
+                className="ml-2 bg-[#FFC72C] text-[#08228d] px-4 py-2 rounded-full font-bold hover:bg-yellow-400 transition duration-300 text-sm"
+              >
+                Sign In
+              </button>
+            )}
+          </div>
+          {/* Mobile Nav Links Dropdown */}
+          {navOpen && (
+            <div className="flex flex-col w-full mt-2 gap-2 bg-[#08228d] rounded shadow-md z-20">
+              {renderLinks(true)}
+            </div>
+          )}
+        </div>
+      </nav>
+      {role && showProfileModal && (
+        <Profile
+          onClose={() => setShowProfileModal(false)}
+          profile={profileConfig[role].profile}
+          isAdmin={profileConfig[role].isAdmin}
+        />
       )}
-    </div>
+      {!role && (
+        <SignInModal isOpen={showSignInModal} onClose={() => setShowSignInModal(false)} />
+      )}
+    </>
   );
 }

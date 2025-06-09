@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import FeaturedProgramViewModal from '../featuredprogramviewModal';
+import FeaturedProgramViewModal from '../Modals/featuredprogramviewModal';
 
 const programCategories = [
   {
@@ -61,7 +61,7 @@ const photosAndReviews = [
   },
 ];
 
-export default function ProgramsPage() {
+export default function programs() {
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
   const [modalProgram, setModalProgram] = React.useState<{ program: string; category: string } | null>(null);
   const categories = programCategories.map((cat) => cat.category);
