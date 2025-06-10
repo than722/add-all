@@ -200,3 +200,23 @@ export const dummyPendingApps: PendingApplication[] = [
     program: 'Investment Analysis',
   },
 ];
+
+// --- Types for program and instructor ---
+export interface Program {
+  program: string;
+  category: string;
+  instructor: string;
+  date: string;
+  time: string;
+  sessions: string;
+  description: string;
+  thumbnail: string;
+}
+
+export interface Instructor {
+  name: string;
+  email: string;
+  contact: string;
+  img: string;
+  bio: string;
+}

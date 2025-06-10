@@ -1,16 +1,24 @@
 import React, { useState } from 'react';
 import ProgressCircle from './progressCircle';
 
+// Update Sidebar types to match new Module/Subsection structure
+interface ContentBlock {
+  id: number;
+  type: 'text' | 'video';
+  value: string;
+  isEditing?: boolean;
+}
+
 interface Subsection {
   id: number;
   title: string;
-  content: string;
+  contentBlocks: ContentBlock[];
 }
 
 interface Module {
   id: number;
   title: string;
-  content: string;
+  contentBlocks: ContentBlock[];
   subsections: Subsection[];
 }
 
@@ -26,8 +34,6 @@ interface SidebarProps {
   startEditModule: (mod: Module) => void;
   saveEditModule: (id: number) => void;
   cancelEditModule: () => void;
-  editModuleContent: string;
-  setEditModuleContent: (s: string) => void;
   moduleProgress: Record<number, number>;
   selectedSubsection: { modId: number; subId: number } | null;
   setSelectedSubsection: (sel: { modId: number; subId: number } | null) => void;
@@ -55,8 +61,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   startEditModule,
   saveEditModule,
   cancelEditModule,
-  editModuleContent,
-  setEditModuleContent,
   moduleProgress,
   selectedSubsection,
   setSelectedSubsection,
@@ -105,11 +109,11 @@ const Sidebar: React.FC<SidebarProps> = ({
             const newId = filteredModules.length > 0 ? Math.max(...filteredModules.map(m => m.id)) + 1 : 1;
             setCourseOutline((prev: Module[]) => [
               ...prev,
-              { id: newId, title: '', content: '', subsections: [] }
+              { id: newId, title: '', contentBlocks: [], subsections: [] }
             ]);
             setSelectedModule(newId);
             setExpandedModule(newId);
-            startEditModule({ id: newId, title: '', content: '', subsections: [] });
+            startEditModule({ id: newId, title: '', contentBlocks: [], subsections: [] });
           }}
         >
           + Add Module
@@ -131,11 +135,11 @@ const Sidebar: React.FC<SidebarProps> = ({
             const newId = filteredModules.length > 0 ? Math.max(...filteredModules.map(m => m.id)) + 1 : 1;
             setCourseOutline((prev: Module[]) => [
               ...prev,
-              { id: newId, title: '', content: '', subsections: [] }
+              { id: newId, title: '', contentBlocks: [], subsections: [] }
             ]);
             setSelectedModule(newId);
             setExpandedModule(newId);
-            startEditModule({ id: newId, title: '', content: '', subsections: [] });
+            startEditModule({ id: newId, title: '', contentBlocks: [], subsections: [] });
           }}
         >
           + Add Module
@@ -192,22 +196,33 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </div>
               ) : (
                 <>
-                  <button
-                    className={`w-full text-left px-3 py-2 rounded font-semibold transition text-xs sm:text-base ${selectedModule === mod.id ? 'bg-[#92D0D3] text-white' : 'hover:bg-gray-100 text-[#08228d]'}`}
-                    onClick={() => {
-                      setExpandedModule(expandedModule === mod.id ? null : mod.id);
-                      setSelectedModule(mod.id);
-                      setSelectedSubsection(null);
-                    }}
-                  >
-                    {mod.title}
-                  </button>
-                  <button
-                    className="text-xs text-[#08228d] underline ml-2"
-                    onClick={() => startSidebarEditModule(mod)}
-                  >
-                    Edit
-                  </button>
+                  <div className="flex items-center">
+                    <button
+                      className={`w-full text-left px-3 py-2 rounded font-semibold transition text-xs sm:text-base ${selectedModule === mod.id ? 'bg-[#92D0D3] text-white' : 'hover:bg-gray-100 text-[#08228d]'}`}
+                      onClick={() => {
+                        setExpandedModule(expandedModule === mod.id ? null : mod.id);
+                        setSelectedModule(mod.id);
+                        setSelectedSubsection(null);
+                      }}
+                    >
+                      {mod.title}
+                    </button>
+                    {/* Delete module button */}
+                    <button
+                      className="text-xs text-red-500 underline ml-2 hover:text-red-700"
+                      title="Delete Module"
+                      onClick={() => {
+                        setCourseOutline(prev => prev.filter(m => m.id !== mod.id));
+                        // If the deleted module was selected, clear selection
+                        if (selectedModule === mod.id) {
+                          setSelectedModule(filteredModules.length > 1 ? filteredModules.find(m => m.id !== mod.id)?.id || 0 : 0);
+                          setSelectedSubsection(null);
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </>
               )}
               <div className="mt-1 mb-2">
@@ -229,14 +244,25 @@ const Sidebar: React.FC<SidebarProps> = ({
                       >
                         <ProgressCircle percent={subsectionProgress[sub.id] || 0} />
                         <span className="font-bold text-gray-900">• {sub.title}</span>
-                        {editingSubId === sub.id ? (
-                          <>
-                            {/* Removed input and Save/Cancel buttons for editing subsections */}
-                          </>
-                        ) : (
-                          <>
-                          </>
-                        )}
+                        {/* Delete subsection button */}
+                        <button
+                          className="ml-2 text-xs text-red-500 underline hover:text-red-700"
+                          title="Delete Subsection"
+                          onClick={e => {
+                            e.stopPropagation();
+                            setCourseOutline(prev => prev.map(m =>
+                              m.id === mod.id
+                                ? { ...m, subsections: m.subsections.filter(s => s.id !== sub.id) }
+                                : m
+                            ));
+                            // If the deleted subsection was selected, clear selection
+                            if (selectedSubsection && selectedSubsection.modId === mod.id && selectedSubsection.subId === sub.id) {
+                              setSelectedSubsection(null);
+                            }
+                          }}
+                        >
+                          Delete
+                        </button>
                         <span className="text-xs text-gray-400 ml-1">{subsectionProgress[sub.id] || 0}%</span>
                       </li>
                     ))}
@@ -248,11 +274,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                       const newSubId = mod.subsections.length > 0 ? Math.max(...mod.subsections.map(s => s.id)) + 1 : mod.id * 10 + 1;
                       setCourseOutline(prev => prev.map(m =>
                         m.id === mod.id
-                          ? { ...m, subsections: [...m.subsections, { id: newSubId, title: '', content: '' }] }
+                          ? { ...m, subsections: [...m.subsections, { id: newSubId, title: '', contentBlocks: [] }] }
                           : m
                       ));
                       setSelectedSubsection({ modId: mod.id, subId: newSubId });
-                      startEditSub({ id: newSubId, title: '', content: '' });
+                      startEditSub({ id: newSubId, title: '', contentBlocks: [] });
                     }}
                   >
                     + Add Subsection

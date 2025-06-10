@@ -159,7 +159,7 @@ export default function Navbar() {
           </div>
           {/* Right: Profile or Sign In */}
           <div className="flex items-center ml-auto">
-            {role ? (
+            {role && role !== 'guest' ? (
               <button
                 onClick={() => setShowProfileModal(true)}
                 className="w-10 h-10 rounded-full overflow-hidden border-2 border-white"
@@ -196,7 +196,7 @@ export default function Navbar() {
                 <path strokeLinecap="round" strokeLinejoin="round" d={navOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
               </svg>
             </button>
-            {role ? (
+            {role && role !== 'guest' ? (
               <button
                 onClick={() => setShowProfileModal(true)}
                 className="ml-2 w-9 h-9 rounded-full overflow-hidden border-2 border-white"
@@ -221,14 +221,14 @@ export default function Navbar() {
           )}
         </div>
       </nav>
-      {role && showProfileModal && (
+      {role && role !== 'guest' && showProfileModal && (
         <Profile
           onClose={() => setShowProfileModal(false)}
           profile={profileConfig[role].profile}
           isAdmin={profileConfig[role].isAdmin}
         />
       )}
-      {!role && (
+      {(!role || role === 'guest') && (
         <SignInModal isOpen={showSignInModal} onClose={() => setShowSignInModal(false)} />
       )}
     </>

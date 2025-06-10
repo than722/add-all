@@ -12,6 +12,10 @@ import AddAdminModal from '@/components/ui/Modals/addAdminModal';
 import AddProgramModal from '@/components/ui/Modals/addprogramModal';
 import ArchiveModal from '@/components/ui/Modals/archiveModal';
 import StatusModal from '@/components/ui/Modals/statusModal';
+import AdminsTable from './AdminsTable';
+import InstructorsList from './InstructorsList';
+import StudentsList from './StudentsList';
+import ProgramsGrid from './ProgramsGrid';
 
 export default function SuperAdminClient() {
   const [adminList, setAdminList] = useState(admins);
@@ -112,12 +116,12 @@ export default function SuperAdminClient() {
   const normalizedAdminPrograms = adminPrograms.map((p) => ({
     program: p.program,
     category: p.category,
-    instructor: 'instructor' in p ? p.instructor : '',
-    date: 'date' in p ? p.date : '',
-    time: 'time' in p ? p.time : '',
-    sessions: 'sessions' in p ? p.sessions : '',
-    description: 'description' in p ? p.description : '',
-    thumbnail: 'thumbnail' in p ? p.thumbnail : '',
+    instructor: 'instructor' in p && typeof (p as any).instructor === 'string' ? (p as any).instructor : '',
+    date: 'date' in p && typeof (p as any).date === 'string' ? (p as any).date : '',
+    time: 'time' in p && typeof (p as any).time === 'string' ? (p as any).time : '',
+    sessions: 'sessions' in p && typeof (p as any).sessions === 'string' ? (p as any).sessions : '',
+    description: 'description' in p && typeof (p as any).description === 'string' ? (p as any).description : '',
+    thumbnail: 'thumbnail' in p && typeof (p as any).thumbnail === 'string' ? (p as any).thumbnail : '',
   }));
 
   // Add program handler
@@ -177,70 +181,7 @@ export default function SuperAdminClient() {
                 + Add Employee
               </button>
             </div>
-            {/* Responsive Table/List */}
-            <div className="block sm:hidden">
-              <ul className="divide-y divide-gray-200">
-                {uniqueUsers.map((user) => {
-                  const isAdmin = adminList.some((a) => a.email === user.email && a.isAdmin);
-                  return (
-                    <li key={user.email} className="py-4 flex flex-col gap-2">
-                      <div>
-                        <span className="font-semibold text-[#08228d]">{user.name || "[Employee's name]"}</span>
-                        <span className="block text-gray-500 text-xs">{user.email || "[email]"}</span>
-                      </div>
-                      <div className="flex flex-col gap-1 text-xs text-gray-700">
-                        <span><span className="font-semibold">Contact:</span> {user.contact || "[contact]"}</span>
-                        <span><span className="font-semibold">Position:</span> {user.position || "Employee"}</span>
-                        <span><span className="font-semibold">Role:</span> {isAdmin ? "Admin" : ""}</span>
-                      </div>
-                      <button
-                        className={`mt-2 px-3 py-2 rounded-full font-semibold transition-all bg-[#3bb3ce] text-white text-xs`}
-                        onClick={() => handleAdminToggle(user.email, user.name, isAdmin)}
-                      >
-                        {isAdmin ? "Remove admin role" : "Add as an admin"}
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-            {/* Desktop Table */}
-            <div className="hidden sm:block overflow-x-auto">
-              <table className="w-full text-left border-separate border-spacing-y-2 sm:border-spacing-y-4 text-xs sm:text-base">
-                <thead>
-                  <tr className="text-[#08228d] font-bold text-base sm:text-lg">
-                    <th className="text-black">Employee</th>
-                    <th className="text-black">Email</th>
-                    <th className="text-black">Contact Info</th>
-                    <th className="text-black">Position</th>
-                    <th className="text-black">Roles</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {uniqueUsers.map((user) => {
-                    const isAdmin = adminList.some((a) => a.email === user.email && a.isAdmin);
-                    return (
-                      <tr key={user.email} className="border-b-2 border-gray-300 last:border-b-0">
-                        <td className="py-2 sm:py-3 text-black">{user.name || "[Employee's name]"}</td>
-                        <td className="text-black">{user.email || "[email]"}</td>
-                        <td className="text-black">{user.contact || "[contact]"}</td>
-                        <td className="text-black">{user.position || 'Employee'}</td>
-                        <td className="text-black">{isAdmin ? "Admin" : ""}</td>
-                        <td>
-                          <button
-                            className={`px-3 sm:px-5 py-2 rounded-full font-semibold transition-all bg-[#3bb3ce] text-white text-xs sm:text-base`}
-                            onClick={() => handleAdminToggle(user.email, user.name, isAdmin)}
-                          >
-                            {isAdmin ? "Remove admin role" : "Add as an admin"}
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+            <AdminsTable uniqueUsers={uniqueUsers} adminList={adminList} handleAdminToggle={handleAdminToggle} />
             <AddAdminModal
               isOpen={showAddAdminModal}
               onClose={() => setShowAddAdminModal(false)}
@@ -259,40 +200,7 @@ export default function SuperAdminClient() {
                 + Add Instructor
               </button>
             </div>
-            <ul className="space-y-2 sm:space-y-3">
-              {instructorsList.filter(inst => !archivedInstructors.includes(inst.name)).map((inst, idx) => (
-                <li
-                  key={idx}
-                  className="bg-white rounded shadow p-3 sm:p-4 flex items-center gap-3 sm:gap-4 cursor-pointer hover:bg-gray-100 transition"
-                  onClick={() => setProfileModal({ ...inst, type: 'instructor' })}
-                  aria-label={`View profile of ${inst.name}`}
-                >
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-[#08228d] flex-shrink-0">
-                    <Image
-                      src={inst.img}
-                      alt={inst.name}
-                      width={48}
-                      height={48}
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <span className="font-semibold text-[#08228d] text-sm sm:text-base">{inst.name}</span>
-                    <span className="block text-gray-500 text-xs sm:text-sm">{inst.email}</span>
-                  </div>
-                  <span className={`ml-auto px-2 py-1 rounded text-xs font-semibold ${instructorStatus[inst.email] === 'active' ? 'bg-green-200 text-green-800' : 'bg-gray-200 text-gray-600'}`}>{instructorStatus[inst.email]}</span>
-                  <button
-                    className="ml-2 bg-red-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-red-700"
-                    onClick={e => {
-                      e.stopPropagation();
-                      setArchivePrompt({ open: true, type: 'instructor', name: inst.name });
-                    }}
-                  >
-                    Archive
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <InstructorsList instructorsList={instructorsList} archivedInstructors={archivedInstructors} setProfileModal={setProfileModal} setArchivePrompt={setArchivePrompt} instructorStatus={instructorStatus} />
             <AddInstructorModal
               isOpen={showAddInstructorModal}
               onClose={() => setShowAddInstructorModal(false)}
@@ -313,39 +221,7 @@ export default function SuperAdminClient() {
         {activeTab === 'students' && (
           <div>
             <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-[#08228d]">Students</h2>
-            <ul className="space-y-2 sm:space-y-3">
-              {students.filter(stud => !archivedStudents.includes(stud.name)).map((stud, idx) => (
-                <li
-                  key={idx}
-                  className="bg-white rounded shadow p-3 sm:p-4 flex items-center gap-3 sm:gap-4 cursor-pointer hover:bg-gray-100 transition"
-                  onClick={() => setProfileModal({ ...stud, type: 'student' })}
-                  aria-label={`View profile of ${stud.name}`}
-                >
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-[#08228d] flex-shrink-0">
-                    <Image
-                      src={stud.img}
-                      alt={stud.name}
-                      width={48}
-                      height={48}
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <span className="font-semibold text-[#08228d] text-sm sm:text-base">{stud.name}</span>
-                    <span className="block text-gray-500 text-xs sm:text-sm">{stud.email}</span>
-                  </div>
-                  <button
-                    className="ml-2 bg-red-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-red-700"
-                    onClick={e => {
-                      e.stopPropagation();
-                      setArchivePrompt({ open: true, type: 'student', name: stud.name });
-                    }}
-                  >
-                    Archive
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <StudentsList students={students} archivedStudents={archivedStudents} setProfileModal={setProfileModal} setArchivePrompt={setArchivePrompt} />
             {/* Archive Student Modal */}
             {archivePrompt && archivePrompt.type === 'student' && (
               <ArchiveModal
@@ -369,50 +245,7 @@ export default function SuperAdminClient() {
                 + Add Program
               </button>
             </div>
-            <div className="overflow-x-auto">
-              <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 w-full">
-                {normalizedAdminPrograms.filter(p => !archivedPrograms.includes(p.program)).map((p, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-white p-3 sm:p-4 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition flex flex-col h-full min-h-[320px] sm:min-h-[420px] w-full"
-                    style={{ minWidth: 0 }}
-                  >
-                    <div className="w-full h-32 sm:h-40 bg-gray-300 rounded-md mb-2 sm:mb-3 flex items-center justify-center text-gray-600 overflow-hidden">
-                      {p.thumbnail && typeof p.thumbnail === 'string' ? (
-                        <img
-                          src={p.thumbnail}
-                          alt="Program Thumbnail"
-                          className="object-cover rounded-md w-full h-full"
-                        />
-                      ) : (
-                        <div className="flex items-center justify-center w-full h-full text-gray-400 text-lg sm:text-2xl font-bold">
-                          No Image
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 flex flex-col">
-                      <h3 className="text-base sm:text-lg font-semibold text-[#08228d] mb-1">{p.program}</h3>
-                      <p className="text-xs sm:text-sm text-gray-500 italic mb-2">{p.category}</p>
-                      <p className="text-gray-700 mb-2 sm:mb-3 flex-1 text-xs sm:text-base">{String(p.description) || dummyDetails.description}</p>
-                      <div className="text-xs text-gray-600 mt-auto mb-1 sm:mb-2">
-                        <div><strong>Time & Sessions:</strong> {String(p.time) || dummyDetails.timeAndSessions} {p.sessions ? `| ${String(p.sessions)} Sessions` : ''}</div>
-                        <div><strong>Date:</strong> {String(p.date) || dummyDetails.date}</div>
-                        <div><strong>Instructor:</strong> {String(p.instructor) || dummyDetails.instructor}</div>
-                      </div>
-                      <div className="flex gap-2 mt-2">
-                        <button
-                          className="flex-1 bg-red-500 text-white py-2 rounded hover:bg-red-700 transition font-semibold text-xs sm:text-base"
-                          onClick={() => setArchivePrompt({ open: true, type: 'program', name: p.program })}
-                        >
-                          Archive
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            {/* Add Program Modal */}
+            <ProgramsGrid normalizedAdminPrograms={normalizedAdminPrograms} archivedPrograms={archivedPrograms} setArchivePrompt={setArchivePrompt} dummyDetails={dummyDetails} />
             <AddProgramModal
               isOpen={showAddProgramModal}
               newProgram={newProgram}

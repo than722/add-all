@@ -6,17 +6,42 @@ import Sidebar from '@/components/courseoutlineComponents/sidebar';
 import ContentArea from '@/components/courseoutlineComponents/contentArea';
 import ProgressCircle from '@/components/courseoutlineComponents/progressCircle';
 
+interface ContentBlock {
+  id: number;
+  type: 'text' | 'video';
+  value: string;
+  isEditing?: boolean;
+}
+
 interface Module {
   id: number;
   title: string;
-  content: string;
+  contentBlocks: ContentBlock[];
   subsections: Subsection[];
 }
 
 interface Subsection {
   id: number;
   title: string;
-  content: string;
+  contentBlocks: ContentBlock[];
+}
+
+// Helper to migrate old course outline to new contentBlocks structure
+function migrateCourseOutline(oldOutline: any[]): Module[] {
+  return oldOutline.map((mod) => ({
+    id: mod.id,
+    title: mod.title,
+    contentBlocks: mod.content
+      ? [{ id: Date.now() + Math.random(), type: 'text', value: mod.content }]
+      : [],
+    subsections: (mod.subsections || []).map((sub: any) => ({
+      id: sub.id,
+      title: sub.title,
+      contentBlocks: sub.content
+        ? [{ id: Date.now() + Math.random(), type: 'text', value: sub.content }]
+        : [],
+    })),
+  }));
 }
 
 export default function editcourseoutlineClient() {
@@ -24,12 +49,11 @@ export default function editcourseoutlineClient() {
   const [selectedModule, setSelectedModule] = useState<number>(initialCourseOutline[0].id);
   const [selectedSubsection, setSelectedSubsection] = useState<{ modId: number; subId: number } | null>(null);
   const [search, setSearch] = useState('');
-  const [courseOutline, setCourseOutline] = useState(initialCourseOutline);
+  const [courseOutline, setCourseOutline] = useState<Module[]>(() => migrateCourseOutline(initialCourseOutline));
   const [role, setRole] = useState<string | null>(null);
   const [editingModuleId, setEditingModuleId] = useState<number | null>(null);
   const [editingSubId, setEditingSubId] = useState<number | null>(null);
   const [editModuleTitle, setEditModuleTitle] = useState('');
-  const [editModuleContent, setEditModuleContent] = useState('');
   const [editSubTitle, setEditSubTitle] = useState('');
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
@@ -61,13 +85,12 @@ export default function editcourseoutlineClient() {
   const startEditModule = (mod: Module) => {
     setEditingModuleId(mod.id);
     setEditModuleTitle(mod.title);
-    setEditModuleContent(mod.content);
   };
   const saveEditModule = (modId: number) => {
     setCourseOutline((prev) =>
       prev.map((mod) =>
         mod.id === modId
-          ? { ...mod, title: editModuleTitle, content: editModuleContent }
+          ? { ...mod, title: editModuleTitle }
           : mod
       )
     );
@@ -123,7 +146,7 @@ export default function editcourseoutlineClient() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
+    <div className="min-h-screen bg-gray-100 flex flex-col">    
       <div className="flex flex-1 flex-col md:flex-row">
         <Sidebar
           search={search}
@@ -146,8 +169,6 @@ export default function editcourseoutlineClient() {
           cancelEditSub={cancelEditSub}
           editSubTitle={editSubTitle}
           setEditSubTitle={setEditSubTitle}
-          editModuleContent={editModuleContent}
-          setEditModuleContent={setEditModuleContent}
           subsectionProgress={subsectionProgress}
           lockedModules={lockedModules}
           toggleLockModule={toggleLockModule}
@@ -160,8 +181,6 @@ export default function editcourseoutlineClient() {
             editingModuleId={editingModuleId}
             editModuleTitle={editModuleTitle}
             setEditModuleTitle={setEditModuleTitle}
-            editModuleContent={editModuleContent}
-            setEditModuleContent={setEditModuleContent}
             saveEditModule={saveEditModule}
             cancelEditModule={cancelEditModule}
             editingSubId={editingSubId}

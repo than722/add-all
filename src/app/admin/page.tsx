@@ -1,4 +1,4 @@
-import Admin from "@/components/admin/adminClient";
+import Admin from "@/components/adminClient/adminClient";
 
 export default function AdminPage() {
   return <Admin initialTab="programs" />;

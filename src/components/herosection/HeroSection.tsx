@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback } from 'react';
 import RegisterModal from '../LoginComponents/registration';
+import Image from 'next/image';
 
 const HeroSection: React.FC = () => {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
@@ -78,9 +79,9 @@ const HeroSection: React.FC = () => {
 
           {/* Right Image Section */}
           <div className="flex-1 grid grid-rows-3 gap-2 sm:gap-4 w-full max-w-md sm:max-w-none mt-6 lg:mt-0">
-            <img src="/add-all image 1.jpg" alt="ADD-ALL 1" className="rounded-xl shadow-lg w-full h-32 sm:h-44 md:h-60 object-cover" />
-            <img src="/add-all image 2.jpg" alt="ADD-ALL 2" className="rounded-xl shadow-lg w-full h-32 sm:h-44 md:h-60 object-cover" />
-            <img src="/add-all image 3.jpg" alt="ADD-ALL 3" className="rounded-xl shadow-lg w-full h-32 sm:h-44 md:h-60 object-cover" />
+            <Image src="/add-all image 1.jpg" alt="ADD-ALL 1" width={600} height={240} className="rounded-xl shadow-lg w-full h-32 sm:h-44 md:h-60 object-cover" />
+            <Image src="/add-all image 2.jpg" alt="ADD-ALL 2" width={600} height={240} className="rounded-xl shadow-lg w-full h-32 sm:h-44 md:h-60 object-cover" />
+            <Image src="/add-all image 3.jpg" alt="ADD-ALL 3" width={600} height={240} className="rounded-xl shadow-lg w-full h-32 sm:h-44 md:h-60 object-cover" />
           </div>
         </div>
       </section>

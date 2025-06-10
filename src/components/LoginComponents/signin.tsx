@@ -25,6 +25,8 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
       router.push('/teacher');
     } else if (role === 'admin') {
       router.push('/admin');
+    } else if (role === 'superadmin') {
+      router.push('/superadmin');
     }
   };
 
@@ -53,12 +55,9 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
             Admin
           </button>
           <button
-            className="bg-[#1E3A5F] text-white px-4 py-2 rounded hover:bg-[#16325c] transition font-semibold text-sm sm:text-base"
-            onClick={() => {
-              onClose();
-              router.push('/superadmin');
-            }}
-          >
+              className="bg-[#1E3A5F] text-white px-4 py-2 rounded hover:bg-[#16325c] transition font-semibold text-sm sm:text-base"
+              onClick={() => handleSignIn(4)}
+            >
             SuperAdmin
           </button>
         </div>
