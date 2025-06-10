@@ -8,7 +8,7 @@ interface EditProfileModalProps {
 }
 
 const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose, profile, onSave }) => {
-  const [name, setName] = useState(profile.name);
+  const [name] = useState(profile.name);
   const [contactNo, setContactNo] = useState(profile.contactNo);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,16 +37,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose, pr
         </button>
         <h2 className="text-lg sm:text-xl font-bold text-[#08228d] mb-3 sm:mb-4 text-center">Edit Profile</h2>
         <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-          <div>
-            <label className="block text-gray-700 mb-1 font-semibold text-sm">Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#92D0D3] text-gray-900 text-sm"
-              required
-            />
-          </div>
+
           <div>
             <label className="block text-gray-700 mb-1 font-semibold text-sm">Contact No.</label>
             <input

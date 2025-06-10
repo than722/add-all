@@ -79,12 +79,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [localEditModuleId, setLocalEditModuleId] = useState<number | null>(null);
   const [localEditModuleTitle, setLocalEditModuleTitle] = useState('');
 
-  // Handler to start editing a module title in the sidebar
-  const startSidebarEditModule = (mod: Module) => {
-    setLocalEditModuleId(mod.id);
-    setLocalEditModuleTitle(mod.title);
-  };
-
   // Handler to save the edited module title from the sidebar
   const saveSidebarEditModule = (modId: number) => {
     setCourseOutline(prev => prev.map(mod =>
@@ -98,8 +92,33 @@ const Sidebar: React.FC<SidebarProps> = ({
     setLocalEditModuleId(null);
   };
 
+  // Detect user role for conditional rendering
+  const [role, setRole] = React.useState<string | null>(null);
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setRole(localStorage.getItem('role'));
+    }
+  }, []);
+
   return (
     <div className="w-full md:w-1/3 bg-white p-2 sm:p-6 shadow-lg md:min-h-screen relative">
+      {/* Back to Programs List for admin/teacher */}
+      {role === 'admin' || role === 'teacher' || role === 'superadmin' ? (
+        <button
+          className="mb-3 sm:mb-4 px-3 py-2 bg-blue-700 text-white rounded-lg font-semibold shadow hover:bg-blue-800 transition text-sm sm:text-base w-full"
+          onClick={() => {
+            if (role === 'admin') {
+              window.location.href = '/admin?tab=programs';
+            } else if (role === 'teacher') {
+              window.location.href = '/teacher?tab=programs';
+            } else if (role === 'superadmin') {
+              window.location.href = '/superadmin?tab=programs';
+            }
+          }}
+        >
+          ← Back to Programs List
+        </button>
+      ) : null}
       {/* Mobile: sticky header for sidebar title and add button */}
       <div className="block md:hidden sticky top-0 z-20 bg-white pb-2">
         <h2 className="text-base font-bold text-[#08228d] mb-2">Edit Course Outline</h2>

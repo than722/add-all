@@ -26,17 +26,24 @@ interface ProgramsGridProps {
 }
 
 export default function ProgramsGrid({ normalizedAdminPrograms, archivedPrograms, setArchivePrompt, dummyDetails }: ProgramsGridProps) {
+  const [role, setRole] = React.useState<string | null>(null);
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setRole(localStorage.getItem('role'));
+    }
+  }, []);
+
   return (
     <div className="overflow-x-auto">
-      <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 w-full">
+      <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 min-w-[320px]">
         {normalizedAdminPrograms.filter((p: Program) => !archivedPrograms.includes(p.program)).map((p: Program, idx: number) => (
           <div
             key={idx}
-            className="bg-white p-3 sm:p-4 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition flex flex-col h-full min-h-[320px] sm:min-h-[420px] w-full"
+            className="bg-white p-3 sm:p-4 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition flex flex-col h-full min-h-[340px] sm:min-h-[420px] w-full"
             style={{ minWidth: 0 }}
           >
             <div className="w-full h-32 sm:h-40 bg-gray-300 rounded-md mb-2 sm:mb-3 flex items-center justify-center text-gray-600 overflow-hidden">
-              {p.thumbnail && typeof p.thumbnail === 'string' ? (
+              {p.thumbnail && typeof p.thumbnail === 'string' && p.thumbnail.trim() !== '' ? (
                 <Image
                   src={p.thumbnail}
                   alt="Program Thumbnail"
@@ -46,9 +53,13 @@ export default function ProgramsGrid({ normalizedAdminPrograms, archivedPrograms
                   unoptimized={p.thumbnail.startsWith('http')}
                 />
               ) : (
-                <div className="flex items-center justify-center w-full h-full text-gray-400 text-lg sm:text-2xl font-bold">
-                  No Image
-                </div>
+                <Image
+                  src="/add-all logo bg.png"
+                  alt="Program Thumbnail"
+                  width={320}
+                  height={160}
+                  className="object-cover rounded-md w-full h-full"
+                />
               )}
             </div>
             <div className="flex-1 flex flex-col">
@@ -61,6 +72,18 @@ export default function ProgramsGrid({ normalizedAdminPrograms, archivedPrograms
                 <div><strong>Instructor:</strong> {String(p.instructor) || dummyDetails.instructor}</div>
               </div>
               <div className="flex gap-2 mt-2">
+                <button
+                  className="flex-1 bg-blue-700 text-white py-2 rounded hover:bg-blue-800 transition font-semibold text-xs sm:text-base"
+                  onClick={() => window.location.href = `/courseoutline?program=${encodeURIComponent(p.program)}&role=superadmin`}
+                >
+                  View Course Outline
+                </button>
+                <button
+                  className="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-800 transition font-semibold text-xs sm:text-base"
+                  onClick={() => window.location.href = `/editcourseoutline?program=${encodeURIComponent(p.program)}&role=superadmin`}
+                >
+                  Edit Course Outline
+                </button>
                 <button
                   className="flex-1 bg-red-500 text-white py-2 rounded hover:bg-red-700 transition font-semibold text-xs sm:text-base"
                   onClick={() => setArchivePrompt({ open: true, type: 'program', name: p.program })}

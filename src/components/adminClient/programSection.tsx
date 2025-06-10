@@ -12,6 +12,8 @@ interface ProgramsSectionProps {
   archivedPrograms: string[];
   setArchivedPrograms: React.Dispatch<React.SetStateAction<string[]>>;
   instructors: Instructor[];
+  onViewCourseOutline?: (program: Program) => void;
+  onEditCourseOutline?: (program: Program) => void;
 }
 
 export default function ProgramsSection({
@@ -20,6 +22,8 @@ export default function ProgramsSection({
   archivedPrograms,
   setArchivedPrograms,
   instructors,
+  onViewCourseOutline,
+  onEditCourseOutline,
 }: ProgramsSectionProps) {
   const [showAddProgramModal, setShowAddProgramModal] = useState(false);
   const [newProgram, setNewProgram] = useState({
@@ -118,6 +122,18 @@ export default function ProgramsSection({
                   <div><strong>Instructor:</strong> {String(p.instructor) || dummyDetails.instructor}</div>
                 </div>
                 <div className="flex gap-2 mt-2">
+                  <button
+                    className="flex-1 bg-blue-500 text-white py-2 rounded hover:bg-blue-700 transition font-semibold text-xs sm:text-base"
+                    onClick={() => onViewCourseOutline && onViewCourseOutline(p)}
+                  >
+                    View Course Outline
+                  </button>
+                  <button
+                    className="flex-1 bg-green-500 text-white py-2 rounded hover:bg-green-700 transition font-semibold text-xs sm:text-base"
+                    onClick={() => onEditCourseOutline && onEditCourseOutline(p)}
+                  >
+                    Edit Course Outline
+                  </button>
                   <button
                     className="flex-1 bg-red-500 text-white py-2 rounded hover:bg-red-700 transition font-semibold text-xs sm:text-base"
                     onClick={() => setArchivePrompt({ open: true, program: p.program })}

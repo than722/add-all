@@ -69,7 +69,15 @@ export default function AdminClient({ initialTab }: AdminClientProps) {
             setAdminPrograms={setAdminPrograms}
             archivedPrograms={archivedPrograms}
             setArchivedPrograms={setArchivedPrograms}
-            instructors={instructorsList} // Pass instructors to AddProgramModal
+            instructors={instructorsList}
+            onViewCourseOutline={(program) => {
+              // Navigate to courseoutline page for this program
+              window.location.href = `/courseoutline?program=${encodeURIComponent(program.program)}`;
+            }}
+            onEditCourseOutline={(program) => {
+              // Navigate to editcourseoutline page for this program
+              window.location.href = `/editcourseoutline?program=${encodeURIComponent(program.program)}`;
+            }}
           />
         )}
 

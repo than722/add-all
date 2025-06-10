@@ -19,32 +19,6 @@ export default function AboutUs() {
 
         {/* Content Section */}
         <div className="p-6 sm:p-10 lg:p-12 space-y-10">
-          {/* Mission */}
-          <section className="bg-blue-50 p-6 rounded-xl shadow-inner border-l-4 border-[#08228d]">
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#08228d] mb-3 flex items-center">
-              <svg className="w-8 h-8 mr-3 text-[#FFC72C]" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              Our Mission
-            </h2>
-            <p className="text-gray-700 text-base sm:text-lg leading-relaxed">
-              To make learning **accessible** and **inclusive** for everyone by offering a wide range of short-term courses that are relevant, affordable, and designed to meet the needs of diverse learners. We believe in breaking down barriers to education, enabling individuals to unlock their full potential and thrive in an ever-evolving world.
-            </p>
-          </section>
-
-          {/* Vision */}
-          <section className="bg-purple-50 p-6 rounded-xl shadow-inner border-l-4 border-[#FFC72C]">
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#08228d] mb-3 flex items-center">
-              <svg className="w-8 h-8 mr-3 text-[#08228d]" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-              </svg>
-              Our Vision
-            </h2>
-            <p className="text-gray-700 text-base sm:text-lg leading-relaxed">
-              To be the leading provider of innovative and inclusive learning experiences in Davao, fostering **lifelong learning** and **skills development** for all. We envision a community where continuous growth is not just a goal but a lived reality for every individual.
-            </p>
-          </section>
 
           {/* What We Offer */}
           <section className="bg-green-50 p-6 rounded-xl shadow-inner border-l-4 border-blue-500">
@@ -53,7 +27,7 @@ export default function AboutUs() {
                 <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
                 <path fillRule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.147-1.146A2 2 0 009.172 3H7.828a2 2 0 00-1.414.586L5.293 4.707A1 1 0 014.586 5H4zm3 8.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm6 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" clipRule="evenodd" />
               </svg>
-              What We Offer
+              We Offer
             </h2>
             <ul className="list-none space-y-3 text-gray-700 text-base sm:text-lg pl-0">
               <li className="flex items-start">
@@ -115,15 +89,24 @@ export default function AboutUs() {
               Contact Us
             </h2>
             <p className="text-gray-700 text-base sm:text-lg mb-2">
-              For inquiries, partnerships, or support, feel free to reach out to our dedicated team:
+              For inquiries please reach out to us at:
             </p>
-            <a href="mailto:addall.info@gmail.com" className="text-[#08228d] hover:text-[#FFC72C] font-semibold text-lg sm:text-xl flex items-center transition-colors duration-200">
+            <a
+              href="mailto:lifelonglearning@addu.edu.ph"
+              className="text-[#08228d] hover:text-[#FFC72C] font-semibold text-lg sm:text-xl flex items-center transition-colors duration-200 mb-2"
+            >
               <svg className="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                 <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
               </svg>
-              addall.info@gmail.com
+              lifelonglearning@addu.edu.ph
             </a>
+            <div className="text-[#08228d] font-semibold text-lg sm:text-xl flex items-center">
+              <svg className="w-6 h-6 mr-2 text-[#08228d]" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M2.003 5.884a17.012 17.012 0 0012.112 12.112l2.302-.766a1 1 0 00.61-.93v-3.195a1 1 0 00-.553-.894l-2.659-1.33a1 1 0 00-1.118.117l-1.514 1.262a12.04 12.04 0 01-4.43-4.43l1.262-1.514a1 1 0 00.117-1.118l-1.33-2.659A1 1 0 007.895 2H4.7a1 1 0 00-.93.61l-.767 2.274z" clipRule="evenodd" />
+              </svg>
+              082-221-2411 local 8414
+            </div>
           </section>
         </div>
       </div>
