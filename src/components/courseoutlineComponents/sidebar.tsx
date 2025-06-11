@@ -105,7 +105,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       {/* Back to Programs List for admin/teacher */}
       {role === 'admin' || role === 'teacher' || role === 'superadmin' ? (
         <button
-          className="mb-3 sm:mb-4 px-3 py-2 bg-blue-700 text-white rounded-lg font-semibold shadow hover:bg-blue-800 transition text-sm sm:text-base w-full"
+          className="mb-3 sm:mb-4 px-3 py-2 bg-blue-700 text-white rounded-lg font-semibold shadow hover:bg-blue-800 transition text-sm sm:text-base w-60"
           onClick={() => {
             if (role === 'admin') {
               window.location.href = '/admin?tab=programs';
@@ -149,7 +149,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       <div className="hidden md:block">
         <h2 className="text-lg sm:text-xl font-bold text-[#08228d] mb-3 sm:mb-4">Edit Course Outline</h2>
         <button
-          className="w-full mb-3 sm:mb-4 px-3 sm:px-4 py-2 bg-blue-700 text-white rounded-lg font-semibold shadow hover:bg-blue-800 transition text-sm sm:text-base"
+          className="w-60 mb-3 sm:mb-4 px-3 sm:px-4 py-2 bg-blue-700 text-white rounded-lg font-semibold shadow hover:bg-blue-800 transition text-sm sm:text-base"
           onClick={() => {
             const newId = filteredModules.length > 0 ? Math.max(...filteredModules.map(m => m.id)) + 1 : 1;
             setCourseOutline((prev: Module[]) => [

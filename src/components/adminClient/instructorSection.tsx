@@ -21,7 +21,6 @@ export default function InstructorsSection({
   setInstructorsList,
   setProfileModal,
   instructorStatus,
-  setStatusModal,
 }: InstructorsSectionProps) {
   const [showAddInstructorModal, setShowAddInstructorModal] = useState(false);
   // State for search query

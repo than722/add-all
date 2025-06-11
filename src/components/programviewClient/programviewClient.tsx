@@ -2,7 +2,6 @@
 
 import { useSearchParams } from 'next/navigation';
 import { programsList } from '@/data/programsData';
-import Navbar from '@/components/ui/navbar/Navbar';
 import React, { useState, useEffect } from 'react';
 import EnrollModal from '@/components/ui/Modals/enrollmentModal';
 import { getRole, UserRole } from '@/components/roles/role';
@@ -84,8 +83,6 @@ const ProgramView = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar />
-
       {/* Program Card */}
       <div className="max-w-4xl mx-auto bg-white p-4 sm:p-8 rounded-xl shadow-lg mt-4 sm:mt-6">
         <div className="flex flex-col md:flex-row items-start gap-4 sm:gap-6">

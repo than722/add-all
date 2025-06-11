@@ -4,7 +4,6 @@ import { useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { programsList } from '@/data/programsData';
-import Navbar from '@/components/ui/navbar/Navbar';
 
 const StudentClient: React.FC = () => {
   const searchParams = useSearchParams();
@@ -38,7 +37,6 @@ const StudentClient: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar />
       <div className="px-6 py-10">
         <h2 className="text-2xl font-bold text-[#08228d] mb-6 text-left">
           {activeTab === 'all' ? 'All Programs' : 'My Programs'}
