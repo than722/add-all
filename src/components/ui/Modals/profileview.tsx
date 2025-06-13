@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import EditProfileModal from './editprofileModal';
+import { useAuth } from '@/components/contexts/authContext'; // Import the useAuth hook
 
 interface ProfileProps {
   onClose: () => void;
@@ -11,12 +12,13 @@ interface ProfileProps {
   isAdmin?: boolean;
   instructorStatus?: { [email: string]: 'active' | 'inactive' };
   onStatusChange?: (instructorName: string, instructorEmail: string, statusToSet: 'active' | 'inactive') => void;
-  hideLogout?: boolean;
+  hideLogout?: boolean; // Keep this prop for flexibility, though we'll adjust where the button appears
   hideNotifications?: boolean;
 }
 
 export default function Profile({ onClose, profile, isAdmin, instructorStatus, onStatusChange, hideLogout, hideNotifications }: ProfileProps) {
   const router = useRouter();
+  const { setAuthRole } = useAuth(); // Destructure setAuthRole from your AuthContext
   const [showEditModal, setShowEditModal] = useState(false);
   const [profileState, setProfileState] = useState({
     name: profile.name,
@@ -32,6 +34,29 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
 
   // Detect if this is an admin view (for instructors or students)
   const isAdminProfileView = isAdmin && (profile.type === 'instructor' || profile.type === 'student');
+
+  const handleLogout = () => {
+    // 1. Clear local storage (AuthContext's setAuthRole also does this)
+    if (typeof window !== 'undefined') {
+      // You can clear specific items or clear all. If AuthContext is managing
+      // the 'role', setAuthRole('guest') is the primary action.
+      // localStorage.clear(); // This clears everything.
+      // sessionStorage.clear(); // Clear session storage too if you use it
+    }
+
+    // 2. Update the global AuthContext state to 'guest'
+    setAuthRole('guest');
+
+    // 3. Close the profile modal
+    onClose();
+
+    // 4. Redirect to the home page (or login page)
+    // Using router.push is generally preferred over window.location.href for Next.js
+    router.push('/');
+    // Optional: router.refresh() if you want to force a full re-render on the home page
+    // router.refresh();
+  };
+
 
   return (
     <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-2 sm:px-0">
@@ -92,7 +117,7 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
           )}
           {!isAdminProfileView && (
             <div className="space-y-2">
-              {/* Admin controls for instructor status */}
+              {/* Admin controls for instructor status - This section seems duplicated, verify if needed here */}
               {isAdmin && profile.type === 'instructor' && instructorStatus && onStatusChange && (
                 <div className="flex gap-2 mb-2">
                   <button
@@ -114,17 +139,11 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
               <button className="w-full bg-[#08228d] text-white py-2 rounded hover:bg-[#1a3d7c] transition text-xs sm:text-base" onClick={() => setShowEditModal(true)}>
                 Edit Profile
               </button>
+              {/* Logout button - now using handleLogout */}
               {!hideLogout && (
                 <button
                   className="w-full bg-gray-200 text-[#08228d] py-2 rounded hover:bg-gray-300 transition text-xs sm:text-base"
-                  onClick={() => {
-                    if (typeof window !== 'undefined') {
-                      localStorage.clear();
-                      sessionStorage.clear();
-                    }
-                    onClose();
-                    window.location.href = '/';
-                  }}
+                  onClick={handleLogout} // Call the new handleLogout function
                 >
                   Logout
                 </button>

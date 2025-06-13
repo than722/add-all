@@ -1,7 +1,8 @@
 // app/layout.tsx
 import type { Metadata } from 'next';
-import '@/styles/globals.css'; 
-import Navbar from '@/components/ui/navbar/Navbar'; 
+import '@/styles/globals.css';
+import Navbar from '@/components/ui/navbar/Navbar';
+import { AuthProvider } from '@/components/contexts/authContext'; // Import your AuthProvider
 
 export const metadata: Metadata = {
   title: 'Ateneo de Davao Academy of Lifelong Learning',
@@ -16,10 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* Your Navbar component */}
-        <Navbar />
-        {/* The children prop will render your page content */}
-        <main>{children}</main>
+        {/* Wrap your entire application with AuthProvider */}
+        <AuthProvider>
+          <Navbar /> {/* Navbar now gets its role from context */}
+          <main>{children}</main>
+        </AuthProvider>
       </body>
     </html>
   );

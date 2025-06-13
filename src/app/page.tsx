@@ -1,5 +1,5 @@
 import HeroSection from '../components/herosection/HeroSection';
-import Programs from '../components/ui/programs/programs';
+import Programs from '../components/herosection/programs';
 import Vision from '../components/herosection/vision';
 import AboutUs from '../components/herosection/aboutUs';
 

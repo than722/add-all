@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import Navbar from '@/components/ui/navbar/Navbar';
 import Profile from '@/components/ui/Modals/profileview';
 import StatusModal from '@/components/ui/Modals/statusModal';
 
@@ -61,7 +60,6 @@ export default function AdminClient({ initialTab }: AdminClientProps) {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar />
       <div className="px-2 sm:px-4 py-6 sm:py-10 w-full max-w-auto">
         {tab === 'programs' && (
           <ProgramsSection

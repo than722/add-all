@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { programsList } from '@/data/programsData';
 import React, { useState, useEffect } from 'react';
 import EnrollModal from '@/components/ui/Modals/enrollmentModal';
-import { getRole, UserRole } from '@/components/roles/role';
+import { getRole, UserRole } from '@/data/roles/role';
 import { dummyStudents, programPrices } from '@/data/data';
 import Link from 'next/link';
 

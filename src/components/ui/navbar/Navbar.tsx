@@ -1,12 +1,14 @@
+// components/ui/navbar/Navbar.tsx
 'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'; // useState for navOpen is still fine
 import Profile from '../Modals/profileview';
 import SignInModal from '../../LoginComponents/signin';
-import { getRole, UserRole } from '../../roles/role';
+// import { getRole, UserRole } from '../../roles/role'; // No longer needed here
+import { useAuth } from '@/components/contexts/authContext'; // <--- Import useAuth
 
 // Define a consistent type for navigation links
 interface NavLink {
@@ -20,41 +22,22 @@ interface NavLink {
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const [role, setRole] = useState<UserRole | 'superadmin' | null>(null);
+  const { role} = useAuth(); 
+
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      let storedRole = localStorage.getItem('role');
-      if (storedRole) {
-        // If storedRole is a number string, map to role
-        if (!isNaN(Number(storedRole))) {
-          const numericRole = parseInt(storedRole, 10);
-          const mappedRole = getRole(numericRole);
-          if (mappedRole) setRole(mappedRole);
-          else setRole('guest');
-        } else if (
-          storedRole === 'student' ||
-          storedRole === 'teacher' ||
-          storedRole === 'admin' ||
-          storedRole === 'superadmin' ||
-          storedRole === 'guest'
-        ) {
-          setRole(storedRole as UserRole);
-        } else {
-          setRole('guest');
-          localStorage.setItem('role', 'guest');
-        }
-      } else {
-        setRole('guest');
-        localStorage.setItem('role', 'guest');
-      }
-    }
-  }, []);
+  // *** REMOVE THE OLD useEffect THAT READS LOCALSTORAGE ***
+  // The role state is now managed by AuthProvider
 
-  // Navigation links config per role
+  // You can keep this useEffect for logging if you want to see when role changes
+  useEffect(() => {
+    console.log('Navbar: Rendered with role:', role);
+  }, [role]);
+
+
+  // Navigation links config per role (no change here, it uses the 'role' state)
   const navLinks: Record<string, NavLink[]> = {
     superadmin: [
       { label: 'Home', href: '/' },
@@ -75,15 +58,15 @@ export default function Navbar() {
     ],
     student: [
       { label: 'Home', href: '/' },
-      { label: 'All Programs', onClick: () => router.push('/student?tab=all') },
-      { label: 'My Programs', onClick: () => router.push('/student?tab=mine') },
+      { label: 'All Programs', onClick: () => router.push('/student/allprograms') },
+      { label: 'My Programs', onClick: () => router.push('/student/myprograms') },
     ],
     guest: [
       { label: 'Home', href: '/' },
       { label: 'Vision', scrollId: 'vision-section' },
       { label: 'About Us', scrollId: 'aboutus-section' },
     ],
-    default: [
+    default: [ // This 'default' case will primarily be hit if role is null initially
       { label: 'Home', href: '/' },
       { label: 'Vision', scrollId: 'vision-section' },
       { label: 'About Us', scrollId: 'aboutus-section' },
@@ -107,7 +90,7 @@ export default function Navbar() {
     }
   };
 
-  // Render navigation links
+  // Render navigation links (no change here)
   const renderLinks = (isMobile = false) => {
     const links =
       role === 'superadmin' ? navLinks.superadmin :
@@ -134,7 +117,7 @@ export default function Navbar() {
   };
 
   // Desktop breakpoint: md for default, sm for others
-  const isDefault = !role;
+  const isDefault = !role; // This will now typically only be true on initial mount before AuthProvider sets the role
   const desktopClass = isDefault ? 'md:flex hidden' : 'sm:flex hidden';
   const mobileClass = isDefault ? 'md:hidden flex' : 'sm:hidden flex';
 
@@ -160,13 +143,15 @@ export default function Navbar() {
           {/* Right: Profile or Sign In */}
           <div className="flex items-center ml-auto">
             {role && role !== 'guest' ? (
-              <button
-                onClick={() => setShowProfileModal(true)}
-                className="w-10 h-10 rounded-full overflow-hidden border-2 border-white"
-                aria-label="Open profile modal"
-              >
-                <Image src="/profileicon.png" alt="Profile" width={40} height={40} className="object-cover" />
-              </button>
+              <>
+                <button
+                  onClick={() => setShowProfileModal(true)}
+                  className="w-10 h-10 rounded-full overflow-hidden border-2 border-white"
+                  aria-label="Open profile modal"
+                >
+                  <Image src="/profileicon.png" alt="Profile" width={40} height={40} className="object-cover" />
+                </button>
+              </>
             ) : (
               <button
                 onClick={() => setShowSignInModal(true)}
@@ -197,13 +182,15 @@ export default function Navbar() {
               </svg>
             </button>
             {role && role !== 'guest' ? (
-              <button
-                onClick={() => setShowProfileModal(true)}
-                className="ml-2 w-9 h-9 rounded-full overflow-hidden border-2 border-white"
-                aria-label="Open profile modal"
-              >
-                <Image src="/profileicon.png" alt="Profile" width={36} height={36} className="object-cover" />
-              </button>
+              <>
+                <button
+                  onClick={() => setShowProfileModal(true)}
+                  className="ml-2 w-9 h-9 rounded-full overflow-hidden border-2 border-white"
+                  aria-label="Open profile modal"
+                >
+                  <Image src="/profileicon.png" alt="Profile" width={36} height={36} className="object-cover" />
+                </button>
+              </>
             ) : (
               <button
                 onClick={() => setShowSignInModal(true)}
@@ -224,8 +211,8 @@ export default function Navbar() {
       {role && role !== 'guest' && showProfileModal && (
         <Profile
           onClose={() => setShowProfileModal(false)}
-          profile={profileConfig[role].profile}
-          isAdmin={profileConfig[role].isAdmin}
+          profile={profileConfig[role]?.profile || { name: '', email: '', img: '', bio: '' }}
+          isAdmin={profileConfig[role]?.isAdmin || false}
         />
       )}
       {(!role || role === 'guest') && (

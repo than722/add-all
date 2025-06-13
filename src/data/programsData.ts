@@ -1,5 +1,3 @@
-// data/programsData.ts
-
 export const programCategories = [
   {
     category: 'ARTS AND DESIGN',
@@ -29,8 +27,11 @@ export const programCategories = [
       'Customer Grouping',
     ],
   },
+  // You can add more categories and programs here as needed
 ];
 
+// This flattens the structured categories into a single list of programs,
+// where each program object includes its category, suitable for direct display.
 export const programsList = programCategories.flatMap(({ category, programs }) =>
   programs.map((program) => ({
     program,
