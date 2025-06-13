@@ -1,3 +1,12 @@
+export interface PendingApplication {
+  name: string;
+  email: string;
+  receiptUrl: string;
+  paymentType: string;
+  status: 'pending' | 'enrolled';
+  program: string;
+}
+
 export const instructors = [
   { name: 'John Doe', email: 'john@school.edu', img: '/profileicon.png', bio: 'Expert in Fine Arts. 10 years teaching experience.' },
   { name: 'Jane Smith', email: 'jane@school.edu', img: '/profileicon.png', bio: 'Specialist in Business and Finance.' },
@@ -5,9 +14,9 @@ export const instructors = [
 ];
 
 export const students = [
-  { name: 'Alice Johnson', email: 'alice@email.com', img: '/profileicon.png', bio: 'Enthusiastic learner.' },
-  { name: 'Bob Smith', email: 'bob@email.com', img: '/profileicon.png', bio: 'Aspiring artist.' },
-  { name: 'Charlie Lee', email: 'charlie@email.com', img: '/profileicon.png', bio: 'Interested in finance.' },
+  { name: 'Alice Johnson', email: 'alice@email.com', img: '/profileicon.png', bio: 'Enthusiastic learner.', status: 'enrolled' },
+  { name: 'Bob Smith', email: 'bob@email.com', img: '/profileicon.png', bio: 'Aspiring artist.', status: 'pending' },
+  { name: 'Charlie Lee', email: 'charlie@email.com', img: '/profileicon.png', bio: 'Interested in finance.', status: 'pending' },
 ];
 
 export const dummyDetails = {
@@ -122,3 +131,92 @@ export const admins = [
   { name: "John Doe", email: "john@school.edu", contact: "09112223333", position: "Employee", isAdmin: false },
   { name: "Jane Smith", email: "jane@school.edu", contact: "09114445555", position: "Employee", isAdmin: false },
 ];
+
+// Demo enrolled students for StudentListPage (simulate localStorage for different programs)
+export const demoStudentListData: Record<string, Array<{
+  name: string;
+  email: string;
+  receiptUrl: string;
+  paymentType: string;
+  status: 'pending' | 'enrolled';
+}>> = {
+  'Floristry': [
+    {
+      name: 'Alice Johnson',
+      email: 'alice@email.com',
+      receiptUrl: 'https://example.com/receipt1.jpg',
+      paymentType: 'GCash',
+      status: 'enrolled',
+    },
+    {
+      name: 'Bob Smith',
+      email: 'bob@email.com',
+      receiptUrl: 'https://example.com/receipt2.jpg',
+      paymentType: 'Bank Transfer',
+      status: 'enrolled',
+    },
+    {
+      name: 'Charlie Lee',
+      email: 'charlie@email.com',
+      receiptUrl: 'https://example.com/receipt3.jpg',
+      paymentType: 'GCash',
+      status: 'pending',
+    },
+  ],
+  'Basic Soap Making': [
+    {
+      name: 'Diana Cruz',
+      email: 'diana@email.com',
+      receiptUrl: 'https://example.com/receipt4.jpg',
+      paymentType: 'Bank Transfer',
+      status: 'enrolled',
+    },
+    {
+      name: 'Ethan Wright',
+      email: 'ethan@email.com',
+      receiptUrl: 'https://example.com/receipt5.jpg',
+      paymentType: 'GCash',
+      status: 'pending',
+    },
+  ],
+};
+
+// Dummy pending applications for admin
+export const dummyPendingApps: PendingApplication[] = [
+  {
+    name: 'Alice Johnson',
+    email: 'alice@email.com',
+    receiptUrl: '/add-all image 1.jpg',
+    paymentType: 'cash',
+    status: 'pending',
+    program: 'Floristry',
+  },
+  {
+    name: 'Bob Smith',
+    email: 'bob@email.com',
+    receiptUrl: '/add-all image 2.jpg',
+    paymentType: 'online',
+    status: 'pending',
+    program: 'Investment Analysis',
+  },
+];
+
+// --- Types for program and instructor ---
+export interface Program {
+  program: string;
+  category: string;
+  instructor: string;
+  date: string;
+  time: string;
+  sessions: string;
+  description: string;
+  thumbnail: string;
+}
+
+export interface Instructor {
+  name: string;
+  email: string;
+  contact: string;
+  img: string;
+  bio: string;
+}

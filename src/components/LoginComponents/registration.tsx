@@ -19,17 +19,17 @@ export default function RegisterModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-2 sm:px-0">
       <div className="absolute inset-0" onClick={onClose}></div>
-      <div className="relative bg-white rounded-2xl max-w-md w-full p-8 shadow-xl z-10">
+      <div className="relative bg-white rounded-2xl max-w-xs sm:max-w-md w-full p-4 sm:p-8 shadow-xl z-10">
         <button
           onClick={onClose}
           aria-label="Close modal"
-          className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 focus:outline-none"
+          className="absolute top-2 right-2 sm:top-4 sm:right-4 text-gray-600 hover:text-gray-900 focus:outline-none"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
+            className="h-5 w-5 sm:h-6 sm:w-6"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -39,11 +39,11 @@ export default function RegisterModal({
           </svg>
         </button>
 
-        <h2 className="text-2xl font-bold text-center mb-6 text-[#1E3A5F]">
+        <h2 className="text-xl sm:text-2xl font-bold text-center mb-4 sm:mb-6 text-[#1E3A5F]">
           Register
         </h2>
         <form
-          className="space-y-4"
+          className="space-y-3 sm:space-y-4"
           onSubmit={(e) => {
             e.preventDefault();
             // Handle form submission here
@@ -51,44 +51,44 @@ export default function RegisterModal({
           }}
         >
           <div>
-            <label htmlFor="fullname" className="block text-gray-700 mb-1 font-semibold">
+            <label htmlFor="fullname" className="block text-gray-700 mb-1 font-semibold text-sm">
               Full Name
             </label>
             <input
               type="text"
               id="fullname"
               name="fullname"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
               required
             />
           </div>
           <div>
-            <label htmlFor="email" className="block text-gray-700 mb-1 font-semibold">
+            <label htmlFor="email" className="block text-gray-700 mb-1 font-semibold text-sm">
               Email
             </label>
             <input
               type="email"
               id="email"
               name="email"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#92D0D3]"
+              className="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#92D0D3] text-sm"
               required
             />
           </div>
           <div>
-            <label htmlFor="contact" className="block text-gray-700 mb-1 font-semibold">
+            <label htmlFor="contact" className="block text-gray-700 mb-1 font-semibold text-sm">
               Contact No.
             </label>
             <input
               type="tel"
               id="contact"
               name="contact"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#92D0D3]"
+              className="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#92D0D3] text-sm"
               required
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-primary text-white py-2 rounded-lg font-semibold hover:bg-primary-dark transition"
+            className="w-full bg-primary text-white py-2 rounded-lg font-semibold hover:bg-primary-dark transition text-sm"
           >
             Register
           </button>
