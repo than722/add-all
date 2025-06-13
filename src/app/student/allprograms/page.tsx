@@ -1,5 +1,4 @@
-
-import AllPrograms from '@/components/Programs/AllPrograms';
+import AllPrograms from '@/components/Programs/Student/StudentsAllPrograms';
 
 export default function AllProgramsPage() {
   return <AllPrograms />;

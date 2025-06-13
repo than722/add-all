@@ -1,8 +1,4 @@
-// app/components/Programs/MyPrograms.tsx
-// This component displays a searchable list of 'my' (enrolled) programs,
-// with a design similar to AllPrograms.tsx and an 'Enrolled' pill.
-
-'use client'; // This component uses useState, so it must be a client component.
+'use client'; 
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -55,7 +51,7 @@ const MyPrograms: React.FC = () => {
         {filteredPrograms.length > 0 ? (
           filteredPrograms.map(({ program, category }, idx) => (
             <Link
-              href={`/programview?program=${encodeURIComponent(program)}`}
+              href={`/student/myprograms/${encodeURIComponent(program)}`}
               key={idx}
               className="bg-white p-3 sm:p-4 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition block"
             >

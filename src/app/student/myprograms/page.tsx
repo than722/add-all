@@ -1,5 +1,4 @@
-'use client';
-import MyPrograms from "@/components/Programs/MyPrograms";
+import MyPrograms from "@/components/Programs/Student/MyPrograms";
 
 export default function MyProgramsPage() {
   return (

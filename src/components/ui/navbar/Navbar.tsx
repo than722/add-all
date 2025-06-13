@@ -54,7 +54,7 @@ export default function Navbar() {
     ],
     teacher: [
       { label: 'Home', href: '/' },
-      { label: 'My Programs', onClick: () => router.push('/teacher') },
+      { label: 'Assigned Programs', onClick: () => router.push('/teacher/assignedprograms') },
     ],
     student: [
       { label: 'Home', href: '/' },

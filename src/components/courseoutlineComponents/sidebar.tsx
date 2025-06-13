@@ -110,7 +110,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             if (role === 'admin') {
               window.location.href = '/admin?tab=programs';
             } else if (role === 'teacher') {
-              window.location.href = '/teacher?tab=programs';
+              window.location.href = '/teacher/assignedprograms';
             } else if (role === 'superadmin') {
               window.location.href = '/superadmin?tab=programs';
             }

@@ -1,10 +1,5 @@
-import React from 'react';
-import TeacherClient from '@/components/teacherClient/teacherClient';
+import { redirect } from 'next/navigation'; 
 
-export default function TeacherClientPage() {
-  return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
-      <TeacherClient />
-    </div>
-  );
+export default function TeacherRootPage() {
+  redirect('/teacher/assignedprograms');
 }

@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { initialCourseOutline, moduleProgress, subsectionProgress } from '@/data/data';
-import Navbar from '../ui/navbar/Navbar';
+// import Navbar from '../ui/navbar/Navbar'; // Navbar is global, no need to import/render here
+import { useRouter } from 'next/navigation'; // Import useRouter for navigation
 
+// ProgressCircle component (remains the same)
 function ProgressCircle({ percent }: { percent: number }) {
   const radius = 12;
   const stroke = 3;
@@ -39,18 +41,24 @@ function ProgressCircle({ percent }: { percent: number }) {
   );
 }
 
-export default function CourseOutlineClient() {
+interface CourseOutlineViewProps {
+  programName: string; // Program name passed from the server page
+}
+
+export default function CourseOutlineView({ programName }: CourseOutlineViewProps) {
+  const router = useRouter(); // Initialize useRouter for navigation
   const [expandedModule, setExpandedModule] = useState<number | null>(null);
   const [selectedModule, setSelectedModule] = useState<number>(initialCourseOutline[0].id);
   const [selectedSubsection, setSelectedSubsection] = useState<{ modId: number; subId: number } | null>(null);
   const [search, setSearch] = useState('');
-  const [courseOutline] = useState(initialCourseOutline);
+  const [courseOutline] = useState(initialCourseOutline); // Static for now, could be dynamic per program
   const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       setRole(localStorage.getItem('role'));
     }
+    // Set initial selected module/subsection if needed, based on programName or saved state
   }, []);
 
   const filteredModules = courseOutline.filter((mod) =>
@@ -64,34 +72,19 @@ export default function CourseOutlineClient() {
 
   return (
     <>
-      {/* Show Navbar for admin, student, etc. */}
-      {role === 'admin' && <Navbar />}
+      {/* Navbar is rendered in root layout, no need to show here */}
       <div className="min-h-screen flex flex-col md:flex-row bg-gray-50 font-sans">
         {/* Sidebar */}
         <aside className="w-full md:w-1/3 bg-white shadow-lg p-4 sm:p-6 sticky top-0 overflow-y-auto max-h-[60vh] md:max-h-screen z-10">
           <div className="flex flex-col sm:flex-row items-start sm:items-center mb-3 sm:mb-4 gap-2">
-            {role === 'admin' || role === 'superadmin' ? (
-              <button
-                className="px-3 py-1 bg-blue-700 text-white rounded-full font-semibold text-xs sm:text-sm shadow hover:bg-blue-800 transition"
-                onClick={() => {
-                  if (role === 'admin') {
-                    window.location.href = '/admin?tab=programs';
-                  } else if (role === 'superadmin') {
-                    window.location.href = '/superadmin?tab=programs';
-                  }
-                }}
-              >
-                ← Back to Programs List
-              </button>
-            ) : (
-              <button
-                className="px-3 py-1 bg-blue-700 text-white rounded-full font-semibold text-xs sm:text-sm shadow hover:bg-blue-800 transition"
-                onClick={() => window.location.href = '/student'}
-              >
-                ← Back
-              </button>
-            )}
-            <h2 className="sm:ml-4 text-lg sm:text-xl font-bold text-blue-700">Course Outline</h2>
+            {/* Back button logic updated to use useRouter.back() or specific path */}
+            <button
+              className="px-3 py-1 bg-blue-700 text-white rounded-full font-semibold text-xs sm:text-sm shadow hover:bg-blue-800 transition"
+              onClick={() => router.push('/student/myprograms')} // Go back to My Programs list
+            >
+              ← Back to My Programs
+            </button>
+            <h2 className="sm:ml-4 text-lg sm:text-xl font-bold text-blue-700">Course Outline: {decodeURIComponent(programName)}</h2>
           </div>
           <input
             type="text"

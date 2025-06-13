@@ -27,7 +27,7 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
     if (role === 'student') {
       router.push('/student/allprograms'); // Redirect to the student programs page
     } else if (role === 'teacher') {
-      router.push('/teacher');
+      router.push('/teacher/assignedprograms'); // Redirect to the teacher programs page
     } else if (role === 'admin') {
       router.push('/admin');
     } else if (role === 'superadmin') {
