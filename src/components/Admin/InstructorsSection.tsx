@@ -11,9 +11,9 @@ interface InstructorStatus {
 interface InstructorsSectionProps {
   instructorsList: Instructor[];
   setInstructorsList: React.Dispatch<React.SetStateAction<Instructor[]>>;
-  setProfileModal: React.Dispatch<React.SetStateAction<null | { name: string; email: string; img: string; bio: string; type?: 'instructor' | 'student' }>>;
+  setProfileModal: React.Dispatch<React.SetStateAction<null | { name: string; email: string; img: string; bio: string; contact?: string; type?: 'instructor' | 'student' }>>;
   instructorStatus: InstructorStatus;
-  setStatusModal: React.Dispatch<React.SetStateAction<{ isOpen: boolean; instructorName: string; instructorEmail: string; statusToSet: 'active' | 'inactive' } | null>>;
+  // setStatusModal prop is removed as per user request (status change handled in Profile modal)
 }
 
 export default function InstructorsSection({
@@ -21,6 +21,7 @@ export default function InstructorsSection({
   setInstructorsList,
   setProfileModal,
   instructorStatus,
+  // setStatusModal is removed from destructuring
 }: InstructorsSectionProps) {
   const [showAddInstructorModal, setShowAddInstructorModal] = useState(false);
   // State for search query
@@ -35,7 +36,7 @@ export default function InstructorsSection({
   const handleAddInstructor = (instructor: { name: string; email: string; contact: string; img: string }) => {
     setInstructorsList((prev) => [
       ...prev,
-      { ...instructor, bio: 'New instructor.' },
+      { ...instructor, bio: 'New instructor.' }, // Default bio for new instructor
     ]);
     setShowAddInstructorModal(false);
   };
@@ -57,7 +58,7 @@ export default function InstructorsSection({
       </div>
 
       {/* Search Bar with Icon */}
-      <div className="mb-6 relative w-full sm:w-96 md:w-1/2 lg:w-1/3 max-w-lg"> {/* Added relative for icon positioning and width */}
+      <div className="mb-6 relative w-full sm:w-96 md:w-1/2 lg:w-1/3 max-w-lg">
         <input
           type="text"
           placeholder="Search instructors..."
@@ -85,27 +86,42 @@ export default function InstructorsSection({
       </div>
 
       <ul className="space-y-2 sm:space-y-3">
+        {filteredInstructors.length === 0 && (
+          <li className="text-gray-500 italic text-sm p-4">No instructors found.</li>
+        )}
         {filteredInstructors.map((inst, idx) => (
           <li
             key={idx}
-            className="bg-white rounded shadow p-3 sm:p-4 flex items-center gap-3 sm:gap-4 cursor-pointer hover:bg-gray-100 transition"
-            onClick={() => setProfileModal({ ...inst, type: 'instructor' })}
-            aria-label={`View profile of ${inst.name}`}
+            className="bg-white rounded shadow p-3 sm:p-4 flex items-center gap-3 sm:gap-4 hover:bg-gray-100 transition"
           >
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-[#08228d] flex-shrink-0">
-              <Image
-                src={inst.img && inst.img.trim() !== '' ? inst.img : '/profileicon.png'}
-                alt={inst.name}
-                width={48}
-                height={48}
-                className="object-cover"
-              />
+            <div
+              className="flex items-center flex-grow cursor-pointer"
+              onClick={() => setProfileModal({ ...inst, type: 'instructor' })}
+              aria-label={`View profile of ${inst.name}`}
+            >
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-[#08228d] flex-shrink-0">
+                <Image
+                  src={inst.img && inst.img.trim() !== '' ? inst.img : '/profileicon.png'}
+                  alt={inst.name}
+                  width={48}
+                  height={48}
+                  className="object-cover"
+                />
+              </div>
+              <div className="flex-1 ml-3">
+                <span className="font-semibold text-[#08228d] text-sm sm:text-base block">{inst.name}</span>
+                <span className="block text-gray-500 text-xs sm:text-sm">{inst.email}</span>
+              </div>
             </div>
-            <div className="flex-1">
-              <span className="font-semibold text-[#08228d] text-sm sm:text-base">{inst.name}</span>
-              <span className="block text-gray-500 text-xs sm:text-sm">{inst.email}</span>
+            {/* Status display (removed the Change Status button) */}
+            <div className="flex items-center gap-2">
+              <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                instructorStatus[inst.email] === 'active' ? 'bg-green-200 text-green-800' : 'bg-gray-200 text-gray-600'
+              }`}>
+                {instructorStatus[inst.email]}
+              </span>
+              {/* Removed the Change Status button */}
             </div>
-            <span className={`ml-auto px-2 py-1 rounded text-xs font-semibold ${instructorStatus[inst.email] === 'active' ? 'bg-green-200 text-green-800' : 'bg-gray-200 text-gray-600'}`}>{instructorStatus[inst.email]}</span>
           </li>
         ))}
       </ul>
@@ -114,6 +130,7 @@ export default function InstructorsSection({
         onClose={() => setShowAddInstructorModal(false)}
         onAdd={handleAddInstructor}
       />
+      {/* StatusChangeModal will no longer be rendered from here directly */}
     </div>
   );
 }

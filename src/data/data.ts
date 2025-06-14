@@ -1,3 +1,6 @@
+// app/data/data.ts
+// Placeholder for other data like program prices and dummy student info.
+
 export interface PendingApplication {
   name: string;
   email: string;
@@ -8,9 +11,10 @@ export interface PendingApplication {
 }
 
 export const instructors = [
-  { name: 'John Doe', email: 'john@school.edu', img: '/profileicon.png', bio: 'Expert in Fine Arts. 10 years teaching experience.' },
-  { name: 'Jane Smith', email: 'jane@school.edu', img: '/profileicon.png', bio: 'Specialist in Business and Finance.' },
-  { name: 'Mark Lee', email: 'mark@school.edu', img: '/profileicon.png', bio: 'Polymer clay and crafts instructor.' },
+  // Added 'contact' property to each instructor
+  { name: 'John Doe', email: 'john@school.edu', img: '/profileicon.png', bio: 'Expert in Fine Arts. 10 years teaching experience.', contact: '09123456789' },
+  { name: 'Jane Smith', email: 'jane@school.edu', img: '/profileicon.png', bio: 'Specialist in Business and Finance.', contact: '09234567890' },
+  { name: 'Mark Lee', email: 'mark@school.edu', img: '/profileicon.png', bio: 'Polymer clay and crafts instructor.', contact: '09345678901' },
 ];
 
 export const students = [
@@ -220,3 +224,16 @@ export interface Instructor {
   img: string;
   bio: string;
 }
+
+// Assuming getRole and UserRole are defined elsewhere, e.g., in '@/data/roles/role'
+export type UserRole = 'superadmin' | 'admin' | 'teacher' | 'student' | 'guest';
+
+export const getRole = (roleNumber: number): UserRole => {
+    switch (roleNumber) {
+        case 1: return 'student';
+        case 2: return 'teacher';
+        case 3: return 'admin';
+        case 4: return 'superadmin';
+        default: return 'guest';
+    }
+};

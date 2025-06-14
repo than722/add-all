@@ -26,8 +26,8 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
     // Redirect based on the assigned role
     if (role === 'student') {
       router.push('/student/allprograms'); // Redirect to the student programs page
-    } else if (role === 'teacher') {
-      router.push('/teacher/assignedprograms'); // Redirect to the teacher programs page
+    } else if (role === 'instructor') {
+      router.push('/instructor/assignedprograms'); // Redirect to the instructor programs page
     } else if (role === 'admin') {
       router.push('/admin');
     } else if (role === 'superadmin') {
@@ -51,9 +51,9 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
           </button>
           <button
             className="bg-[#08228d] text-white px-4 py-2 rounded hover:bg-[#001f40] transition font-semibold text-sm sm:text-base"
-            onClick={() => handleSignIn(2)} // Teacher role
+            onClick={() => handleSignIn(2)} // instructor role
           >
-            Teacher
+            Instructor
           </button>
           <button
             className="bg-[#FFC72C] text-[#08228d] px-4 py-2 rounded hover:bg-yellow-400 transition font-semibold text-sm sm:text-base"

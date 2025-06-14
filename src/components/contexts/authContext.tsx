@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           initialRole = getRole(parseInt(storedRole, 10));
         } else if ( // Check if it's a valid string role
           storedRole === 'student' ||
-          storedRole === 'teacher' ||
+          storedRole === 'instructor' ||
           storedRole === 'admin' ||
           storedRole === 'superadmin' ||
           storedRole === 'guest'

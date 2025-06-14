@@ -4,13 +4,13 @@ import React, { useState } from 'react'; // Import useState
 import Link from 'next/link';
 import { programsList } from '@/data/programsData';
 
-const TeacherAssignedPrograms: React.FC = () => {
+const instructorAssignedPrograms: React.FC = () => {
   // State for search query
   const [searchQuery, setSearchQuery] = useState('');
 
-  // For demonstration, simulate assigned programs for a teacher.
-  // In a real application, you would fetch the *actual* programs assigned to the current teacher from your backend.
-  const assignedProgramsDemo = programsList.filter((p, idx) => idx % 3 === 0 || p.program === 'Floristry'); // A different demo subset for teachers
+  // For demonstration, simulate assigned programs for a instructor.
+  // In a real application, you would fetch the *actual* programs assigned to the current instructor from your backend.
+  const assignedProgramsDemo = programsList.filter((p, idx) => idx % 3 === 0 || p.program === 'Floristry'); // A different demo subset for instructors
 
   // Filter programs based on searchQuery
   const filteredPrograms = assignedProgramsDemo.filter((p) =>
@@ -28,7 +28,7 @@ const TeacherAssignedPrograms: React.FC = () => {
           Assigned Programs
         </h2>
 
-        {/* Search Bar with Icon - Adopted from your provided TeacherClient design */}
+        {/* Search Bar with Icon - Adopted from your provided instructorClient design */}
         <div className="mb-6 relative w-full sm:w-96 md:w-1/2 lg:w-1/3 max-w-lg ">
           <input
             type="text"
@@ -64,9 +64,9 @@ const TeacherAssignedPrograms: React.FC = () => {
                 key={idx}
                 className="bg-white p-3 sm:p-4 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition flex flex-col"
               >
-                {/* Program Thumbnail (can still link to a teacher-specific program overview if desired) */}
+                {/* Program Thumbnail (can still link to a instructor-specific program overview if desired) */}
                 <Link
-                  href={`/teacher/assignedprograms/${encodeURIComponent(program)}`} // Example: A teacher's view of the program details
+                  href={`/instructor/assignedprograms/${encodeURIComponent(program)}`} // Example: A instructor's view of the program details
                   className="w-full h-24 sm:h-32 bg-gray-300 rounded-md mb-2 sm:mb-3 flex items-center justify-center text-gray-600 text-xs sm:text-base flex-shrink-0"
                 >
                   Thumbnail
@@ -88,4 +88,4 @@ const TeacherAssignedPrograms: React.FC = () => {
   );
 };
 
-export default TeacherAssignedPrograms;
+export default instructorAssignedPrograms;

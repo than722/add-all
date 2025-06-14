@@ -48,13 +48,13 @@ export default function Navbar() {
     ],
     admin: [
       { label: 'Home', href: '/' },
-      { label: 'Programs List', onClick: () => router.push('/admin?tab=programs') },
-      { label: 'Instructors', onClick: () => router.push('/admin?tab=instructors') },
-      { label: 'Students', onClick: () => router.push('/admin?tab=students') },
+      { label: 'Programs List', onClick: () => router.push('/admin/programlist') },
+      { label: 'Instructors', onClick: () => router.push('/admin/instructorlist') },
+      { label: 'Students', onClick: () => router.push('/admin/studentlist') },
     ],
-    teacher: [
+    instructor: [
       { label: 'Home', href: '/' },
-      { label: 'Assigned Programs', onClick: () => router.push('/teacher/assignedprograms') },
+      { label: 'Assigned Programs', onClick: () => router.push('/instructor/assignedprograms') },
     ],
     student: [
       { label: 'Home', href: '/' },
@@ -77,7 +77,7 @@ export default function Navbar() {
   const profileConfig: Record<string, { profile: { name: string; email: string; img: string; bio: string; type?: 'student' | 'instructor' }, isAdmin: boolean }> = {
     superadmin: { profile: { name: 'Super Admin', email: 'superadmin@example.com', img: '/profileicon.png', bio: 'Super Administrator' }, isAdmin: true },
     admin: { profile: { name: 'Admin', email: 'admin@example.com', img: '/profileicon.png', bio: 'Admin at ADD-ALL' }, isAdmin: true },
-    teacher: { profile: { name: 'Teacher', email: 'teacher@example.com', img: '/profileicon.png', bio: 'Instructor at ADD-ALL', type: 'instructor' }, isAdmin: false },
+    instructor: { profile: { name: 'Mrs. Dela Cruz', email: 'instructor@example.com', img: '/profileicon.png', bio: 'Instructor at ADD-ALL', type: 'instructor' }, isAdmin: false },
     student: { profile: { name: 'Juan Dela Cruz', email: 'student@example.com', img: '/profileicon.png', bio: 'Student at ADD-ALL', type: 'student' }, isAdmin: false },
   };
 
@@ -95,7 +95,7 @@ export default function Navbar() {
     const links =
       role === 'superadmin' ? navLinks.superadmin :
       role === 'admin' ? navLinks.admin :
-      role === 'teacher' ? navLinks.teacher :
+      role === 'instructor' ? navLinks.instructor :
       role === 'student' ? navLinks.student :
       role === 'guest' ? navLinks.guest :
       navLinks.default;

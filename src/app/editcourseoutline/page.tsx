@@ -1,5 +1,5 @@
 import React from 'react';
-import EditCourseOutlineClient from '@/components/editcourseoutlineClient/editcourseoutlineClient';
+import EditCourseOutlineClient from '@/components/Programs/EditCourseOutlineClient';
 
 export default function EditCourseOutlinePage() {
   return (

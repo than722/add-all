@@ -84,16 +84,16 @@ const ProgramActionsClient: React.FC<ProgramActionsClientProps> = ({ programName
 
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-8 mt-4 sm:mt-6 mb-8 sm:mb-12 text-center">
-      {role === 'teacher' ? (
+      {role === 'instructor' ? (
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
           <Link
-            href={`/teacher/assignedprograms/${encodeURIComponent(programData.program)}/enrolledstudents`}
+            href={`/instructor/assignedprograms/${encodeURIComponent(programData.program)}/enrolledstudents`}
             className="inline-block bg-[#92D0D3] text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full hover:bg-[#6bb7b9] transition text-sm sm:text-base"
           >
             List of Students
           </Link>
           <Link
-            href={`/teacher/assignedprograms/${encodeURIComponent(programData.program)}/editprogram`}
+            href={`/instructor/assignedprograms/${encodeURIComponent(programData.program)}/editprogram`}
             className="inline-block bg-[#08228d] text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full hover:bg-[#001f40] transition text-sm sm:text-base"
           >
             Edit Course Outline
