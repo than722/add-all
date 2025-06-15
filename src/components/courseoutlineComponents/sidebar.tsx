@@ -1,16 +1,30 @@
-import React from 'react';
-import ProgressCircle from './progressCircle';
+// app/components/courseoutlineComponents/sidebar.tsx
+// This component displays the sidebar for the course outline,
+// including modules, subsections, search, and editing controls.
+
+'use client'; // This component uses useState, so it must be a client component.
+
+import React, { useState, Dispatch, SetStateAction, useEffect } from 'react';
+import ProgressCircle from './progressCircle'; // Ensure this path is correct
+
+// Update Sidebar types to match new Module/Subsection structure
+interface ContentBlock {
+  id: number;
+  type: 'text' | 'video';
+  value: string;
+  isEditing?: boolean;
+}
 
 interface Subsection {
   id: number;
   title: string;
-  content?: string;
+  contentBlocks: ContentBlock[];
 }
 
 interface Module {
   id: number;
   title: string;
-  content: string;
+  contentBlocks: ContentBlock[];
   subsections: Subsection[];
 }
 
@@ -27,9 +41,7 @@ interface SidebarProps {
   saveEditModule: (id: number) => void;
   cancelEditModule: () => void;
   editModuleTitle: string;
-  setEditModuleTitle: (s: string) => void;
-  editModuleContent: string;
-  setEditModuleContent: (s: string) => void;
+  setEditModuleTitle: Dispatch<SetStateAction<string>>;
   moduleProgress: Record<number, number>;
   selectedSubsection: { modId: number; subId: number } | null;
   setSelectedSubsection: (sel: { modId: number; subId: number } | null) => void;
@@ -42,6 +54,9 @@ interface SidebarProps {
   subsectionProgress: Record<number, number>;
   lockedModules: number[];
   toggleLockModule: (modId: number) => void;
+  setCourseOutline: Dispatch<SetStateAction<Module[]>>;
+  onBackClick: () => void;
+  backButtonText: string;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -58,8 +73,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   cancelEditModule,
   editModuleTitle,
   setEditModuleTitle,
-  editModuleContent,
-  setEditModuleContent,
   moduleProgress,
   selectedSubsection,
   setSelectedSubsection,
@@ -72,142 +85,246 @@ const Sidebar: React.FC<SidebarProps> = ({
   subsectionProgress,
   lockedModules,
   toggleLockModule,
+  setCourseOutline,
+  onBackClick,
+  backButtonText,
 }) => {
+  // Handler for adding a new module
+  const handleAddModule = () => {
+      const newId = Date.now();
+      const newModule: Module = {
+          id: newId,
+          title: `New Module ${filteredModules.length + 1}`,
+          contentBlocks: [{ id: Date.now() + 0.1, type: 'text', value: 'Content for new module.' }],
+          subsections: []
+      };
+      setCourseOutline(prev => [...prev, newModule]);
+      setSelectedModule(newId);
+      setExpandedModule(newId);
+      setEditModuleTitle(newModule.title);
+      startEditModule(newModule);
+  };
+
+  // Handler for adding a new subsection to the currently selected module
+  const handleAddSubsection = () => {
+      if (selectedModule === null) return;
+      setCourseOutline(prevOutline => prevOutline.map(mod => {
+          if (mod.id === selectedModule) {
+              const newSubId = Date.now() + Math.random();
+              const newSubsection: Subsection = {
+                  id: newSubId,
+                  title: `New Subsection ${mod.subsections.length + 1}`,
+                  contentBlocks: [{ id: Date.now() + 0.2, type: 'text', value: 'Content for new subsection.' }]
+              };
+              return {
+                  ...mod,
+                  subsections: [...mod.subsections, newSubsection]
+              };
+          }
+          return mod;
+      }));
+  };
+
+  // Handler for deleting a module
+  const handleDeleteModule = (modId: number) => {
+      if (window.confirm('Are you sure you want to delete this module and all its subsections?')) {
+          setCourseOutline(prev => {
+              const updatedOutline = prev.filter(mod => mod.id !== modId);
+              if (selectedModule === modId) {
+                  setSelectedModule(updatedOutline.length > 0 ? updatedOutline[0].id : 0);
+                  setSelectedSubsection(null);
+              }
+              setExpandedModule(null);
+              return updatedOutline;
+          });
+      }
+  };
+
+  // Handler for deleting a subsection
+  const handleDeleteSubsection = (modId: number, subId: number) => {
+      if (window.confirm('Are you sure you want to delete this subsection?')) {
+          setCourseOutline(prevOutline => prevOutline.map(mod => {
+              if (mod.id === modId) {
+                  return {
+                      ...mod,
+                      subsections: mod.subsections.filter(sub => sub.id !== subId)
+                  };
+              }
+              return mod;
+          }));
+          if (selectedSubsection?.modId === modId && selectedSubsection?.subId === subId) {
+              setSelectedSubsection(null);
+          }
+      }
+  };
+
   return (
-    <div className="w-full md:w-1/3 bg-white p-6 shadow-lg md:min-h-screen">
-      <h2 className="text-xl font-bold text-[#002B5C] mb-4">Edit Course Outline</h2>
+    <aside className="w-full md:w-1/3 bg-white shadow-lg p-4 sm:p-6 sticky top-0 overflow-y-auto max-h-[60vh] md:max-h-screen z-10">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center mb-3 sm:mb-4 gap-2">
+        {/* Back button now uses props */}
+        <button
+          className="px-3 py-1 bg-blue-700 text-white rounded-full font-semibold text-xs sm:text-sm shadow hover:bg-blue-800 transition"
+          onClick={onBackClick}
+        >
+          {backButtonText}
+        </button>
+        {/* The Course Outline title remains */}
+        <h2 className="sm:ml-4 text-lg sm:text-xl font-bold text-blue-700">Course Outline</h2>
+      </div>
       <input
         type="text"
         placeholder="Search modules..."
         value={search}
-        onChange={e => setSearch(e.target.value)}
-        className="w-full mb-4 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#92D0D3]"
+        onChange={(e) => setSearch(e.target.value)}
+        className="w-full mb-3 sm:mb-4 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition placeholder-gray-900 text-gray-900 text-sm sm:text-base"
       />
-      <ul className="space-y-2">
+      <div className="flex justify-between mb-4">
+        <button
+            className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition text-sm"
+            onClick={handleAddModule}
+        >
+            + Add Module
+        </button>
+        <button
+            className="bg-purple-600 text-white px-3 py-1 rounded-md hover:bg-purple-700 transition text-sm"
+            onClick={handleAddSubsection}
+            disabled={selectedModule === null} // Disable if no module selected
+        >
+            + Add Subsection
+        </button>
+      </div>
+      <ul className="space-y-2 sm:space-y-3">
         {filteredModules.length === 0 && (
-          <li className="text-gray-400 italic">No modules found.</li>
+          <li className="text-gray-400 italic text-xs sm:text-sm">No modules found.</li>
         )}
         {filteredModules.map((mod) => (
-          <li key={mod.id} className="flex items-center gap-2">
-            {/* Lock/Unlock button for teachers */}
-            <button
-              className={`text-lg mr-2 ${lockedModules.includes(mod.id) ? 'text-red-500' : 'text-green-500'}`}
-              title={lockedModules.includes(mod.id) ? 'Unlock Module' : 'Lock Module'}
-              onClick={() => toggleLockModule(mod.id)}
-              aria-label={lockedModules.includes(mod.id) ? 'Unlock Module' : 'Lock Module'}
+          <li key={mod.id} className="mb-1 sm:mb-2">
+            {/* Changed from <button> to <div> to allow nested buttons */}
+            <div
+              className={`w-full flex flex-col sm:flex-row justify-between items-start sm:items-center px-3 sm:px-4 py-2 rounded-lg transition ${
+                selectedModule === mod.id
+                  ? 'bg-blue-100 text-blue-700 font-semibold shadow-inner'
+                  : 'hover:bg-gray-100 text-gray-800'
+              } cursor-pointer`} 
+              onClick={() => { // Click handler for the whole div, to expand/select module
+                setExpandedModule(expandedModule === mod.id ? null : mod.id);
+                setSelectedModule(mod.id);
+                setSelectedSubsection(null);
+              }}
             >
-              {lockedModules.includes(mod.id) ? (
-                <span role="img" aria-label="locked">🔒</span>
-              ) : (
-                <span role="img" aria-label="unlocked">🔓</span>
-              )}
-            </button>
-            <div className="flex-1">
+              {/* Module Title or Input Field */}
               {editingModuleId === mod.id ? (
-                <div className="mb-2">
-                  <input
-                    className="w-full mb-1 px-2 py-1 border rounded"
-                    value={editModuleTitle}
-                    onChange={e => setEditModuleTitle(e.target.value)}
-                  />
-                  <textarea
-                    className="w-full mb-1 px-2 py-1 border rounded"
-                    value={editModuleContent}
-                    onChange={e => setEditModuleContent(e.target.value)}
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      className="bg-[#92D0D3] text-white px-2 py-1 rounded"
-                      onClick={() => saveEditModule(mod.id)}
-                    >
-                      Save
-                    </button>
-                    <button
-                      className="bg-gray-300 text-[#002B5C] px-2 py-1 rounded"
-                      onClick={cancelEditModule}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
+                <input
+                  type="text"
+                  value={editModuleTitle}
+                  onChange={(e) => setEditModuleTitle(e.target.value)}
+                  onBlur={() => saveEditModule(mod.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') saveEditModule(mod.id);
+                    if (e.key === 'Escape') cancelEditModule();
+                  }}
+                  className="w-full bg-blue-50 border border-blue-300 rounded px-2 py-1 text-sm focus:outline-none"
+                  autoFocus
+                  onClick={e => e.stopPropagation()} // Stop propagation to prevent module selection when editing input
+                />
               ) : (
-                <>
-                  <button
-                    className={`w-full text-left px-3 py-2 rounded font-semibold transition ${selectedModule === mod.id ? 'bg-[#92D0D3] text-white' : 'hover:bg-gray-100 text-[#002B5C]'}`}
-                    onClick={() => {
-                      setExpandedModule(expandedModule === mod.id ? null : mod.id);
-                      setSelectedModule(mod.id);
-                      setSelectedSubsection(null);
-                    }}
-                  >
-                    {mod.title}
-                  </button>
-                  <button
-                    className="text-xs text-[#002B5C] underline ml-2"
-                    onClick={() => startEditModule(mod)}
-                  >
-                    Edit
-                  </button>
-                </>
+                // Changed from <span onClick> to just <span> as the parent div handles the click
+                <span className="text-sm sm:text-base">{mod.title}</span>
               )}
-              <div className="mt-1 mb-2">
-                <div className="w-full bg-gray-200 rounded h-2">
-                  <div
-                    className="bg-[#92D0D3] h-2 rounded"
-                    style={{ width: `${moduleProgress[mod.id] || 0}%`, transition: 'width 0.3s' }}
-                  />
+              <div className="flex items-center gap-2">
+                <div className="w-full sm:w-24 mt-2 sm:mt-0">
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                      className="bg-blue-500 h-2 rounded-full"
+                      style={{ width: `${moduleProgress[mod.id] || 0}%`, transition: 'width 0.3s' }}
+                    />
+                  </div>
+                  <div className="text-xs text-gray-500 mt-1 text-right">{moduleProgress[mod.id] || 0}%</div>
                 </div>
-                <div className="text-xs text-gray-500 mt-1">{moduleProgress[mod.id] || 0}% complete</div>
+                {/* Lock/Unlock Button */}
+                <button
+                    onClick={(e) => { e.stopPropagation(); toggleLockModule(mod.id); }}
+                    className={`ml-2 p-1 rounded-full text-white ${
+                        lockedModules.includes(mod.id) ? 'bg-red-500' : 'bg-gray-400'
+                    } hover:opacity-80 transition`}
+                    title={lockedModules.includes(mod.id) ? 'Unlock Module' : 'Lock Module'}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        {lockedModules.includes(mod.id) ? (
+                            <path fillRule="evenodd" d="M10 2a.75.75 0 01.75.75V4.5a.75.75 0 01-1.5 0V2.75A.75.75 0 0110 2zm-5.5 8.75a.75.75 0 01.75-.75h9.5a.75.75 0 010 1.5h-9.5a.75.75 0 01-.75-.75zM4 6a2 2 0 012-2h8a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm2 0h8v2H6V6z" clipRule="evenodd" />
+                        ) : (
+                            <path fillRule="evenodd" d="M8 2a5.5 5.5 0 00-5.5 5.5v2.75a.75.75 0 001.5 0V7.5a4 4 0 118 0v2.75a.75.75 0 001.5 0V7.5A5.5 5.5 0 008 2zM3 10a.75.75 0 01.75-.75h9.5a.75.75 0 010 1.5h-9.5A.75.75 0 013 10z" clipRule="evenodd" />
+                        )}
+                    </svg>
+                </button>
+                {/* Delete Module Button */}
+                <button
+                    onClick={(e) => { e.stopPropagation(); handleDeleteModule(mod.id); }}
+                    className="ml-1 p-1 rounded-full bg-red-500 text-white hover:bg-red-600 transition"
+                    title="Delete Module"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1z" clipRule="evenodd" />
+                    </svg>
+                </button>
               </div>
-              {expandedModule === mod.id && (
-                <ul className="ml-4 mt-1 space-y-1">
-                  {mod.subsections.map((sub) => (
-                    <li key={sub.id} className={`text-sm text-gray-700 flex items-center gap-2 ${selectedSubsection && selectedSubsection.modId === mod.id && selectedSubsection.subId === sub.id ? 'bg-[#e6f7f8] rounded' : ''}`}
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => setSelectedSubsection({ modId: mod.id, subId: sub.id })}
-                    >
+            </div> {/* End of the outer div for module item */}
+            {expandedModule === mod.id && (
+              <ul className="mt-1 sm:mt-2 ml-2 sm:ml-4 space-y-1 sm:space-y-2">
+                {mod.subsections.map((sub) => (
+                  <li key={sub.id}>
+                    <div className={`flex items-center p-2 rounded-lg transition hover:bg-gray-100 ${selectedSubsection?.modId === mod.id && selectedSubsection?.subId === sub.id ? 'bg-blue-50' : ''}`}>
                       <ProgressCircle percent={subsectionProgress[sub.id] || 0} />
-                      {editingSubId === sub.id ? (
-                        <>
-                          <input
-                            className="px-1 py-0.5 border rounded text-sm"
-                            value={editSubTitle}
-                            onChange={e => setEditSubTitle(e.target.value)}
-                          />
-                          <button
-                            className="text-xs text-[#92D0D3] underline"
-                            onClick={() => saveEditSub(mod.id, sub.id)}
-                          >
-                            Save
-                          </button>
-                          <button
-                            className="text-xs text-gray-400 underline"
-                            onClick={cancelEditSub}
-                          >
-                            Cancel
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <span>• {sub.title}</span>
-                          <button
-                            className="text-xs text-[#002B5C] underline ml-1"
-                            onClick={e => { e.stopPropagation(); startEditSub(sub); }}
-                          >
-                            Edit
-                          </button>
-                        </>
-                      )}
-                      <span className="text-xs text-gray-400 ml-1">{subsectionProgress[sub.id] || 0}%</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+                      <div className="ml-2 sm:ml-3 flex-1 flex items-center justify-between">
+                        {editingSubId === sub.id ? (
+                            <input
+                                type="text"
+                                value={editSubTitle}
+                                onChange={(e) => setEditSubTitle(e.target.value)}
+                                onBlur={() => saveEditSub(mod.id, sub.id)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') saveEditSub(mod.id, sub.id);
+                                    if (e.key === 'Escape') cancelEditSub();
+                                }}
+                                className="w-full bg-blue-50 border border-blue-300 rounded px-2 py-1 text-sm focus:outline-none"
+                                autoFocus
+                            />
+                        ) : (
+                            <span className="font-bold text-xs sm:text-base text-gray-900 cursor-pointer" onClick={() => setSelectedSubsection({ modId: mod.id, subId: sub.id })}>{sub.title}</span>
+                        )}
+                        <div className="flex items-center gap-2">
+                            <span className="text-xs text-gray-400">{subsectionProgress[sub.id] || 0}%</span>
+                            {/* Edit Subsection Button */}
+                            <button
+                                onClick={(e) => { e.stopPropagation(); startEditSub(sub); }}
+                                className="ml-1 p-1 rounded-full bg-blue-400 text-white hover:bg-blue-500 transition"
+                                title="Edit Subsection"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.38-2.828-2.829z" />
+                                </svg>
+                            </button>
+                            {/* Delete Subsection Button */}
+                            <button
+                                onClick={(e) => { e.stopPropagation(); handleDeleteSubsection(mod.id, sub.id); }}
+                                className="ml-1 p-1 rounded-full bg-red-400 text-white hover:bg-red-500 transition"
+                                title="Delete Subsection"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1z" clipRule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </li>
         ))}
       </ul>
-    </div>
+    </aside>
   );
 };
 

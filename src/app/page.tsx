@@ -1,25 +1,22 @@
-'use client';
+import HeroSection from '../components/herosection/HeroSection';
+import Programs from '../components/herosection/programs';
+import Vision from '../components/herosection/vision';
+import AboutUs from '../components/herosection/aboutUs';
 
-import React, { useState } from 'react';
-import Navbar from '../components/ui/Navbar';
-import HeroSection from '../components/ui/HeroSection';
-import RegisterModal from '../components/LoginComponents/registration';
-import ProgramsPage from '../components/ui/programs/programs';
 export default function Page() {
-  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 
   return (
-    <main>
-      <Navbar />
-      <HeroSection
-        isRegisterOpen={isRegisterOpen}
-        setIsRegisterOpen={setIsRegisterOpen}
-      />
-      <RegisterModal
-        isOpen={isRegisterOpen}
-        onClose={() => setIsRegisterOpen(false)}
-      />
-      <ProgramsPage />
+    <main className="min-h-screen w-full bg-gray-50">
+      <HeroSection />
+      <div className="px-2 sm:px-0">
+        <Programs />
+      </div>
+      <div className="px-2 sm:px-0" id="vision-section">
+        <Vision />
+      </div>
+      <div className="px-2 sm:px-0" id="aboutus-section">
+        <AboutUs />
+      </div>
     </main>
   );
 }
