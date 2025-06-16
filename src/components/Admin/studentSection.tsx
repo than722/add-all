@@ -1,48 +1,67 @@
 // AdminSections/StudentsSection.tsx
-import React, { useState } from 'react';
+import React, { useState, Dispatch, SetStateAction } from 'react'; // Import Dispatch, SetStateAction
 import Image from 'next/image';
-import PendingModal from '@/components/ui/Modals/pendingModal';
-import { students as initialStudents, PendingApplication } from '@/data/data';
+import type { PendingApplication } from '@/data/data'; // Import PendingApplication type
 
-interface Student {
+// Define a consolidated StudentRecord type for this component's props
+// This interface combines student details with application-specific info for display
+interface StudentRecord {
   name: string;
   email: string;
-  img: string;
-  bio?: string;
+  img: string; // Must be present
+  bio: string;
+  contact: string; // Must be present
+  status: 'registered' | 'pending' | 'enrolled'; // Overall status
+  program?: string; // Program they applied/enrolled in
+  receiptUrl?: string; // If they have a pending application
+  paymentType?: string; // If they have a pending application
 }
 
 interface StudentsSectionProps {
-  pendingApps: PendingApplication[];
-  setPendingApps: React.Dispatch<React.SetStateAction<PendingApplication[]>>;
-  setProfileModal: React.Dispatch<React.SetStateAction<null | { name: string; email: string; img: string; bio: string; type?: 'instructor' | 'student' }>>;
+  allStudentRecords: StudentRecord[]; // Consolidated list of all student records
+  onViewProfile: (student: StudentRecord) => void; // Callback to open Profile modal
+  onViewPending: (application: PendingApplication) => void; // Callback to open PendingModal for a specific application
+  
+  // Props added to resolve the TypeScript error from the parent component
+  pendingApps: PendingApplication[]; // List of pending applications
+  setPendingApps: Dispatch<SetStateAction<PendingApplication[]>>; // Setter for pending applications
+  setProfileModal: Dispatch<SetStateAction<{ name: string; email: string; img: string; bio: string; contact?: string; type?: "instructor" | "student" | undefined; } | null>>;
+  
+  // Assuming these are also passed from SuperAdminClient, if not, they might be removed later
+  archivedStudents: string[]; // List of archived student names/emails
+  setArchivePrompt: Dispatch<SetStateAction<{ open: boolean; type: 'program' | 'instructor' | 'student'; name: string } | null>>;
 }
 
 export default function StudentsSection({
-  pendingApps,
-  setPendingApps,
-  setProfileModal,
+  allStudentRecords,
+  onViewProfile,
+  onViewPending,
+  pendingApps, // Destructure the newly added props
+  setPendingApps, // Destructure the newly added props
+  setProfileModal, // Destructure the newly added prop
+  archivedStudents, // Destructure if passed
+  setArchivePrompt, // Destructure if passed
 }: StudentsSectionProps) {
-  const [pendingModal, setPendingModal] = useState<PendingApplication | null>(null);
-  const [viewedReceipt, setViewedReceipt] = useState<string | null>(null);
+  // Removed internal pendingModal and viewedReceipt states
+  // const [pendingModal, setPendingModal] = useState<PendingApplication | null>(null);
+  // const [viewedReceipt, setViewedReceipt] = useState<string | null>(null);
+
   // State for search query
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Filter students based on searchQuery
-  const filteredStudents = initialStudents.filter((stud) =>
-    stud.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    stud.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const handleConfirmEnrollment = (email: string) => {
-    setPendingApps((prev) =>
-      prev.map((app) =>
-        app.email === email && app.status === 'pending'
-          ? { ...app, status: 'enrolled' }
-          : app
-      )
+  // Filter student records based on searchQuery
+  const filteredStudentRecords = allStudentRecords
+    .filter((record) =>
+      // Exclude archived students if archivedStudents prop is provided
+      !archivedStudents.includes(record.name) // Assuming archived by name, adjust if by email
+    )
+    .filter((record) =>
+      record.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      record.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (record.program && record.program.toLowerCase().includes(searchQuery.toLowerCase()))
     );
-    setPendingModal(null);
-  };
+
+  // Removed handleConfirmEnrollment as it's now handled by parent
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
@@ -53,7 +72,7 @@ export default function StudentsSection({
       <h2 className="text-lg sm:text-xl font-bold mb-4 text-[#08228d]">Students</h2>
 
       {/* Search Bar with Icon */}
-      <div className="mb-6 relative w-full sm:w-96 md:w-1/2 lg:w-1/3 max-w-lg"> {/* Added relative for icon positioning and width */}
+      <div className="mb-6 relative w-full sm:w-96 md:w-1/2 lg:w-1/3 max-w-lg">
         <input
           type="text"
           placeholder="Search students..."
@@ -81,60 +100,74 @@ export default function StudentsSection({
       </div>
 
       <ul className="space-y-2 sm:space-y-3">
-        {filteredStudents.map((stud, idx) => {
-          const pendingApp = pendingApps.find(
-            (app) => app.email === stud.email && app.status === 'pending'
-          );
-          const enrolledApp = pendingApps.find(
-            (app) => app.email === stud.email && app.status === 'enrolled'
-          );
-          return (
+        {filteredStudentRecords.length === 0 ? (
+          <li className="text-gray-500 italic text-sm p-4">No students found.</li>
+        ) : (
+          filteredStudentRecords.map((record, idx) => (
             <li
-              key={idx}
-              className="bg-white rounded shadow p-3 sm:p-4 flex items-center gap-3 sm:gap-4 cursor-pointer hover:bg-gray-100 transition"
-              onClick={() => setProfileModal({ ...stud, type: 'student' })}
-              aria-label={`View profile of ${stud.name}`}
+              key={record.email + (record.program || '')} // Unique key based on email and program if applicable
+              className="bg-white rounded shadow p-3 sm:p-4 flex items-center gap-3 sm:gap-4 hover:bg-gray-100 transition"
             >
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-[#08228d] flex-shrink-0">
-                <Image
-                  src={stud.img && stud.img.trim() !== '' ? stud.img : '/profileicon.png'}
-                  alt={stud.name}
-                  width={48}
-                  height={48}
-                  className="object-cover"
-                />
+              <div
+                className="flex items-center flex-grow cursor-pointer"
+                onClick={() => setProfileModal({ ...record, type: 'student' })} // Use setProfileModal from props
+                aria-label={`View profile of ${record.name}`}
+              >
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-[#08228d] flex-shrink-0">
+                  <Image
+                    src={record.img && record.img.trim() !== '' ? record.img : '/profileicon.png'}
+                    alt={record.name}
+                    width={48}
+                    height={48}
+                    className="object-cover"
+                  />
+                </div>
+                <div className="flex-1 ml-3">
+                  <span className="font-semibold text-[#08228d] text-sm sm:text-base block">{record.name}</span>
+                  <span className="block text-gray-500 text-xs sm:text-sm">{record.email}</span>
+                  {record.program && <span className="block text-gray-500 text-xs sm:text-sm italic">({record.program})</span>}
+                </div>
               </div>
-              <div className="flex-1">
-                <span className="font-semibold text-[#08228d] text-sm sm:text-base">{stud.name}</span>
-                <span className="block text-gray-500 text-xs sm:text-sm">{stud.email}</span>
-              </div>
-              {pendingApp && (
+              {/* Status display and action button */}
+              <div className="flex items-center gap-2">
+                {record.status === 'pending' && record.receiptUrl && record.program ? (
+                  <button
+                    className="ml-auto bg-yellow-400 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-yellow-500"
+                    onClick={e => {
+                      e.stopPropagation();
+                      onViewPending({
+                        name: record.name,
+                        email: record.email,
+                        receiptUrl: record.receiptUrl,
+                        paymentType: record.paymentType || 'N/A',
+                        status: 'pending',
+                        program: record.program,
+                      } as PendingApplication);
+                    }}
+                  >
+                    Pending Application
+                  </button>
+                ) : record.status === 'enrolled' ? (
+                  <span className="ml-auto bg-green-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold">Enrolled</span>
+                ) : (
+                  <span className="ml-auto bg-gray-400 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold">Registered</span>
+                )}
+                {/* Archive Button for Students */}
                 <button
-                  className="ml-auto bg-yellow-400 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-yellow-500"
+                  className="ml-2 bg-red-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-red-700"
                   onClick={e => {
-                    e.stopPropagation();
-                    setPendingModal(pendingApp);
+                    e.stopPropagation(); // Prevent parent li's click
+                    setArchivePrompt({ open: true, type: 'student', name: record.name }); // Use setArchivePrompt from props
                   }}
                 >
-                  Pending Application
+                  Archive
                 </button>
-              )}
-              {!pendingApp && enrolledApp && (
-                <span className="ml-auto bg-green-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold">Enrolled</span>
-              )}
+              </div>
             </li>
-          );
-        })}
+          ))
+        )}
       </ul>
-      {/* Pending Application Modal */}
-      <PendingModal
-        pendingModal={pendingModal}
-        viewedReceipt={viewedReceipt}
-        onClose={() => setPendingModal(null)}
-        onViewReceipt={setViewedReceipt}
-        onCloseReceipt={() => setViewedReceipt(null)}
-        onConfirm={handleConfirmEnrollment}
-      />
+      {/* Removed PendingModal rendering from here */}
     </div>
   );
 }

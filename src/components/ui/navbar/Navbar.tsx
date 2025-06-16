@@ -44,7 +44,7 @@ export default function Navbar() {
       { label: 'Instructors', href: '#instructors', anchor: true },
       { label: 'Students', href: '#students', anchor: true },
       { label: 'Programs', href: '#programs', anchor: true },
-      { label: 'Administrators', href: '#administrators', anchor: true },
+      { label: 'Administrators',onClick: () => router.push('/superadmin/adminlist') },
     ],
     admin: [
       { label: 'Home', href: '/' },

@@ -52,6 +52,16 @@ export default function StudentsList({ students, archivedStudents, setProfileMod
     );
     setPendingModal(null);
   };
+  
+  const handleDeclineEnrollment = (email: string) => {
+    setPendingApps((prev) =>
+      prev.map((app) =>
+        app.email === email && app.status === 'pending'
+          ? { ...app, status: 'declined' }
+          : app
+      )
+    );
+  };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
@@ -144,11 +154,9 @@ export default function StudentsList({ students, archivedStudents, setProfileMod
       </ul>
       <PendingModal
         pendingModal={pendingModal}
-        viewedReceipt={viewedReceipt}
         onClose={() => setPendingModal(null)}
-        onViewReceipt={setViewedReceipt}
-        onCloseReceipt={() => setViewedReceipt(null)}
         onConfirm={handleConfirmEnrollment}
+        onDecline={handleDeclineEnrollment}
       />
     </>
   );

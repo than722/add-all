@@ -1,5 +1,6 @@
 // app/data/data.ts
-// Placeholder for other data like program prices and dummy student info.
+// This file contains dummy data for programs, instructors, students, admins,
+// and their associated types and statuses.
 
 export interface PendingApplication {
   name: string;
@@ -10,18 +11,58 @@ export interface PendingApplication {
   program: string;
 }
 
-export const instructors = [
-  // Added 'contact' property to each instructor
-  { name: 'John Doe', email: 'john@school.edu', img: '/profileicon.png', bio: 'Expert in Fine Arts. 10 years teaching experience.', contact: '09123456789' },
-  { name: 'Jane Smith', email: 'jane@school.edu', img: '/profileicon.png', bio: 'Specialist in Business and Finance.', contact: '09234567890' },
-  { name: 'Mark Lee', email: 'mark@school.edu', img: '/profileicon.png', bio: 'Polymer clay and crafts instructor.', contact: '09345678901' },
+// Updated Instructor interface to align with `User` type in hooks
+export interface Instructor {
+  name: string;
+  email: string;
+  img: string; // Ensure img is always present or nullable if not always provided by source
+  bio: string;
+  contact: string; // Ensure contact is always present as a string
+  programs?: string[]; // Added for potential program assignments
+  rating?: number; // Added for potential instructor ratings
+  students?: string[]; // Added for potential list of students
+}
+
+// Updated Student interface to align with `User` type in hooks
+export interface Student {
+  name: string;
+  email: string;
+  img: string; // Ensure img is always present or nullable
+  bio: string;
+  status: 'pending' | 'enrolled';
+  contact: string; // Ensure contact is always present as a string
+}
+
+// New or updated Admin interface to match `User` type in hooks
+export interface Admin {
+  name: string;
+  email: string;
+  contact: string;
+  position: string; // Ensure position is always present as a string
+  isAdmin: boolean;
+  img?: string; // Added img for consistency with User interface
+}
+
+// Raw Data Arrays
+export const instructors: Instructor[] = [
+  { name: 'John Doe', email: 'john@school.edu', img: '/profileicon.png', bio: 'Expert in Fine Arts. 10 years teaching experience.', contact: '09123456789', programs: ['Floristry'], rating: 4.5, students: ['alice@email.com'] },
+  { name: 'Jane Smith', email: 'jane@school.edu', img: '/profileicon.png', bio: 'Specialist in Business and Finance.', contact: '09234567890', programs: ['Financial Statements: Preparation, Presentation and Analysis'], rating: 4.8, students: ['bob@email.com'] },
+  { name: 'Mark Lee', email: 'mark@school.edu', img: '/profileicon.png', bio: 'Polymer clay and crafts instructor.', contact: '09345678901', programs: ['Polymer Clay'], rating: 4.2, students: [] },
 ];
 
-export const students = [
-  { name: 'Alice Johnson', email: 'alice@email.com', img: '/profileicon.png', bio: 'Enthusiastic learner.', status: 'enrolled' },
-  { name: 'Bob Smith', email: 'bob@email.com', img: '/profileicon.png', bio: 'Aspiring artist.', status: 'pending' },
-  { name: 'Charlie Lee', email: 'charlie@email.com', img: '/profileicon.png', bio: 'Interested in finance.', status: 'pending' },
+export const students: Student[] = [
+  { name: 'Alice Johnson', email: 'alice@email.com', img: '/profileicon.png', bio: 'Enthusiastic learner.', status: 'enrolled', contact: '09111222333' },
+  { name: 'Bob Smith', email: 'bob@email.com', img: '/profileicon.png', bio: 'Aspiring artist.', status: 'pending', contact: '09444555666' },
+  { name: 'Charlie Lee', email: 'charlie@email.com', img: '/profileicon.png', bio: 'Interested in finance.', status: 'pending', contact: '09777888999' },
 ];
+
+export const admins: Admin[] = [
+  { name: "Super Admin", email: "superadmin@add-all.edu", contact: "09123456789", position: "Super Admin", isAdmin: true, img: '/profileicon.png' },
+  { name: "Admin User", email: "admin@add-all.edu", contact: "09112223333", position: "Employee", isAdmin: true, img: '/profileicon.png' }, // Example admin
+  { name: "John Doe", email: "john@school.edu", contact: "09123456789", position: "Instructor", isAdmin: false, img: '/profileicon.png' }, // Example: An instructor who is not an admin
+  { name: "Jane Smith", email: "jane@school.edu", contact: "09234567890", position: "Instructor", isAdmin: false, img: '/profileicon.png' },
+];
+
 
 export const dummyDetails = {
   description:
@@ -110,87 +151,85 @@ export const instructorStatus: Record<string, 'active' | 'inactive'> = {
   'mark@school.edu': 'active',
 };
 
-// Dummy enrolled students for a program (simulate localStorage for studentList demo)
 export const demoEnrolledStudentsKey = 'pendingApps_Floristry';
 export const demoEnrolledStudentsValue = JSON.stringify([
   {
     name: 'Alice Johnson',
     email: 'alice@email.com',
-    receiptUrl: '',
+    receiptUrl: '/receipt.png',
     paymentType: 'GCash',
     status: 'enrolled',
+    program: 'Floristry',
   },
   {
     name: 'Bob Smith',
     email: 'bob@email.com',
-    receiptUrl: '',
+    receiptUrl: '/receipt.png',
     paymentType: 'Bank Transfer',
     status: 'enrolled',
+    program: 'Basic Soap Making',
   },
 ]);
 
-// Dummy admin data for superadmin page
-export const admins = [
-  { name: "Super Admin", email: "superadmin@add-all.edu", contact: "09123456789", position: "Employee", isAdmin: true },
-  { name: "John Doe", email: "john@school.edu", contact: "09112223333", position: "Employee", isAdmin: false },
-  { name: "Jane Smith", email: "jane@school.edu", contact: "09114445555", position: "Employee", isAdmin: false },
-];
-
-// Demo enrolled students for StudentListPage (simulate localStorage for different programs)
 export const demoStudentListData: Record<string, Array<{
   name: string;
   email: string;
   receiptUrl: string;
   paymentType: string;
   status: 'pending' | 'enrolled';
+  program: string;
 }>> = {
   'Floristry': [
     {
       name: 'Alice Johnson',
       email: 'alice@email.com',
-      receiptUrl: 'https://example.com/receipt1.jpg',
+      receiptUrl: '/receipt.png',
       paymentType: 'GCash',
       status: 'enrolled',
+      program: 'Floristry',
     },
     {
       name: 'Bob Smith',
       email: 'bob@email.com',
-      receiptUrl: 'https://example.com/receipt2.jpg',
+      receiptUrl: '/receipt.png',
       paymentType: 'Bank Transfer',
       status: 'enrolled',
+      program: 'Floristry',
     },
     {
       name: 'Charlie Lee',
       email: 'charlie@email.com',
-      receiptUrl: 'https://example.com/receipt3.jpg',
+      receiptUrl: '/receipt.png',
       paymentType: 'GCash',
       status: 'pending',
+      program: 'Floristry',
     },
   ],
   'Basic Soap Making': [
     {
       name: 'Diana Cruz',
       email: 'diana@email.com',
-      receiptUrl: 'https://example.com/receipt4.jpg',
+      receiptUrl: '/receipt.png',
       paymentType: 'Bank Transfer',
       status: 'enrolled',
+      program: 'Basic Soap Making',
     },
     {
       name: 'Ethan Wright',
       email: 'ethan@email.com',
-      receiptUrl: 'https://example.com/receipt5.jpg',
+      receiptUrl: '/receipt.png',
       paymentType: 'GCash',
       status: 'pending',
+      program: 'Basic Soap Making',
     },
   ],
 };
 
-// Dummy pending applications for admin
 export const dummyPendingApps: PendingApplication[] = [
   {
     name: 'Alice Johnson',
     email: 'alice@email.com',
-    receiptUrl: '/add-all image 1.jpg',
+    receiptUrl: '/receipt.png',
     paymentType: 'cash',
     status: 'pending',
     program: 'Floristry',
@@ -198,14 +237,14 @@ export const dummyPendingApps: PendingApplication[] = [
   {
     name: 'Bob Smith',
     email: 'bob@email.com',
-    receiptUrl: '/add-all image 2.jpg',
+    receiptUrl: '/receipt.png',
     paymentType: 'online',
     status: 'pending',
     program: 'Investment Analysis',
   },
 ];
 
-// --- Types for program and instructor ---
+// Consistent Program type definition (can be imported from programsData if it's more definitive there)
 export interface Program {
   program: string;
   category: string;
@@ -217,15 +256,7 @@ export interface Program {
   thumbnail: string;
 }
 
-export interface Instructor {
-  name: string;
-  email: string;
-  contact: string;
-  img: string;
-  bio: string;
-}
-
-// Assuming getRole and UserRole are defined elsewhere, e.g., in '@/data/roles/role'
+// UserRole from roles/role.ts (assuming external definition)
 export type UserRole = 'superadmin' | 'admin' | 'teacher' | 'student' | 'guest';
 
 export const getRole = (roleNumber: number): UserRole => {

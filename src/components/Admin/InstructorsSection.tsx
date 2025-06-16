@@ -1,5 +1,5 @@
 // AdminSections/InstructorsSection.tsx
-import React, { useState } from 'react';
+import React, { useState, Dispatch, SetStateAction } from 'react';
 import Image from 'next/image';
 import AddInstructorModal from '@/components/ui/Modals/addinstructorModal';
 import type { Instructor } from '@/data/data';
@@ -8,12 +8,32 @@ interface InstructorStatus {
   [email: string]: 'active' | 'inactive';
 }
 
+// Define the type for the status modal data, as it's still being passed up to Profile
+interface StatusModalData {
+  isOpen: boolean;
+  instructorName: string;
+  instructorEmail: string;
+  statusToSet: 'active' | 'inactive';
+}
+
+interface ArchivePrompt {
+  open: boolean;
+  type: 'program' | 'instructor' | 'student';
+  name: string;
+}
+
 interface InstructorsSectionProps {
   instructorsList: Instructor[];
   setInstructorsList: React.Dispatch<React.SetStateAction<Instructor[]>>;
   setProfileModal: React.Dispatch<React.SetStateAction<null | { name: string; email: string; img: string; bio: string; contact?: string; type?: 'instructor' | 'student' }>>;
   instructorStatus: InstructorStatus;
-  // setStatusModal prop is removed as per user request (status change handled in Profile modal)
+  // Added the missing props:
+  archivedInstructors: string[];
+  setArchivePrompt: Dispatch<SetStateAction<ArchivePrompt | null>>;
+  // setStatusModal prop is commented out as it's handled in Profile modal,
+  // but if the InstructorsList still tries to call it directly, it needs to be defined.
+  // Based on the SuperAdminClient, setStatusModal is passed down, so we need to add it back here.
+  setStatusModal: Dispatch<SetStateAction<StatusModalData | null>>;
 }
 
 export default function InstructorsSection({
@@ -21,17 +41,21 @@ export default function InstructorsSection({
   setInstructorsList,
   setProfileModal,
   instructorStatus,
-  // setStatusModal is removed from destructuring
+  archivedInstructors, // Destructure the new prop
+  setArchivePrompt, // Destructure the new prop
+  setStatusModal, // Destructure setStatusModal as it's passed from parent
 }: InstructorsSectionProps) {
   const [showAddInstructorModal, setShowAddInstructorModal] = useState(false);
   // State for search query
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Filter instructors based on searchQuery
-  const filteredInstructors = instructorsList.filter((inst) =>
-    inst.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    inst.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Filter instructors based on searchQuery and archived status
+  const filteredInstructors = instructorsList
+    .filter((inst) => !archivedInstructors.includes(inst.name)) // Filter out archived instructors
+    .filter((inst) =>
+      inst.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      inst.email.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
   const handleAddInstructor = (instructor: { name: string; email: string; contact: string; img: string }) => {
     setInstructorsList((prev) => [
@@ -96,7 +120,7 @@ export default function InstructorsSection({
           >
             <div
               className="flex items-center flex-grow cursor-pointer"
-              onClick={() => setProfileModal({ ...inst, type: 'instructor' })}
+              onClick={() => setProfileModal({ ...inst, bio: inst.bio || 'No bio provided.', type: 'instructor' })}
               aria-label={`View profile of ${inst.name}`}
             >
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-[#08228d] flex-shrink-0">
@@ -113,14 +137,34 @@ export default function InstructorsSection({
                 <span className="block text-gray-500 text-xs sm:text-sm">{inst.email}</span>
               </div>
             </div>
-            {/* Status display (removed the Change Status button) */}
+            {/* Status display with a button to trigger status change modal */}
             <div className="flex items-center gap-2">
-              <span className={`px-2 py-1 rounded text-xs font-semibold ${
-                instructorStatus[inst.email] === 'active' ? 'bg-green-200 text-green-800' : 'bg-gray-200 text-gray-600'
-              }`}>
+              <button
+                className={`px-2 py-1 rounded text-xs font-semibold cursor-pointer ${
+                  instructorStatus[inst.email] === 'active' ? 'bg-green-200 text-green-800' : 'bg-gray-200 text-gray-600'
+                } hover:opacity-80 transition`}
+                onClick={e => {
+                  e.stopPropagation(); // Prevent opening profile modal
+                  setStatusModal({
+                    isOpen: true,
+                    instructorName: inst.name,
+                    instructorEmail: inst.email,
+                    statusToSet: instructorStatus[inst.email] === 'active' ? 'inactive' : 'active'
+                  });
+                }}
+              >
                 {instructorStatus[inst.email]}
-              </span>
-              {/* Removed the Change Status button */}
+              </button>
+              {/* Archive Button */}
+              <button
+                className="ml-2 bg-red-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-red-700"
+                onClick={e => {
+                  e.stopPropagation(); // Prevent opening profile modal
+                  setArchivePrompt({ open: true, type: 'instructor', name: inst.name });
+                }}
+              >
+                Archive
+              </button>
             </div>
           </li>
         ))}
@@ -130,7 +174,7 @@ export default function InstructorsSection({
         onClose={() => setShowAddInstructorModal(false)}
         onAdd={handleAddInstructor}
       />
-      {/* StatusChangeModal will no longer be rendered from here directly */}
+      {/* StatusChangeModal will be rendered in the parent component (AdminClient) */}
     </div>
   );
 }

@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 
@@ -8,7 +10,7 @@ interface AddAdminModalProps {
     name: string;
     email: string;
     contact: string;
-    img: string;
+    img: string; // Removed, as this is for client-side display only and not part of the User type for table
     position: string;
   }) => void;
 }
@@ -17,7 +19,7 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({ isOpen, onClose, onAdd })
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [contact, setContact] = useState('');
-  const [img, setImg] = useState('');
+  const [tempImgPreview, setTempImgPreview] = useState<string | null>(null); // For local preview
   const [position, setPosition] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -28,7 +30,7 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({ isOpen, onClose, onAdd })
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImg(reader.result as string);
+        setTempImgPreview(reader.result as string); // Set for local preview
       };
       reader.readAsDataURL(file);
     }
@@ -36,11 +38,12 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({ isOpen, onClose, onAdd })
 
   const handleAdd = () => {
     if (name && email && contact && position) {
-      onAdd({ name, email, contact, img, position });
+      // Pass the necessary user data, img is handled as a visual preview only
+      onAdd({ name, email, contact, position, img: tempImgPreview || '/profileicon.png' }); // Pass img for the table display too
       setName('');
       setEmail('');
       setContact('');
-      setImg('');
+      setTempImgPreview(null); // Reset preview
       setPosition('');
       onClose();
     }
@@ -61,8 +64,9 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({ isOpen, onClose, onAdd })
           onClick={() => fileInputRef.current?.click()}
           title="Upload profile picture"
         >
-          {img ? (
-            <Image src={img} alt="Profile Preview" width={96} height={96} className="object-cover w-full h-full" />
+          {/* Use tempImgPreview for the src */}
+          {tempImgPreview ? (
+            <Image src={tempImgPreview} alt="Profile Preview" width={96} height={96} className="object-cover w-full h-full" />
           ) : (
             <Image src="/profileicon.png" alt="Profile Placeholder" width={64} height={64} className="opacity-60" />
           )}

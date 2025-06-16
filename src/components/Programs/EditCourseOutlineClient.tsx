@@ -145,7 +145,7 @@ export default function EditCourseOutlineClient({ programName, role }: EditCours
     }
     if (role === 'instructor') {
       // Instructors go back to their specific program details page
-      return `/teacher/assignedprograms/${encodeURIComponent(programName)}`;
+      return `/instructor/assignedprograms/${programName}`;
     }
     return '/'; // Fallback
   };
