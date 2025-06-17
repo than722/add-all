@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link'; // For navigation to program details/edit pages
-import AddProgramModal from '@/components/ui/Modals/addprogramModal'; // Ensure correct path
-import ArchiveModal from '@/components/ui/Modals/archiveModal'; // Ensure correct path
+import AddProgramModal from '@/components/ui/Modals/AdminModals/addprogramModal'; // Ensure correct path
+import ArchiveModal from '@/components/ui/Modals/AdminModals/archiveModal'; // Ensure correct path
 import { programsList as allProgramsFromData } from '@/data/programsData'; // Import programsList from programsData.ts
 import { dummyDetails, instructors, Program, Instructor } from '@/data/data'; // Import types and data, including dummyDetails
 

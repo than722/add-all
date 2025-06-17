@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { demoStudentListData } from "@/data/data";
-import Profile from "@/components/ui/Modals/profileview";
+import Profile from "@/components/ui/Modals/ProfileModals/profileview";
 
 interface PendingApplication {
   name: string;

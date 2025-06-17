@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import StudentsSection from './StudentSection'; // Assuming this path, adjust if needed
-import Profile from '@/components/ui/Modals/profileview';
-import PendingModal from '@/components/ui/Modals/pendingModal';
-import ArchiveModal from '@/components/ui/Modals/archiveModal'; // Import ArchiveModal
+import Profile from '@/components/ui/Modals/ProfileModals/profileview';
+import PendingModal from '@/components/ui/Modals/AdminModals/pendingModal';
+import ArchiveModal from '@/components/ui/Modals/AdminModals/archiveModal'; // Import ArchiveModal
 
 import {
   students as initialStudents,

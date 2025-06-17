@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import InstructorsSectionSuperAdmin from './InstructorSection'; // Import the new Super Admin specific Instructors Section
-import Profile from '@/components/ui/Modals/profileview';
-import StatusModal from '@/components/ui/Modals/statusModal'; // Import StatusModal
-import ArchiveModal from '@/components/ui/Modals/archiveModal'; // Import ArchiveModal
+import Profile from '@/components/ui/Modals/ProfileModals/profileview';
+import StatusModal from '@/components/ui/Modals/AdminModals/statusModal'; // Import StatusModal
+import ArchiveModal from '@/components/ui/Modals/AdminModals/archiveModal'; // Import ArchiveModal
 
 import { instructors as initialInstructors, Instructor } from '@/data/data';
 import { instructorStatus as initialInstructorStatus } from '@/data/data';

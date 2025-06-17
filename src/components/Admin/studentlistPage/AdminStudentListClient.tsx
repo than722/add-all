@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import StudentsSection from './StudentSection';
-import Profile from '@/components/ui/Modals/profileview';
-import PendingModal from '@/components/ui/Modals/pendingModal';
+import Profile from '@/components/ui/Modals/ProfileModals/profileview';
+import PendingModal from '@/components/ui/Modals/AdminModals/pendingModal';
 
 import {
   students as initialStudents,
@@ -158,7 +158,6 @@ export default function AdminStudentListClient() {
           pendingModal={pendingModal}
           onClose={() => setPendingModal(null)}
           onConfirm={(email, program) => handleApproveApplication(email, program)}
-          onDecline={(email, program) => {handleDeclineApplication(email, program)}}
         />
       )}
     </div>

@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import Profile from '@/components/ui/Modals/profileview';
-import PendingApplicationModal from '@/components/ui/Modals/pendingModal'; // Ensure this is the correct modal for pending applications
-import ArchiveModal from '@/components/ui/Modals/archiveModal'; // Import ArchiveModal
-import StatusModal from '@/components/ui/Modals/statusModal'; // Import StatusModal
+import Profile from '@/components/ui/Modals/ProfileModals/profileview';
+import PendingApplicationModal from '@/components/ui/Modals/AdminModals/pendingModal'; // Ensure this is the correct modal for pending applications
+import ArchiveModal from '@/components/ui/Modals/AdminModals/archiveModal'; // Import ArchiveModal
+import StatusModal from '@/components/ui/Modals/AdminModals/statusModal'; // Import StatusModal
 
 import {
   instructors as initialInstructors,
@@ -234,7 +234,6 @@ export default function AdminClient({ initialTab }: AdminClientProps) {
           pendingModal={pendingModalData} // Check prop name, your modal used `pendingModal`
           onClose={() => setPendingModalData(null)}
           onConfirm={() => handleConfirmEnrollment(pendingModalData.email, pendingModalData.program)} // Pass correct arguments
-          onDecline={() => handleDeclineEnrollment(pendingModalData.email, pendingModalData.program)} // Ensure this prop is expected by PendingApplicationModal
         />
       )}
 

@@ -1,7 +1,7 @@
 // AdminSections/InstructorsSection.tsx
 import React, { useState, Dispatch, SetStateAction } from 'react';
 import Image from 'next/image';
-import AddInstructorModal from '@/components/ui/Modals/addinstructorModal';
+import AddInstructorModal from '@/components/ui/Modals/AdminModals/addinstructorModal';
 import type { Instructor } from '@/data/data';
 
 interface InstructorStatus {

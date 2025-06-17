@@ -1,4 +1,4 @@
-import AdminCourseOutlineViewClient from '@/components/Admin/AdminCourseOutlineView'; // Import the new client component
+import AdminCourseOutlineViewClient from '@/components/Admin/programlistPage/AdminCourseOutlineView'; // Import the new client component
 
 interface AdminViewOutlinePageProps {
   params: {

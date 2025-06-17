@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
-import RegisterModal from '../LoginComponents/registration';
+import RegisterModal from '../ui/Modals/HeroSectionModals/registration';
 import Image from 'next/image';
 
 const HeroSection: React.FC = () => {

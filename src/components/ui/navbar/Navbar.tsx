@@ -5,8 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react'; // useState for navOpen is still fine
-import Profile from '../Modals/profileview';
-import SignInModal from '../../LoginComponents/signin';
+import Profile from '../Modals/ProfileModals/profileview';
+import SignInModal from '../Modals/signin';
 // import { getRole, UserRole } from '../../roles/role'; // No longer needed here
 import { useAuth } from '@/components/contexts/authContext'; // <--- Import useAuth
 

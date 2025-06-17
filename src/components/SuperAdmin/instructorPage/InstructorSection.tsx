@@ -2,7 +2,7 @@
 
 import React, { useState, Dispatch, SetStateAction } from "react";
 import Image from "next/image";
-import AddInstructorModal from '@/components/ui/Modals/addinstructorModal'; // Assuming correct path
+import AddInstructorModal from '@/components/ui/Modals/AdminModals/addinstructorModal'; // Assuming correct path
 import type { Instructor } from '@/data/data'; // Import Instructor type
 
 interface InstructorStatus {

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import FeaturedProgramViewModal from '../ui/Modals/featuredprogramviewModal';
+import FeaturedProgramViewModal from '../ui/Modals/HeroSectionModals/featuredprogramviewModal';
 
 const programCategories = [
   {

@@ -6,7 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { programsList } from '@/data/programsData';
-import EnrollModal from '@/components/ui/Modals/enrollmentModal';
+import EnrollModal from '@/components/ui/Modals/EnrollmentModal/enrollmentModal';
 import { dummyStudents, programPrices } from '@/data/data';
 import { useAuth } from '@/components/contexts/authContext'; // Directly import useAuth here
 

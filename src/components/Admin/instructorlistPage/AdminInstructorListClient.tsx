@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import InstructorsSection from './InstructorsSection';
-import Profile from '@/components/ui/Modals/profileview';
+import Profile from '@/components/ui/Modals/ProfileModals/profileview';
 import { instructors as initialInstructors, Instructor } from '@/data/data';
 import { instructorStatus as initialInstructorStatus } from '@/data/data';
 

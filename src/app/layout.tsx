@@ -20,7 +20,7 @@ export default function RootLayout({
         {/* Wrap your entire application with AuthProvider */}
         <AuthProvider>
           <Navbar /> {/* Navbar now gets its role from context */}
-          <main>{children}</main>
+          <main>{children}</main> 
         </AuthProvider>
       </body>
     </html>

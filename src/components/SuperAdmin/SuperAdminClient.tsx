@@ -10,8 +10,8 @@ import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from 'next/navigation'; // Import useRouter and usePathname
 
 // Modals related to Admin management (still relevant for this component)
-import AdminRoleConfirmModal from '@/components/ui/Modals/AdminRoleConfrimModal';
-import AddAdminModal from '@/components/ui/Modals/AddAdminModal';
+import AdminRoleConfirmModal from '@/components/ui/Modals/AdminModals/AdminRoleConfrimModal';
+import AddAdminModal from '@/components/ui/Modals/AdminModals/AddAdminModal';
 
 // Admin-specific section component (still rendered directly here)
 import AdminsTable from './adminPage/AdminsTable';

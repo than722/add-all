@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import EditProfileModal from './editprofileModal'; // Ensure this path is correct
-import StatusModal from './statusModal'; // Import the StatusModal
+import StatusModal from '../AdminModals/statusModal'; // Import the StatusModal
 import { useAuth } from '@/components/contexts/authContext'; // Import the useAuth hook
 
 interface ProfileProps {
