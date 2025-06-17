@@ -3,6 +3,7 @@ import React from 'react';
 interface StatusModalProps {
   isOpen: boolean;
   instructorName: string;
+  instructorEmail: string;
   statusToSet: 'active' | 'inactive';
   onConfirm: () => void;
   onCancel: () => void;

@@ -1,5 +1,5 @@
 import React from 'react';
-import StudentListClient from '@/components/studentList/studentlistClient';
+import StudentListClient from '@/components/Programs/Instructor/studentList/studentlistClient';
 
 export default function StudentListClientPage() {
   return (

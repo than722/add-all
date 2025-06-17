@@ -43,6 +43,19 @@ export interface Admin {
   img?: string; // Added img for consistency with User interface
 }
 
+// NEW: Define StudentRecord interface for consolidated student data
+export interface StudentRecord {
+  name: string;
+  email: string;
+  img: string;
+  bio: string;
+  contact: string;
+  status: 'registered' | 'pending' | 'enrolled';
+  program?: string;
+  receiptUrl?: string;
+  paymentType?: string;
+}
+
 // Raw Data Arrays
 export const instructors: Instructor[] = [
   { name: 'John Doe', email: 'john@school.edu', img: '/profileicon.png', bio: 'Expert in Fine Arts. 10 years teaching experience.', contact: '09123456789', programs: ['Floristry'], rating: 4.5, students: ['alice@email.com'] },

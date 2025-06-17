@@ -19,9 +19,9 @@ import { programsList as rawProgramsList } from '@/data/programsData';
 import type { Program, Instructor, Student } from '@/data/data'; // Import Student and Program types
 
 // Import sub-components for other sections
-import InstructorsSection from './InstructorsSection';
-import StudentsSection from './StudentSection'; // Assuming path to AdminSections/StudentsSection or components/Admin/StudentSection
-import ProgramsGrid from '@/components/SuperAdmin/ProgramsGrid'; // Assuming ProgramsGrid is in SuperAdmin folder
+import InstructorsSection from './instructorlistPage/InstructorsSection';
+import StudentsSection from './studentlistPage/StudentSection'; // Assuming path to AdminSections/StudentsSection or components/Admin/StudentSection
+import ProgramsGrid from './ProgramsGrid'; // Assuming ProgramsGrid is in SuperAdmin folder
 
 // Define a consolidated StudentRecord type for passing to StudentsSection
 interface StudentRecord {
@@ -257,6 +257,7 @@ export default function AdminClient({ initialTab }: AdminClientProps) {
       <StatusModal
         isOpen={!!statusModal?.isOpen}
         instructorName={statusModal?.instructorName || ''}
+        instructorEmail={statusModal?.instructorEmail || ''}
         statusToSet={statusModal?.statusToSet || 'active'}
         onConfirm={() => {
           if (statusModal) {

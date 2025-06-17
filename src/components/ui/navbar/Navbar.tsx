@@ -41,9 +41,9 @@ export default function Navbar() {
   const navLinks: Record<string, NavLink[]> = {
     superadmin: [
       { label: 'Home', href: '/' },
-      { label: 'Instructors', href: '#instructors', anchor: true },
-      { label: 'Students', href: '#students', anchor: true },
-      { label: 'Programs', href: '#programs', anchor: true },
+      { label: 'Instructors', href: '/superadmin/instructorlist', anchor: true },
+      { label: 'Students', href: '/superadmin/studentlist', anchor: true },
+      { label: 'Programs', href: '/superadmin/programlist', anchor: true },
       { label: 'Administrators',onClick: () => router.push('/superadmin/adminlist') },
     ],
     admin: [

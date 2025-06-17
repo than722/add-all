@@ -60,7 +60,7 @@ export default function AdminsTable({ uniqueUsers, adminList, handleAdminToggle 
               <th className="text-black">Contact Info</th>
               <th className="text-black">Position</th>
               <th className="text-black">Roles</th>
-              <th></th> {/* Action column */}
+              <th></th> 
             </tr>
           </thead>
           <tbody>

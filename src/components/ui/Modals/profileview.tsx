@@ -178,6 +178,7 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
         <StatusModal
           isOpen={isStatusModalOpen}
           instructorName={profile.name}
+          instructorEmail={profile.email}
           statusToSet={statusToConfirm}
           onConfirm={handleConfirmStatusChange}
           onCancel={handleCancelStatusChange}
