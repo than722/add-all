@@ -30,9 +30,6 @@ interface InstructorsSectionProps {
   // Added the missing props:
   archivedInstructors: string[];
   setArchivePrompt: Dispatch<SetStateAction<ArchivePrompt | null>>;
-  // setStatusModal prop is commented out as it's handled in Profile modal,
-  // but if the InstructorsList still tries to call it directly, it needs to be defined.
-  // Based on the SuperAdminClient, setStatusModal is passed down, so we need to add it back here.
   setStatusModal: Dispatch<SetStateAction<StatusModalData | null>>;
 }
 
@@ -139,22 +136,13 @@ export default function InstructorsSection({
             </div>
             {/* Status display with a button to trigger status change modal */}
             <div className="flex items-center gap-2">
-              <button
-                className={`px-2 py-1 rounded text-xs font-semibold cursor-pointer ${
-                  instructorStatus[inst.email] === 'active' ? 'bg-green-200 text-green-800' : 'bg-gray-200 text-gray-600'
-                } hover:opacity-80 transition`}
-                onClick={e => {
-                  e.stopPropagation(); // Prevent opening profile modal
-                  setStatusModal({
-                    isOpen: true,
-                    instructorName: inst.name,
-                    instructorEmail: inst.email,
-                    statusToSet: instructorStatus[inst.email] === 'active' ? 'inactive' : 'active'
-                  });
-                }}
+              <span
+                className={`ml-auto px-2 py-1 rounded text-xs font-semibold
+                  ${instructorStatus[inst.email] === 'active' ? 'bg-green-200 text-green-800' : 'bg-gray-200 text-gray-600'}
+                  transition`}
               >
                 {instructorStatus[inst.email]}
-              </button>
+              </span>
               {/* Archive Button */}
               <button
                 className="ml-2 bg-red-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-red-700"

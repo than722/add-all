@@ -166,7 +166,6 @@ export default function SuperAdminStudentListClient() {
           pendingModal={pendingModal}
           onClose={() => setPendingModal(null)}
           onConfirm={(email, program) => handleApproveApplication(email, program)}
-          onDecline={(email, program) => {handleDeclineApplication(email, program)}}
         />
       )}
 

@@ -136,22 +136,13 @@ export default function InstructorsSectionSuperAdmin({
               <span className="block text-gray-500 text-xs sm:text-sm">{inst.email}</span>
             </div>
             {/* Status pill with onClick to change status via setStatusModal */}
-            <button
+            <span
                 className={`ml-auto px-2 py-1 rounded text-xs font-semibold
-                    ${instructorStatus[inst.email] === 'active' ? 'bg-green-200 text-green-800' : 'bg-gray-200 text-gray-600'}
-                    hover:opacity-80 transition`}
-                onClick={e => {
-                    e.stopPropagation(); // Prevent opening profile modal
-                    setStatusModal({
-                        isOpen: true,
-                        instructorName: inst.name,
-                        instructorEmail: inst.email,
-                        statusToSet: instructorStatus[inst.email] === 'active' ? 'inactive' : 'active'
-                    });
-                }}
-            >
+                  ${instructorStatus[inst.email] === 'active' ? 'bg-green-200 text-green-800' : 'bg-gray-200 text-gray-600'}
+                  transition`}
+              >
                 {instructorStatus[inst.email]}
-            </button>
+              </span>
             <button
               className="ml-2 bg-red-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-red-700"
               onClick={e => {

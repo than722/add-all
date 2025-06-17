@@ -18,15 +18,12 @@ interface PendingModalProps {
   onClose: () => void;
   // onConfirm now takes email and program to pass back to parent
   onConfirm: (email: string, program: string) => void;
-
-  onDecline: (email: string, program: string) => void; // Added onDecline for decline action
 }
 
 const PendingModal: React.FC<PendingModalProps> = ({
   pendingModal,
   onClose,
   onConfirm,
-  onDecline,
 }) => {
   // Internal state for controlling the visibility of the receipt image
   const [showReceiptImage, setShowReceiptImage] = useState(false);
@@ -90,12 +87,6 @@ const PendingModal: React.FC<PendingModalProps> = ({
             onClick={() => setShowValidation(true)} // Show the validation modal
           >
             Confirm Enrollment
-          </button>
-          <button
-            className="w-full bg-[#92D0D3] text-white py-2 rounded hover:bg-[#6bb7bb] transition font-semibold text-xs sm:text-base"
-            onClick={() => setShowValidation(true)} // Show the validation modal
-          >
-            Decline Enrollment
           </button>
         </div>
       </div>
