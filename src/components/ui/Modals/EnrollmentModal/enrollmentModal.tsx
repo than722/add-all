@@ -11,7 +11,11 @@ interface EnrollModalProps {
 const EnrollModal: React.FC<EnrollModalProps> = ({ isOpen, onClose, program, price, onEnrollmentSubmitted }) => {
   const [paymentType, setPaymentType] = useState<'cash' | 'online' | ''>('');
   const [receipt, setReceipt] = useState<File | null>(null);
-  const [error, setError] = useState<string | null>(null);
+
+  // Separate error states for better user feedback
+  const [receiptError, setReceiptError] = useState<string | null>(null);
+  const [paymentTypeError, setPaymentTypeError] = useState<string | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
@@ -19,22 +23,39 @@ const EnrollModal: React.FC<EnrollModalProps> = ({ isOpen, onClose, program, pri
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setReceipt(e.target.files[0]);
+      setReceiptError(null); // Clear error when a file is selected
+    } else {
+      setReceipt(null); // Clear receipt if no file is selected
+      setReceiptError('Please upload your payment receipt.'); // Set error if file is deselected
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Reset errors before validating
+    setReceiptError(null);
+    setPaymentTypeError(null);
+
+    let isValid = true;
+
     if (!receipt) {
-      setError('Please upload your payment receipt.');
-      return;
+      setReceiptError('Please upload your payment receipt.');
+      isValid = false;
     }
+
     if (!paymentType) {
-      setError('Please select a payment type.');
-      return;
+      setPaymentTypeError('Please select a payment type.');
+      isValid = false;
     }
-    setError(null);
-    if (onEnrollmentSubmitted) onEnrollmentSubmitted(receipt, paymentType);
-    onClose();
+
+    if (isValid && onEnrollmentSubmitted) {
+      onEnrollmentSubmitted(receipt as File, paymentType); // Assert receipt as File, as it's checked to be non-null
+      // Reset form state after successful submission
+      setPaymentType('');
+      setReceipt(null);
+      onClose();
+    }
   };
 
   return (
@@ -65,30 +86,33 @@ const EnrollModal: React.FC<EnrollModalProps> = ({ isOpen, onClose, program, pri
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                required
                 aria-label="Choose File"
               />
               <button
                 type="button"
-                className="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2 bg-white text-gray-900 text-left focus:outline-none focus:ring-2 focus:ring-[#92D0D3] text-xs sm:text-base"
+                className={`w-full border rounded-lg px-3 sm:px-4 py-2 bg-white text-gray-900 text-left focus:outline-none focus:ring-2 ${receiptError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-[#92D0D3]'} text-xs sm:text-base`}
                 onClick={() => fileInputRef.current && fileInputRef.current.click()}
               >
                 {receipt ? receipt.name : 'Choose File'}
               </button>
             </div>
             {receipt && <div className="mt-2 text-green-600 text-xs sm:text-sm">{receipt.name} selected</div>}
+            {receiptError && <div className="text-red-600 text-xs mt-1">{receiptError}</div>}
           </div>
           <div>
             <label className="block text-gray-700 mb-1 font-semibold text-sm">Payment Type</label>
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+            <div className={`flex flex-col sm:flex-row gap-2 sm:gap-4 ${paymentTypeError ? 'border-red-500 p-2 rounded-lg' : ''}`}> {/* Highlight if payment type error */}
               <label className="flex items-center gap-2 text-gray-700 text-sm">
                 <input
                   type="radio"
                   name="paymentType"
                   value="cash"
                   checked={paymentType === 'cash'}
-                  onChange={() => setPaymentType('cash')}
-                  className="accent-[#92D0D3]"  
+                  onChange={() => {
+                    setPaymentType('cash');
+                    setPaymentTypeError(null); // Clear error on selection
+                  }}
+                  className="accent-[#92D0D3]"
                 />
                 Cash
               </label>
@@ -98,14 +122,17 @@ const EnrollModal: React.FC<EnrollModalProps> = ({ isOpen, onClose, program, pri
                   name="paymentType"
                   value="online"
                   checked={paymentType === 'online'}
-                  onChange={() => setPaymentType('online')}
+                  onChange={() => {
+                    setPaymentType('online');
+                    setPaymentTypeError(null); // Clear error on selection
+                  }}
                   className="accent-[#92D0D3]"
                 />
                 Online Payment
               </label>
             </div>
+            {paymentTypeError && <div className="text-red-600 text-xs mt-1">{paymentTypeError}</div>}
           </div>
-          {error && <div className="text-red-600 text-xs sm:text-sm">{error}</div>}
           <button
             type="submit"
             className="w-full bg-[#92D0D3] text-white py-2 rounded-lg font-semibold hover:bg-[#7bbec2] transition text-sm sm:text-base"

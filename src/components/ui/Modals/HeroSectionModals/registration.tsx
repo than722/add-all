@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 /**
  * A modal component for user registration.
@@ -6,15 +6,89 @@ import React from 'react';
  * @param {Object} props - The component props.
  * @param {boolean} props.isOpen - Determines if the modal is open.
  * @param {Function} props.onClose - Callback function to close the modal.
+ * @param {Function} [props.onRegister] - Optional callback function to handle successful registration.
  * @returns {JSX.Element | null} The rendered modal component or null if not open.
  */
 export default function RegisterModal({
   isOpen,
   onClose,
+  onRegister, // Added an optional onRegister prop for parent communication
 }: {
   isOpen: boolean;
   onClose: () => void;
+  onRegister?: (userData: { fullName: string; email: string; contact: string }) => void;
 }) {
+  // State for form inputs
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [contact, setContact] = useState('');
+
+  // State for validation errors
+  const [fullNameError, setFullNameError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [contactError, setContactError] = useState<string | null>(null);
+
+  // Helper function to validate email format
+  const validateEmail = (email: string): boolean => {
+    return /\S+@\S+\.\S+/.test(email);
+  };
+
+  // Helper function to validate contact number (basic check for digits, could be expanded)
+  const validateContact = (contact: string): boolean => {
+    // Allows for basic digits, spaces, hyphens, and parentheses
+    return /^[0-9\s\-()+]+$/.test(contact) && contact.trim().length >= 7; // Minimum 7 digits
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Reset all errors at the start of validation
+    setFullNameError(null);
+    setEmailError(null);
+    setContactError(null);
+
+    let isValid = true;
+
+    // Validate Full Name
+    if (!fullName.trim()) {
+      setFullNameError('Full Name is required.');
+      isValid = false;
+    }
+
+    // Validate Email
+    if (!email.trim()) {
+      setEmailError('Email is required.');
+      isValid = false;
+    } else if (!validateEmail(email)) {
+      setEmailError('Please enter a valid email address.');
+      isValid = false;
+    }
+
+    // Validate Contact No.
+    if (!contact.trim()) {
+      setContactError('Contact Number is required.');
+      isValid = false;
+    } else if (!validateContact(contact)) {
+      setContactError('Please enter a valid contact number (digits, spaces, hyphens, parentheses allowed, min 7 digits).');
+      isValid = false;
+    }
+
+    if (isValid) {
+      // If validation passes, call the onRegister callback (if provided)
+      if (onRegister) {
+        onRegister({ fullName, email, contact });
+      }
+      // Log for demonstration
+      console.log('Registration successful:', { fullName, email, contact });
+
+      // Clear the form and close the modal
+      setFullName('');
+      setEmail('');
+      setContact('');
+      onClose();
+    }
+  };
+
   // Return null to prevent rendering the modal when it is not open
   if (!isOpen) return null;
 
@@ -42,14 +116,7 @@ export default function RegisterModal({
         <h2 className="text-xl sm:text-2xl font-bold text-center mb-4 sm:mb-6 text-[#1E3A5F]">
           Register
         </h2>
-        <form
-          className="space-y-3 sm:space-y-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            // Handle form submission here
-            console.log('Form submitted');
-          }}
-        >
+        <form className="space-y-3 sm:space-y-4" onSubmit={handleSubmit}>
           <div>
             <label htmlFor="fullname" className="block text-gray-700 mb-1 font-semibold text-sm">
               Full Name
@@ -58,10 +125,16 @@ export default function RegisterModal({
               type="text"
               id="fullname"
               name="fullname"
-              className="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-              required
+              className={`w-full border rounded-lg px-3 sm:px-4 py-2 focus:outline-none focus:ring-2 text-sm ${fullNameError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-primary'}`}
+              value={fullName}
+              onChange={(e) => {
+                setFullName(e.target.value);
+                setFullNameError(null); // Clear error on change
+              }}
             />
+            {fullNameError && <p className="text-red-500 text-xs mt-1">{fullNameError}</p>}
           </div>
+
           <div>
             <label htmlFor="email" className="block text-gray-700 mb-1 font-semibold text-sm">
               Email
@@ -70,25 +143,37 @@ export default function RegisterModal({
               type="email"
               id="email"
               name="email"
-              className="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#92D0D3] text-sm"
-              required
+              className={`w-full border rounded-lg px-3 sm:px-4 py-2 focus:outline-none focus:ring-2 text-sm ${emailError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-[#92D0D3]'}`}
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setEmailError(null); // Clear error on change
+              }}
             />
+            {emailError && <p className="text-red-500 text-xs mt-1">{emailError}</p>}
           </div>
+
           <div>
             <label htmlFor="contact" className="block text-gray-700 mb-1 font-semibold text-sm">
               Contact No.
             </label>
             <input
-              type="tel"
+              type="tel" // Use type="tel" for phone numbers
               id="contact"
               name="contact"
-              className="w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#92D0D3] text-sm"
-              required
+              className={`w-full border rounded-lg px-3 sm:px-4 py-2 focus:outline-none focus:ring-2 text-sm ${contactError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-[#92D0D3]'}`}
+              value={contact}
+              onChange={(e) => {
+                setContact(e.target.value);
+                setContactError(null); // Clear error on change
+              }}
             />
+            {contactError && <p className="text-red-500 text-xs mt-1">{contactError}</p>}
           </div>
+
           <button
             type="submit"
-            className="w-full bg-primary text-white py-2 rounded-lg font-semibold hover:bg-primary-dark transition text-sm"
+            className="w-full bg-primary text-white py-2 rounded-lg font-semibold hover:bg-primary-dark transition text-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Register
           </button>

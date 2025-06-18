@@ -241,21 +241,28 @@ const Sidebar: React.FC<SidebarProps> = ({
                   </div>
                   <div className="text-xs text-gray-500 mt-1 text-right">{moduleProgress[mod.id] || 0}%</div>
                 </div>
-                {/* Lock/Unlock Button */}
+                {/* Lock/Unlock Button - Simplified */}
                 <button
-                    onClick={(e) => { e.stopPropagation(); toggleLockModule(mod.id); }}
-                    className={`ml-2 p-1 rounded-full text-white ${
-                        lockedModules.includes(mod.id) ? 'bg-red-500' : 'bg-gray-400'
-                    } hover:opacity-80 transition`}
-                    title={lockedModules.includes(mod.id) ? 'Unlock Module' : 'Lock Module'}
+                  onClick={(e) => { e.stopPropagation(); toggleLockModule(mod.id); }}
+                  className={`ml-2 p-1 rounded-full text-white flex items-center justify-center text-sm
+                    ${lockedModules.includes(mod.id) ? 'bg-red-500 hover:bg-red-600' : 'bg-gray-400 hover:bg-gray-500'}
+                    transition w-6 h-6 sm:w-7 sm:h-7 focus:outline-none focus:ring-2 focus:ring-offset-2
+                    ${lockedModules.includes(mod.id) ? 'focus:ring-red-500' : 'focus:ring-gray-400'}
+                  `}
+                  title={lockedModules.includes(mod.id) ? 'Unlock Module' : 'Lock Module'}
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        {lockedModules.includes(mod.id) ? (
-                            <path fillRule="evenodd" d="M10 2a.75.75 0 01.75.75V4.5a.75.75 0 01-1.5 0V2.75A.75.75 0 0110 2zm-5.5 8.75a.75.75 0 01.75-.75h9.5a.75.75 0 010 1.5h-9.5a.75.75 0 01-.75-.75zM4 6a2 2 0 012-2h8a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm2 0h8v2H6V6z" clipRule="evenodd" />
-                        ) : (
-                            <path fillRule="evenodd" d="M8 2a5.5 5.5 0 00-5.5 5.5v2.75a.75.75 0 001.5 0V7.5a4 4 0 118 0v2.75a.75.75 0 001.5 0V7.5A5.5 5.5 0 008 2zM3 10a.75.75 0 01.75-.75h9.5a.75.75 0 010 1.5h-9.5A.75.75 0 013 10z" clipRule="evenodd" />
-                        )}
+                  {lockedModules.includes(mod.id) ? (
+                    // Simple unlock icon (open lock)
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
                     </svg>
+                  ) : (
+                    // Simple lock icon (closed lock)
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M11 5.093V3.75A1.75 1.75 0 009.25 2h-4.5A1.75 1.75 0 003 3.75V5.093m.5 8.157L6 14.5a1.75 1.75 0 003.5 0l2.5-1.25" />
+                    </svg>
+                  )}
                 </button>
                 {/* Delete Module Button */}
                 <button
