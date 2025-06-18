@@ -1,18 +1,22 @@
 'use client'; // This component uses useState, so it must be a client component.
 
-import React, { useState } from 'react'; // Import useState
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { programsList } from '@/data/programsData';
 
-const instructorAssignedPrograms: React.FC = () => {
-  // State for search query
+interface InstructorAssignedProgramsProps {
+  programName?: string; // Optional prop for flexibility
+}
+
+const InstructorAssignedPrograms: React.FC<InstructorAssignedProgramsProps> = ({ programName }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
-  // For demonstration, simulate assigned programs for a instructor.
-  // In a real application, you would fetch the *actual* programs assigned to the current instructor from your backend.
-  const assignedProgramsDemo = programsList.filter((p, idx) => idx % 3 === 0 || p.program === 'Floristry'); // A different demo subset for instructors
+  // Simulate assigned programs for an instructor (demo only)
+  const assignedProgramsDemo = programsList.filter(
+    (p, idx) => idx % 3 === 0 || p.program === 'Floristry'
+  );
 
-  // Filter programs based on searchQuery
+  // Filter programs based on search query
   const filteredPrograms = assignedProgramsDemo.filter((p) =>
     p.program.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -22,14 +26,14 @@ const instructorAssignedPrograms: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100"> {/* Added bg-gray-100 for consistent background */}
+    <div className="min-h-screen bg-gray-100">
       <div className="px-3 sm:px-6 py-6 sm:py-10">
         <h2 className="text-xl sm:text-2xl font-bold text-[#08228d] mb-4 sm:mb-6 text-left">
-          Assigned Programs
+          Assigned Programs {programName && `for ${programName}`}
         </h2>
 
-        {/* Search Bar with Icon - Adopted from your provided instructorClient design */}
-        <div className="mb-6 relative w-full sm:w-96 md:w-1/2 lg:w-1/3 max-w-lg ">
+        {/* Search bar with icon */}
+        <div className="mb-6 relative w-full sm:w-96 md:w-1/2 lg:w-1/3 max-w-lg">
           <input
             type="text"
             placeholder="Search programs..."
@@ -37,7 +41,6 @@ const instructorAssignedPrograms: React.FC = () => {
             onChange={handleSearchChange}
             className="w-full p-3 pl-10 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 text-black"
           />
-          {/* Search Icon (SVG) */}
           <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -56,24 +59,21 @@ const instructorAssignedPrograms: React.FC = () => {
           </div>
         </div>
 
-        {/* Updated grid classes for 3 items in a row on larger screens */}
+        {/* Program cards grid */}
         <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
           {filteredPrograms.length > 0 ? (
             filteredPrograms.map(({ program, category }, idx) => (
-              <div // Use div as the wrapper since action is handled by buttons
+              <div
                 key={idx}
                 className="bg-white p-3 sm:p-4 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition flex flex-col"
               >
-                {/* Program Thumbnail (can still link to a instructor-specific program overview if desired) */}
                 <Link
-                  href={`/instructor/assignedprograms/${encodeURIComponent(program)}`} // Example: A instructor's view of the program details
+                  href={`/instructor/assignedprograms/${encodeURIComponent(program)}`}
                   className="w-full h-24 sm:h-32 bg-gray-300 rounded-md mb-2 sm:mb-3 flex items-center justify-center text-gray-600 text-xs sm:text-base flex-shrink-0"
                 >
                   Thumbnail
                 </Link>
-                {/* Program Name */}
                 <h3 className="text-base sm:text-lg font-semibold text-[#08228d]">{program}</h3>
-                {/* Program Category */}
                 <p className="text-xs sm:text-sm text-gray-500 italic mb-3 flex-grow">{category}</p>
               </div>
             ))
@@ -88,4 +88,4 @@ const instructorAssignedPrograms: React.FC = () => {
   );
 };
 
-export default instructorAssignedPrograms;
+export default InstructorAssignedPrograms;
