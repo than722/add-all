@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function StudentLayout({
+export default function InstructorLayout({
   children, 
 }: {
   children: React.ReactNode;

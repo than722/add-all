@@ -1,25 +1,37 @@
-// AdminSections/AdminsTable.tsx
 import React from "react";
 
-// User interface as provided by you
 interface User {
   name: string;
   email: string;
   contact?: string;
   position?: string;
-  isAdmin?: boolean; // Added for clarity as it's used in logic
+  isAdmin?: boolean;
 }
 
 interface AdminsTableProps {
-  uniqueUsers: User[]; // List of all users (potential admins)
-  adminList: User[]; // List of users currently marked as admin
+  uniqueUsers: User[];
+  adminList: User[];
   handleAdminToggle: (email: string, name: string, isAdmin: boolean) => void;
+  onAddClick: () => void;
 }
 
-export default function AdminsTable({ uniqueUsers, adminList, handleAdminToggle }: AdminsTableProps) {
+export default function AdminsTable({
+  uniqueUsers,
+  adminList,
+  handleAdminToggle,
+  onAddClick,
+}: AdminsTableProps) {
   return (
     <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8">
-      <h3 className="text-xl sm:text-2xl font-extrabold text-[#08228d] mb-6">Manage Administrator Roles</h3>
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="text-xl sm:text-2xl font-extrabold text-[#08228d]">Manage Administrator Roles</h3>
+        <button
+          onClick={onAddClick}
+          className="bg-[#08228d] text-white px-4 py-2 rounded hover:bg-[#1a3d7c] text-sm cursor-pointer" // Added cursor-pointer
+        >
+          + Add Employee
+        </button>
+      </div>
 
       {/* Mobile / Stacked List View */}
       <div className="block sm:hidden">
@@ -51,7 +63,7 @@ export default function AdminsTable({ uniqueUsers, adminList, handleAdminToggle 
                     </div>
                   </div>
                   <button
-                    className={`mt-4 w-full py-2 rounded-lg font-bold text-white text-sm transition-all duration-200 ease-in-out
+                    className={`mt-4 w-full py-2 rounded-lg font-bold text-white text-sm transition-all duration-200 ease-in-out cursor-pointer
                       ${isAdmin ? "bg-red-500 hover:bg-red-600 active:bg-red-700" : "bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700"}
                       focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                         isAdmin ? "focus:ring-red-500" : "focus:ring-emerald-500"
@@ -128,7 +140,7 @@ export default function AdminsTable({ uniqueUsers, adminList, handleAdminToggle 
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button
-                        className={`px-4 py-2 rounded-lg font-bold text-white text-sm transition-all duration-200 ease-in-out
+                        className={`px-4 py-2 rounded-lg font-bold text-white text-sm transition-all duration-200 ease-in-out cursor-pointer
                           ${isAdmin ? "bg-red-500 hover:bg-red-600 active:bg-red-700" : "bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700"}
                           focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                             isAdmin ? "focus:ring-red-500" : "focus:ring-emerald-500"

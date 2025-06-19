@@ -26,7 +26,7 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
   const [profileState, setProfileState] = useState({
     name: profile.name,
     // Initialize contactNo from profile.contact or as an empty string
-    contactNo: profile.contact || '', 
+    contactNo: profile.contact || '',
   });
 
   // State for the status confirmation modal
@@ -85,7 +85,7 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
         }>
           {/* Close button always top right */}
           <button
-            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl sm:text-2xl"
+            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl sm:text-2xl cursor-pointer" // Added cursor-pointer
             onClick={onClose}
             aria-label="Close profile modal"
           >
@@ -102,7 +102,7 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
                 alt={profile.name}
                 width={100}
                 height={100}
-                className="mx-auto rounded-full mb-2 w-24 h-24 object-cover"
+                className="mx-auto rounded-full mb-2 w-24 h-24 object-cover" // Image itself usually doesn't need cursor-pointer unless it's clickable
               />
               <p className="font-semibold text-[#08228d] text-lg sm:text-xl break-words w-full">{profileState.name}</p>
               <p className="text-xs sm:text-sm text-gray-500 break-words w-full">{profile.email}</p>
@@ -114,14 +114,14 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
             {isAdminProfileView && profile.type === 'instructor' && instructorStatus && onStatusChange && (
               <div className="flex gap-2 mb-2 w-full">
                 <button
-                  className={`flex-1 py-2 rounded text-xs sm:text-base ${currentInstructorStatus === 'active' ? 'bg-green-600 text-white' : 'bg-gray-200 text-[#08228d]'} font-semibold`}
+                  className={`flex-1 py-2 rounded text-xs sm:text-base ${currentInstructorStatus === 'active' ? 'bg-green-600 text-white' : 'bg-gray-200 text-[#08228d]'} font-semibold cursor-pointer`} // Added cursor-pointer
                   onClick={() => handleStatusChangeClick('active')} // Changed to open confirmation modal
                   disabled={currentInstructorStatus === 'active'}
                 >
                   Active
                 </button>
                 <button
-                  className={`flex-1 py-2 rounded text-xs sm:text-base ${currentInstructorStatus === 'inactive' ? 'bg-red-600 text-white' : 'bg-gray-200 text-[#08228d]'} font-semibold`}
+                  className={`flex-1 py-2 rounded text-xs sm:text-base ${currentInstructorStatus === 'inactive' ? 'bg-red-600 text-white' : 'bg-gray-200 text-[#08228d]'} font-semibold cursor-pointer`} // Added cursor-pointer
                   onClick={() => handleStatusChangeClick('inactive')} // Changed to open confirmation modal
                   disabled={currentInstructorStatus === 'inactive'}
                 >
@@ -131,7 +131,7 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
             )}
             {/* Edit Profile Button (for admin viewing any profile type, or for user viewing their own profile) */}
             {isAdminProfileView || (!isAdmin && (profile.type === 'student' || profile.type === 'instructor')) ? (
-              <button className="w-full bg-[#08228d] text-white py-2 rounded hover:bg-[#1a3d7c] transition text-xs sm:text-base mt-2" onClick={() => setShowEditModal(true)}>
+              <button className="w-full bg-[#08228d] text-white py-2 rounded hover:bg-[#1a3d7c] transition text-xs sm:text-base mt-2 cursor-pointer" onClick={() => setShowEditModal(true)}> {/* Added cursor-pointer */}
                 Edit Profile
               </button>
             ) : null}
@@ -139,7 +139,7 @@ export default function Profile({ onClose, profile, isAdmin, instructorStatus, o
             {/* Logout button (only for the currently logged-in user's own profile, not when admin views others) */}
             {!isAdminProfileView && !hideLogout && (
               <button
-                className="w-full bg-gray-200 text-[#08228d] py-2 rounded hover:bg-gray-300 transition text-xs sm:text-base mt-2"
+                className="w-full bg-gray-200 text-[#08228d] py-2 rounded hover:bg-gray-300 transition text-xs sm:text-base mt-2 cursor-pointer" // Added cursor-pointer
                 onClick={handleLogout}
               >
                 Logout

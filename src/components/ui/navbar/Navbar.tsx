@@ -1,14 +1,12 @@
-// components/ui/navbar/Navbar.tsx
 'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react'; // useState for navOpen is still fine
+import { useEffect, useState } from 'react';
 import Profile from '../Modals/ProfileModals/profileview';
 import SignInModal from '../Modals/signin';
-// import { getRole, UserRole } from '../../roles/role'; // No longer needed here
-import { useAuth } from '@/components/contexts/authContext'; // <--- Import useAuth
+import { useAuth } from '@/components/contexts/authContext';
 
 // Define a consistent type for navigation links
 interface NavLink {
@@ -22,20 +20,15 @@ interface NavLink {
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { role} = useAuth(); 
+  const { role } = useAuth();
 
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
 
-  // *** REMOVE THE OLD useEffect THAT READS LOCALSTORAGE ***
-  // The role state is now managed by AuthProvider
-
-  // You can keep this useEffect for logging if you want to see when role changes
   useEffect(() => {
     console.log('Navbar: Rendered with role:', role);
   }, [role]);
-
 
   // Navigation links config per role (no change here, it uses the 'role' state)
   const navLinks: Record<string, NavLink[]> = {
@@ -44,7 +37,7 @@ export default function Navbar() {
       { label: 'Instructors', href: '/superadmin/instructorlist', anchor: true },
       { label: 'Students', href: '/superadmin/studentlist', anchor: true },
       { label: 'Programs', href: '/superadmin/programlist', anchor: true },
-      { label: 'Administrators',onClick: () => router.push('/superadmin/adminlist') },
+      { label: 'Administrators', onClick: () => router.push('/superadmin/adminlist') },
     ],
     admin: [
       { label: 'Home', href: '/' },
@@ -66,7 +59,7 @@ export default function Navbar() {
       { label: 'Vision', scrollId: 'vision-section' },
       { label: 'About Us', scrollId: 'aboutus-section' },
     ],
-    default: [ // This 'default' case will primarily be hit if role is null initially
+    default: [
       { label: 'Home', href: '/' },
       { label: 'Vision', scrollId: 'vision-section' },
       { label: 'About Us', scrollId: 'aboutus-section' },
@@ -94,30 +87,30 @@ export default function Navbar() {
   const renderLinks = (isMobile = false) => {
     const links =
       role === 'superadmin' ? navLinks.superadmin :
-      role === 'admin' ? navLinks.admin :
-      role === 'instructor' ? navLinks.instructor :
-      role === 'student' ? navLinks.student :
-      role === 'guest' ? navLinks.guest :
-      navLinks.default;
+        role === 'admin' ? navLinks.admin :
+          role === 'instructor' ? navLinks.instructor :
+            role === 'student' ? navLinks.student :
+              role === 'guest' ? navLinks.guest :
+                navLinks.default;
     return links.map((link, i) => {
       if (link.href && !link.anchor && !link.scrollId && !link.onClick) {
-        return <Link key={i} href={link.href} className="text-white font-extrabold hover:text-[#FFC72C] text-base py-1 px-2" onClick={isMobile ? () => setNavOpen(false) : undefined}>{link.label}</Link>;
+        return <Link key={i} href={link.href} className="text-white font-extrabold hover:text-[#FFC72C] text-base py-1 px-2 cursor-pointer" onClick={isMobile ? () => setNavOpen(false) : undefined}>{link.label}</Link>;
       }
       if (link.anchor && link.href) {
-        return <a key={i} href={link.href} className="text-white font-extrabold hover:text-[#FFC72C] text-base py-1 px-2" onClick={isMobile ? () => setNavOpen(false) : undefined}>{link.label}</a>;
+        return <a key={i} href={link.href} className="text-white font-extrabold hover:text-[#FFC72C] text-base py-1 px-2 cursor-pointer" onClick={isMobile ? () => setNavOpen(false) : undefined}>{link.label}</a>;
       }
       if (link.scrollId) {
         return <button key={i} type="button" className="text-white font-extrabold hover:text-[#FFC72C] text-base py-1 px-2 bg-transparent border-none cursor-pointer text-left" onClick={() => handleScroll(link.scrollId!)}>{link.label}</button>;
       }
       if (link.onClick) {
-        return <button key={i} className="text-white font-extrabold hover:text-[#FFC72C] text-base py-1 px-2 text-left" onClick={() => { if (isMobile) setNavOpen(false); link.onClick && link.onClick(); }}>{link.label}</button>;
+        return <button key={i} className="text-white font-extrabold hover:text-[#FFC72C] text-base py-1 px-2 text-left cursor-pointer" onClick={() => { if (isMobile) setNavOpen(false); link.onClick && link.onClick(); }}>{link.label}</button>;
       }
       return null;
     });
   };
 
   // Desktop breakpoint: md for default, sm for others
-  const isDefault = !role; // This will now typically only be true on initial mount before AuthProvider sets the role
+  const isDefault = !role;
   const desktopClass = isDefault ? 'md:flex hidden' : 'sm:flex hidden';
   const mobileClass = isDefault ? 'md:hidden flex' : 'sm:hidden flex';
 
@@ -128,10 +121,10 @@ export default function Navbar() {
         <div className={`${desktopClass} items-center justify-between w-full px-6 py-4 relative`}>
           {/* Left: Logo and School Name */}
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 overflow-hidden rounded-full">
+            <div className="w-12 h-12 overflow-hidden rounded-full cursor-pointer"> {/* Added cursor-pointer */}
               <Image src="/add-all logo bg.png" alt="Logo" width={48} height={48} className="object-cover" />
             </div>
-            <div className="leading-snug">
+            <div className="leading-snug cursor-pointer"> {/* Added cursor-pointer */}
               <h1 className="text-white font-extrabold tracking-wide text-lg">Ateneo de Davao</h1>
               <h2 className="text-white font-bold text-sm uppercase tracking-widest">Academy of Lifelong Learning</h2>
             </div>
@@ -146,7 +139,7 @@ export default function Navbar() {
               <>
                 <button
                   onClick={() => setShowProfileModal(true)}
-                  className="w-10 h-10 rounded-full overflow-hidden border-2 border-white"
+                  className="w-10 h-10 rounded-full overflow-hidden border-2 border-white cursor-pointer" // Added cursor-pointer
                   aria-label="Open profile modal"
                 >
                   <Image src="/profileicon.png" alt="Profile" width={40} height={40} className="object-cover" />
@@ -155,7 +148,7 @@ export default function Navbar() {
             ) : (
               <button
                 onClick={() => setShowSignInModal(true)}
-                className="bg-[#FFC72C] text-[#08228d] px-4 py-2 rounded-full font-bold hover:bg-yellow-400 transition duration-300 text-base"
+                className="bg-[#FFC72C] text-[#08228d] px-4 py-2 rounded-full font-bold hover:bg-yellow-400 transition duration-300 text-base cursor-pointer" // Added cursor-pointer
               >
                 Sign In
               </button>
@@ -165,15 +158,15 @@ export default function Navbar() {
         {/* Mobile Layout */}
         <div className={`${mobileClass} flex-col w-full px-3 py-3`}>
           <div className="flex items-center w-full z-10">
-            <div className="w-10 h-10 overflow-hidden rounded-full">
+            <div className="w-10 h-10 overflow-hidden rounded-full cursor-pointer"> {/* Added cursor-pointer */}
               <Image src="/add-all logo bg.png" alt="Logo" width={48} height={48} className="object-cover" />
             </div>
-            <div className="leading-snug ml-3">
+            <div className="leading-snug ml-3 cursor-pointer"> {/* Added cursor-pointer */}
               <h1 className="text-white font-extrabold tracking-wide text-sm">Ateneo de Davao</h1>
               <h2 className="text-white font-bold text-xs uppercase tracking-widest">Academy of Lifelong Learning</h2>
             </div>
             <button
-              className="ml-auto p-2 focus:outline-none"
+              className="ml-auto p-2 focus:outline-none cursor-pointer" // Added cursor-pointer
               onClick={() => setNavOpen((v) => !v)}
               aria-label="Toggle navigation"
             >
@@ -185,7 +178,7 @@ export default function Navbar() {
               <>
                 <button
                   onClick={() => setShowProfileModal(true)}
-                  className="ml-2 w-9 h-9 rounded-full overflow-hidden border-2 border-white"
+                  className="ml-2 w-9 h-9 rounded-full overflow-hidden border-2 border-white cursor-pointer" // Added cursor-pointer
                   aria-label="Open profile modal"
                 >
                   <Image src="/profileicon.png" alt="Profile" width={36} height={36} className="object-cover" />
@@ -194,7 +187,7 @@ export default function Navbar() {
             ) : (
               <button
                 onClick={() => setShowSignInModal(true)}
-                className="ml-2 bg-[#FFC72C] text-[#08228d] px-4 py-2 rounded-full font-bold hover:bg-yellow-400 transition duration-300 text-sm"
+                className="ml-2 bg-[#FFC72C] text-[#08228d] px-4 py-2 rounded-full font-bold hover:bg-yellow-400 transition duration-300 text-sm cursor-pointer" // Added cursor-pointer
               >
                 Sign In
               </button>

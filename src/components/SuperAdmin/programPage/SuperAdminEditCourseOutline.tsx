@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { initialCourseOutline, moduleProgress, subsectionProgress } from '@/data/data';
-import Sidebar from '@/components/courseoutlineComponents/sidebar'; // Ensure this path is correct
-import ContentArea from '@/components/courseoutlineComponents/contentArea'; // Ensure this path is correct
+import Sidebar from '@/components/editcourseoutlineComponents/sidebar'; // Ensure this path is correct
+import ContentArea from '@/components/editcourseoutlineComponents/contentArea'; // Ensure this path is correct
 // ProgressCircle is likely used internally by Sidebar/ContentArea, no need to import here if not directly used
 // import ProgressCircle from '@/components/courseoutlineComponents/progressCircle';
 import { useRouter } from 'next/navigation'; // Import useRouter for navigation

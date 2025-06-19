@@ -27,8 +27,8 @@ const ContentBlockEditor: React.FC<ContentBlockEditorProps> = ({ block, editingB
           onChange={e => onChange(e.target.value)}
         />
         <div className="flex gap-2">
-          <button className="bg-[#08228d] text-white px-2 py-1 rounded text-xs sm:text-base" onClick={onSave}>Save</button>
-          <button className="bg-gray-300 text-[#08228d] px-2 py-1 rounded text-xs sm:text-base" onClick={onCancel}>Cancel</button>
+          <button className="bg-[#08228d] text-white px-2 py-1 rounded text-xs sm:text-base cursor-pointer" onClick={onSave}>Save</button>
+          <button className="bg-gray-300 text-[#08228d] px-2 py-1 rounded text-xs sm:text-base cursor-pointer" onClick={onCancel}>Cancel</button>
         </div>
       </>
     );
@@ -44,8 +44,8 @@ const ContentBlockEditor: React.FC<ContentBlockEditorProps> = ({ block, editingB
           className="block w-full border rounded px-2 py-1 text-xs sm:text-sm mb-2"
         />
         <div className="flex gap-2">
-          <button className="bg-[#08228d] text-white px-2 py-1 rounded text-xs sm:text-base" onClick={onSave}>Save</button>
-          <button className="bg-gray-300 text-[#08228d] px-2 py-1 rounded text-xs sm:text-base" onClick={onCancel}>Cancel</button>
+          <button className="bg-[#08228d] text-white px-2 py-1 rounded text-xs sm:text-base cursor-pointer" onClick={onSave}>Save</button>
+          <button className="bg-gray-300 text-[#08228d] px-2 py-1 rounded text-xs sm:text-base cursor-pointer" onClick={onCancel}>Cancel</button>
         </div>
       </>
     );

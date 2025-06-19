@@ -71,7 +71,7 @@ export default function InstructorsSection({
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
         <h2 className="text-lg sm:text-xl font-bold mb-0 text-[#08228d]">Instructors</h2>
         <button
-          className="bg-[#08228d] text-white px-3 py-2 sm:px-4 sm:py-2 rounded hover:bg-[#1a3d7c] w-full sm:w-auto"
+          className="bg-[#08228d] text-white px-3 py-2 sm:px-4 sm:py-2 rounded hover:bg-[#1a3d7c] w-full sm:w-auto cursor-pointer"
           onClick={() => setShowAddInstructorModal(true)}
         >
           + Add Instructor
@@ -116,7 +116,7 @@ export default function InstructorsSection({
             className="bg-white rounded shadow p-3 sm:p-4 flex items-center gap-3 sm:gap-4 hover:bg-gray-100 transition"
           >
             <div
-              className="flex items-center flex-grow cursor-pointer"
+              className="flex items-center flex-grow cursor-pointer" // Added cursor-pointer here
               onClick={() => setProfileModal({ ...inst, bio: inst.bio || 'No bio provided.', type: 'instructor' })}
               aria-label={`View profile of ${inst.name}`}
             >
@@ -145,7 +145,7 @@ export default function InstructorsSection({
               </span>
               {/* Archive Button */}
               <button
-                className="ml-2 bg-red-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-red-700"
+                className="ml-2 bg-red-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-red-700 cursor-pointer" // Added cursor-pointer here
                 onClick={e => {
                   e.stopPropagation(); // Prevent opening profile modal
                   setArchivePrompt({ open: true, type: 'instructor', name: inst.name });
@@ -162,7 +162,7 @@ export default function InstructorsSection({
         onClose={() => setShowAddInstructorModal(false)}
         onAdd={handleAddInstructor}
       />
-      {/* StatusChangeModal will be rendered in the parent component (AdminClient) */}
+      
     </div>
   );
 }

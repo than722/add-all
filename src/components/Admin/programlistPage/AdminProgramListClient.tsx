@@ -58,8 +58,8 @@ const AdminProgramListClient: React.FC = () => {
 
   const handleAddProgram = () => {
     if (!newProgram.program || !newProgram.category || !newProgram.instructor) {
-        console.error("Program name, category, and instructor are required.");
-        return;
+      console.error("Program name, category, and instructor are required.");
+      return;
     }
 
     setAdminPrograms((prev) => [
@@ -94,7 +94,7 @@ const AdminProgramListClient: React.FC = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
           <h2 className="text-xl sm:text-2xl font-bold text-[#08228d]">Programs List (Admin)</h2>
           <button
-            className="bg-[#08228d] text-white px-3 py-2 sm:px-4 sm:py-2 rounded hover:bg-[#1a3d7c] w-full sm:w-auto"
+            className="bg-[#08228d] text-white px-3 py-2 sm:px-4 sm:py-2 rounded hover:bg-[#1a3d7c] w-full sm:w-auto cursor-pointer"
             onClick={() => setShowAddProgramModal(true)}
           >
             + Add Program
@@ -145,7 +145,7 @@ const AdminProgramListClient: React.FC = () => {
                         alt="Program Thumbnail"
                         width={320}
                         height={160}
-                        className="object-cover rounded-md w-full h-full"
+                        className="object-cover rounded-md w-50 h-50"
                         unoptimized={p.thumbnail.startsWith('http')}
                       />
                     ) : (
@@ -170,18 +170,18 @@ const AdminProgramListClient: React.FC = () => {
                     <div className="flex gap-2 mt-2">
                       <Link
                         href={`/admin/programlist/${encodeURIComponent(p.program)}/view-outline`} // Link to admin-specific view outline
-                        className="flex-1 bg-blue-500 text-white py-2 rounded hover:bg-blue-700 transition font-semibold text-xs sm:text-base text-center"
+                        className="flex-1 bg-blue-500 text-white py-2 rounded hover:bg-blue-700 transition font-semibold text-xs sm:text-base text-center cursor-pointer"
                       >
                         View Outline
                       </Link>
                       <Link
                         href={`/admin/programlist/${encodeURIComponent(p.program)}/edit-outline`} // Link to admin-specific edit outline
-                        className="flex-1 bg-green-500 text-white py-2 rounded hover:bg-green-700 transition font-semibold text-xs sm:text-base text-center"
+                        className="flex-1 bg-green-500 text-white py-2 rounded hover:bg-green-700 transition font-semibold text-xs sm:text-base text-center cursor-pointer"
                       >
                         Edit Outline
                       </Link>
                       <button
-                        className="flex-1 bg-red-500 text-white py-2 rounded hover:bg-red-700 transition font-semibold text-xs sm:text-base"
+                        className="flex-1 bg-red-500 text-white py-2 rounded hover:bg-red-700 transition font-semibold text-xs sm:text-base cursor-pointer"
                         onClick={() => setArchivePrompt({ open: true, program: p.program })}
                       >
                         Archive

@@ -89,7 +89,7 @@ const SuperAdminProgramListClient: React.FC = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
           <h2 className="text-xl sm:text-2xl font-bold text-[#08228d]">Programs List (Super Admin)</h2> {/* Updated heading */}
           <button
-            className="bg-[#08228d] text-white px-3 py-2 sm:px-4 sm:py-2 rounded hover:bg-[#1a3d7c] w-full sm:w-auto"
+            className="bg-[#08228d] text-white px-3 py-2 sm:px-4 sm:py-2 rounded hover:bg-[#1a3d7c] w-full sm:w-auto cursor-pointer"
             onClick={() => setShowAddProgramModal(true)}
           >
             + Add Program
@@ -176,7 +176,7 @@ const SuperAdminProgramListClient: React.FC = () => {
                         Edit Outline
                       </Link>
                       <button
-                        className="flex-1 bg-red-500 text-white py-2 rounded hover:bg-red-700 transition font-semibold text-xs sm:text-base"
+                        className="flex-1 bg-red-500 text-white py-2 rounded hover:bg-red-700 transition font-semibold text-xs sm:text-base cursor-pointer"
                         onClick={() => setArchivePrompt({ open: true, program: p.program })}
                       >
                         Archive

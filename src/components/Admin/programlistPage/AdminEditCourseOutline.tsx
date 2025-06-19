@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { initialCourseOutline, moduleProgress, subsectionProgress } from '@/data/data';
-import Sidebar from '@/components/courseoutlineComponents/sidebar'; // Ensure this path is correct
-import ContentArea from '@/components/courseoutlineComponents/contentArea'; // Ensure this path is correct
-import ProgressCircle from '@/components/courseoutlineComponents/progressCircle'; // Ensure this path is correct
+import Sidebar from '@/components/editcourseoutlineComponents/sidebar'; // Ensure this path is correct
+import ContentArea from '@/components/editcourseoutlineComponents/contentArea'; // Ensure this path is correct
+import ProgressCircle from '@/components/editcourseoutlineComponents/progressCircle'; // Ensure this path is correct
 import { useRouter } from 'next/navigation'; // Import useRouter for navigation
 
 interface ContentBlock {

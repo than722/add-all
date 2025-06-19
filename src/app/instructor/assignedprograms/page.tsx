@@ -1,7 +1,14 @@
-import InstructorsAssignedPrograms from '@/components/Programs/Instructor/InstructorsAssignedPrograms'; // Updated import name
 
-export default function instructorAssignedProgramsPage() {
-  return (
-    <InstructorsAssignedPrograms /> // Updated component name
-  );
+import InstructorsAssignedPrograms from '@/components/Programs/Instructor/InstructorsAssignedPrograms';
+
+interface PageProps {
+  params: {
+    programName: string;
+  };
+}
+
+export default function InstructorProgramDetailsPage({ params }: PageProps) {
+  const { programName } = params;
+
+  return <InstructorsAssignedPrograms programName={programName} />;
 }

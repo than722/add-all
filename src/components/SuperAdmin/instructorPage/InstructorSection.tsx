@@ -69,7 +69,7 @@ export default function InstructorsSectionSuperAdmin({
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
         <h2 className="text-lg sm:text-xl font-bold mb-0 text-[#08228d]">Instructors</h2>
         <button
-          className="bg-[#08228d] text-white px-3 py-2 sm:px-4 sm:py-2 rounded hover:bg-[#1a3d7c] w-full sm:w-auto"
+          className="bg-[#08228d] text-white px-3 py-2 sm:px-4 sm:py-2 rounded hover:bg-[#1a3d7c] w-full sm:w-auto cursor-pointer"
           onClick={() => setShowAddInstructorModal(true)}
         >
           + Add Instructor
@@ -144,7 +144,7 @@ export default function InstructorsSectionSuperAdmin({
                 {instructorStatus[inst.email]}
               </span>
             <button
-              className="ml-2 bg-red-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-red-700"
+              className="ml-2 bg-red-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-red-700 cursor-pointer "
               onClick={e => {
                 e.stopPropagation(); // Prevent opening profile modal
                 setArchivePrompt({ open: true, type: 'instructor', name: inst.name });

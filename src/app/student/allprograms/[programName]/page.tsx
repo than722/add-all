@@ -19,3 +19,4 @@ export default async function StudentProgramDetailsPage({ params }: StudentProgr
     </div>
   );
 }
+  

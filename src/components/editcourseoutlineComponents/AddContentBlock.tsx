@@ -32,10 +32,10 @@ const AddContentBlock: React.FC<AddContentBlockProps> = ({ addingContentType, ne
         />
       )}
       <div className="flex gap-2">
-        <button className="bg-[#08228d] text-white px-2 py-1 rounded text-xs sm:text-base" onClick={onSave}>
+        <button className="bg-[#08228d] text-white px-2 py-1 rounded text-xs sm:text-base cursor-pointer" onClick={onSave}>
           Save {addingContentType === 'text' ? 'Text' : 'Video'} Block
         </button>
-        <button className="bg-gray-300 text-[#08228d] px-2 py-1 rounded text-xs sm:text-base" onClick={onCancel}>
+        <button className="bg-gray-300 text-[#08228d] px-2 py-1 rounded text-xs sm:text-base cursor-pointer" onClick={onCancel}>
           Cancel
         </button>
       </div>

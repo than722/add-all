@@ -27,10 +27,10 @@ const ContentBlockDisplay: React.FC<ContentBlockDisplayProps> = ({ block, onEdit
       </div>
     )}
     <div className="flex gap-2 mt-2">
-      <button className="text-[#08228d] underline text-xs sm:text-sm hover:text-[#001f40]" onClick={onEdit}>
+      <button className="text-[#08228d] underline text-xs sm:text-sm hover:text-[#001f40] cursor-pointer" onClick={onEdit}>
         Edit {block.type === 'text' ? 'Text' : 'Video'}
       </button>
-      <button className="text-red-500 underline text-xs sm:text-sm hover:text-red-700" onClick={onDelete}>
+      <button className="text-red-500 underline text-xs sm:text-sm hover:text-red-700 cursor-pointer" onClick={onDelete}>
         Delete
       </button>
     </div>

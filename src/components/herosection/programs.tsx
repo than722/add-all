@@ -19,7 +19,7 @@ const programCategories = [
       'Figure Painting',
       'Urban Gardening',
       'Aromatherapy',
-      'Sewing for Home',    
+      'Sewing for Home',
     ],
   },
   {
@@ -61,7 +61,7 @@ const photosAndReviews = [
   },
 ];
 
-export default function programs() {
+export default function Programs() {
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
   const [modalProgram, setModalProgram] = React.useState<{ program: string; category: string } | null>(null);
   const categories = programCategories.map((cat) => cat.category);
@@ -71,19 +71,17 @@ export default function programs() {
   const router = useRouter();
 
   return (
-    <div 
-        id="programs"
-        className="min-h-screen px-6 py-12 bg-gray-100"
-        >
-      {/* Featured Programs */}
+    <div
+      id="programs"
+      className="min-h-screen px-6 py-12 bg-gray-100"
+    >
       <h1 className="text-3xl font-bold text-center text-[#08228d] mb-6">
         Featured Programs
       </h1>
 
-      {/* Category Pills */}
       <div className="flex flex-wrap justify-center gap-3 mb-6">
         <button
-          className={`px-4 py-2 rounded-full border font-semibold transition text-sm ${selectedCategory === null ? 'bg-[#08228d] text-white border-[#08228d]' : 'bg-white text-[#08228d] border-[#08228d] hover:bg-[#08228d] hover:text-white'}`}
+          className={`px-4 py-2 rounded-full border font-semibold transition text-sm ${selectedCategory === null ? 'bg-[#08228d] text-white border-[#08228d]' : 'bg-white text-[#08228d] border-[#08228d] hover:bg-[#08228d] hover:text-white'} cursor-pointer`}
           onClick={() => setSelectedCategory(null)}
         >
           All
@@ -91,7 +89,7 @@ export default function programs() {
         {categories.map((cat) => (
           <button
             key={cat}
-            className={`px-4 py-2 rounded-full border font-semibold transition text-sm ${selectedCategory === cat ? 'bg-[#08228d] text-white border-[#08228d]' : 'bg-white text-[#08228d] border-[#08228d] hover:bg-[#08228d] hover:text-white'}`}
+            className={`px-4 py-2 rounded-full border font-semibold transition text-sm ${selectedCategory === cat ? 'bg-[#08228d] text-white border-[#08228d]' : 'bg-white text-[#08228d] border-[#08228d] hover:bg-[#08228d] hover:text-white'} cursor-pointer`}
             onClick={() => setSelectedCategory(cat)}
           >
             {cat}
@@ -107,21 +105,18 @@ export default function programs() {
             onClick={() => setModalProgram({ program, category })}
             title={`View details for ${program}`}
           >
-            {/* Placeholder Thumbnail */}
             <div className="w-full h-40 bg-gray-300 rounded-lg mb-4 flex items-center justify-center text-gray-500 text-lg select-none">
               Thumbnail
             </div>
 
-            {/* Program Name */}
             <h3 className="text-lg font-semibold text-[#08228d] text-center mb-2">
               {program}
             </h3>
 
-            {/* Category */}
             <p className="text-sm text-gray-600 text-center italic">{category}</p>
 
             <button
-              className="mt-4 bg-[#08228d] text-white px-4 py-2 rounded-full font-semibold text-xs hover:bg-[#001f40] transition"
+              className="mt-4 bg-[#08228d] text-white px-4 py-2 rounded-full font-semibold text-xs hover:bg-[#001f40] transition cursor-pointer"
               onClick={e => {
                 e.stopPropagation();
                 setModalProgram({ program, category });
@@ -133,7 +128,6 @@ export default function programs() {
         ))}
       </div>
 
-      {/* Photos and Reviews */}
       <h1 className="text-3xl font-bold text-center text-[#08228d] mb-6">
         Featured Photos
       </h1>
@@ -142,17 +136,14 @@ export default function programs() {
         {photosAndReviews.map(({ title, text }, idx) => (
           <div
             key={idx}
-            className="flex-shrink-0 w-64 bg-white rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition duration-300 flex flex-col p-6"
+            className="flex-shrink-0 w-64 bg-white rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition duration-300 flex flex-col p-6 cursor-pointer"
           >
-            {/* Placeholder Thumbnail */}
             <div className="w-full h-40 bg-gray-300 rounded-lg mb-4 flex items-center justify-center text-gray-500 text-lg select-none">
               Photo
             </div>
 
-            {/* Review Title */}
             <h3 className="text-lg font-semibold text-[#08228d] mb-2">{title}</h3>
 
-            {/* Review Text */}
             <p className="text-gray-600 text-sm">{text}</p>
           </div>
         ))}

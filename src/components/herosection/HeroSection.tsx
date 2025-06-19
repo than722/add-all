@@ -64,13 +64,13 @@ const HeroSection: React.FC = () => {
             <div className="flex flex-wrap gap-3 sm:gap-4">
               <button
                 onClick={() => setIsRegisterOpen(true)}
-                className="px-4 sm:px-6 py-2 sm:py-3 bg-[#FFC72C] text-[#08228d] font-bold rounded-full shadow hover:bg-yellow-400 transition duration-300 text-sm sm:text-base"
+                className="px-4 sm:px-6 py-2 sm:py-3 bg-[#FFC72C] text-[#08228d] font-bold rounded-full shadow hover:bg-yellow-400 transition duration-300 text-sm sm:text-base cursor-pointer" 
               >
                 Enroll now!
               </button>
               <button
                 onClick={scrollToPrograms}
-                className="px-4 sm:px-6 py-2 sm:py-3 bg-white/80 text-[#08228d] font-semibold rounded-full border border-[#08228d] hover:bg-white transition duration-300 backdrop-blur text-sm sm:text-base"
+                className="px-4 sm:px-6 py-2 sm:py-3 bg-white/80 text-[#08228d] font-semibold rounded-full border border-[#08228d] hover:bg-white transition duration-300 backdrop-blur text-sm sm:text-base cursor-pointer" 
               >
                 Explore Programs
               </button>

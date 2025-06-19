@@ -20,13 +20,13 @@ const ArchiveModal: React.FC<ArchiveModalProps> = ({ isOpen, type, name, onConfi
         </p>
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 justify-end">
           <button
-            className="px-4 py-2 rounded bg-gray-200 text-[#08228d] font-semibold hover:bg-gray-300 text-sm sm:text-base"
+            className="px-4 py-2 rounded bg-gray-200 text-[#08228d] font-semibold hover:bg-gray-300 text-sm sm:text-base cursor-pointer"
             onClick={onCancel}
           >
             Cancel
           </button>
           <button
-            className="px-4 py-2 rounded bg-red-500 text-white font-semibold hover:bg-red-700 text-sm sm:text-base"
+            className="px-4 py-2 rounded bg-red-500 text-white font-semibold hover:bg-red-700 text-sm sm:text-base cursor-pointer"
             onClick={onConfirm}
           >
             Archive

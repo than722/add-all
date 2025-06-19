@@ -1,13 +1,9 @@
-// app/components/Programs/EditCourseOutlineClient.tsx
-// This component provides the interface for both Admin and Instructor to edit a program's course outline.
-// The back button navigation adapts based on the 'role' prop.
-
 'use client';
 
 import React, { useState, useMemo, Dispatch, SetStateAction } from 'react';
 import { initialCourseOutline, moduleProgress, subsectionProgress } from '@/data/data';
-import Sidebar from '@/components/courseoutlineComponents/sidebar'; // Ensure this path is correct
-import ContentArea from '@/components/courseoutlineComponents/contentArea'; // Ensure this path is correct
+import Sidebar from '@/components/editcourseoutlineComponents/sidebar';
+import ContentArea from '@/components/editcourseoutlineComponents/contentArea';
 import { useRouter } from 'next/navigation';
 
 interface ContentBlock {
@@ -30,7 +26,6 @@ interface Subsection {
   contentBlocks: ContentBlock[];
 }
 
-// Helper to migrate old course outline to new contentBlocks structure
 function migrateCourseOutline(oldOutline: any[]): Module[] {
   return oldOutline.map((mod) => ({
     id: mod.id,
@@ -50,7 +45,7 @@ function migrateCourseOutline(oldOutline: any[]): Module[] {
 
 interface EditCourseOutlineClientProps {
   programName: string;
-  role: 'admin' | 'instructor'; // Explicitly define the roles this component supports
+  role: 'admin' | 'instructor';
 }
 
 export default function EditCourseOutlineClient({ programName, role }: EditCourseOutlineClientProps) {
@@ -79,7 +74,6 @@ export default function EditCourseOutlineClient({ programName, role }: EditCours
   const selectedSub = selectedSubsection && courseOutline
     .find((mod) => mod.id === selectedSubsection.modId)?.subsections.find((sub) => sub.id === selectedSubsection.subId) || null;
 
-  // Handlers for editing
   const startEditModule = (mod: Module) => {
     setEditingModuleId(mod.id);
     setEditModuleTitle(mod.title);
@@ -109,11 +103,11 @@ export default function EditCourseOutlineClient({ programName, role }: EditCours
       prev.map((mod) =>
         mod.id === modId
           ? {
-              ...mod,
-              subsections: mod.subsections.map((sub: any) =>
-                sub.id === subId ? { ...sub, title: editSubTitle } : sub
-              ),
-            }
+            ...mod,
+            subsections: mod.subsections.map((sub: any) =>
+              sub.id === subId ? { ...sub, title: editSubTitle } : sub
+            ),
+          }
           : mod
       )
     );
@@ -138,16 +132,14 @@ export default function EditCourseOutlineClient({ programName, role }: EditCours
     setTimeout(() => setSaveMessage(''), 2000);
   };
 
-  // Determine the back URL based on the role
   const getBackUrl = () => {
     if (role === 'admin') {
       return `/admin/programlist`;
     }
     if (role === 'instructor') {
-      // Instructors go back to their specific program details page
       return `/instructor/assignedprograms/${programName}`;
     }
-    return '/'; // Fallback
+    return '/';
   };
 
   const getBackButtonText = () => {
@@ -160,11 +152,9 @@ export default function EditCourseOutlineClient({ programName, role }: EditCours
     return '← Back';
   };
 
-
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <div className="flex flex-1 flex-col md:flex-row">
-        {/* Sidebar Component */}
         <Sidebar
           search={search}
           setSearch={setSearch}
@@ -191,12 +181,11 @@ export default function EditCourseOutlineClient({ programName, role }: EditCours
           subsectionProgress={subsectionProgress}
           lockedModules={lockedModules}
           toggleLockModule={toggleLockModule}
-          setCourseOutline={setCourseOutline}
+          setCourseOutline={setCourseOutline as Dispatch<SetStateAction<any[]>>}
           onBackClick={() => router.push(getBackUrl())}
           backButtonText={getBackButtonText()}
         />
 
-        {/* Main Content Area */}
         <ContentArea
           selected={selected}
           selectedSub={selectedSub}
@@ -214,15 +203,14 @@ export default function EditCourseOutlineClient({ programName, role }: EditCours
           setSelectedSubsection={setSelectedSubsection}
           lockedModules={lockedModules}
           startEditModule={startEditModule}
-          setCourseOutline={setCourseOutline}
+          setCourseOutline={setCourseOutline as Dispatch<SetStateAction<any[]>>}
           setSelectedModule={setSelectedModule}
         />
         {saveMessage && <span className="ml-4 text-green-600 font-semibold">{saveMessage}</span>}
-        {/* Global Save Button for the entire outline */}
         <div className="p-4 bg-white shadow-md mt-auto flex justify-end">
           <button
             onClick={handleSave}
-            className="bg-green-600 text-white py-2 px-6 rounded-full hover:bg-green-700 transition font-semibold"
+            className="bg-green-600 text-white py-2 px-6 rounded-full hover:bg-green-700 transition font-semibold cursor-pointer"
           >
             Save All Changes
           </button>

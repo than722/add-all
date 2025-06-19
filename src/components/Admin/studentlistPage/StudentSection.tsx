@@ -132,7 +132,7 @@ export default function StudentsSection({
               <div className="flex items-center gap-2">
                 {record.status === 'pending' && record.receiptUrl && record.program ? (
                   <button
-                    className="ml-auto bg-yellow-400 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-yellow-500"
+                    className="ml-auto bg-yellow-400 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-yellow-500 cursor-pointer"
                     onClick={e => {
                       e.stopPropagation();
                       onViewPending({
@@ -154,7 +154,7 @@ export default function StudentsSection({
                 )}
                 {/* Archive Button for Students */}
                 <button
-                  className="ml-2 bg-red-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-red-700"
+                  className="ml-2 bg-red-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-red-700 cursor-pointer"
                   onClick={e => {
                     e.stopPropagation(); // Prevent parent li's click
                     setArchivePrompt({ open: true, type: 'student', name: record.name }); // Use setArchivePrompt from props

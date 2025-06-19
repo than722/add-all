@@ -3,25 +3,22 @@ import ContentBlockEditor from './contentblockEditor';
 import ContentBlockDisplay from './contentblockDisplay';
 import AddContentBlock from './AddContentBlock';
 
-// 1. Define ContentBlock interface
 interface ContentBlock {
   id: number;
-  type: 'text' | 'video'; // Or 'image', 'quiz', etc.
-  value: string; // The actual content (e.g., text, video URL)
-  isEditing?: boolean; // To manage editing state of individual content blocks
+  type: 'text' | 'video';
+  value: string;
+  isEditing?: boolean;
 }
 
 interface Subsection {
-  id: number;   
+  id: number;
   title: string;
-  // Change content to contentBlocks
   contentBlocks: ContentBlock[];
 }
 
 interface Module {
   id: number;
   title: string;
-  // Change content to contentBlocks
   contentBlocks: ContentBlock[];
   subsections: Subsection[];
 }
@@ -32,9 +29,6 @@ interface ContentAreaProps {
   editingModuleId: number | null;
   editModuleTitle: string;
   setEditModuleTitle: (s: string) => void;
-  // Module content now handles contentBlocks
-  // editModuleContent: string; // This prop will be removed or repurposed
-  // setEditModuleContent: (s: string) => void; // This prop will be removed or repurposed
   saveEditModule: (id: number) => void;
   cancelEditModule: () => void;
   editingSubId: number | null;
@@ -56,8 +50,6 @@ const ContentArea: React.FC<ContentAreaProps> = ({
   editingModuleId,
   editModuleTitle,
   setEditModuleTitle,
-  // editModuleContent, // No longer directly used as a single string
-  // setEditModuleContent, // No longer directly used as a single string
   saveEditModule,
   cancelEditModule,
   editingSubId,
@@ -72,7 +64,6 @@ const ContentArea: React.FC<ContentAreaProps> = ({
   setCourseOutline,
   setSelectedModule,
 }) => {
-  // If the selected module is locked, show a message (for students)
   if (selected && lockedModules.includes(selected.id)) {
     return (
       <div className="flex-1 p-8">
@@ -83,17 +74,13 @@ const ContentArea: React.FC<ContentAreaProps> = ({
     );
   }
 
-  // State to control what type of content is being added
   const [addingContentType, setAddingContentType] = useState<'none' | 'text' | 'video'>('none');
   const [newTextContent, setNewTextContent] = useState<string>('');
   const [newVideoUrl, setNewVideoUrl] = useState<string>('');
 
-  // States for editing existing content blocks
   const [editingBlockId, setEditingBlockId] = useState<number | null>(null);
   const [editingBlockValue, setEditingBlockValue] = useState<string>('');
 
-
-  // Helper function to update the course outline with new content blocks
   const updateCourseOutlineWithNewBlock = (
     moduleId: number,
     subsectionId: number | null,
@@ -103,13 +90,11 @@ const ContentArea: React.FC<ContentAreaProps> = ({
       prevOutline.map(module => {
         if (module.id === moduleId) {
           if (subsectionId === null) {
-            // Update module's content blocks
             return {
               ...module,
               contentBlocks: [...module.contentBlocks, newBlock],
             };
           } else {
-            // Update subsection's content blocks
             return {
               ...module,
               subsections: module.subsections.map(sub =>
@@ -125,7 +110,6 @@ const ContentArea: React.FC<ContentAreaProps> = ({
     );
   };
 
-  // Helper function to update an existing content block
   const updateCourseOutlineBlock = (
     moduleId: number,
     subsectionId: number | null,
@@ -136,7 +120,6 @@ const ContentArea: React.FC<ContentAreaProps> = ({
       prevOutline.map(module => {
         if (module.id === moduleId) {
           if (subsectionId === null) {
-            // Update module's content blocks
             return {
               ...module,
               contentBlocks: module.contentBlocks.map(block =>
@@ -144,17 +127,16 @@ const ContentArea: React.FC<ContentAreaProps> = ({
               ),
             };
           } else {
-            // Update subsection's content blocks
             return {
               ...module,
               subsections: module.subsections.map(sub =>
                 sub.id === subsectionId
                   ? {
-                      ...sub,
-                      contentBlocks: sub.contentBlocks.map(block =>
-                        block.id === blockId ? { ...block, value: newValue } : block
-                      ),
-                    }
+                    ...sub,
+                    contentBlocks: sub.contentBlocks.map(block =>
+                      block.id === blockId ? { ...block, value: newValue } : block
+                    ),
+                  }
                   : sub
               ),
             };
@@ -167,7 +149,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
 
   const handleSaveNewContent = () => {
     if (!selected) return;
-    if (addingContentType === 'none') return; // Prevent 'none' as a type
+    if (addingContentType === 'none') return;
     const newBlock: ContentBlock = {
       id: Date.now(),
       type: addingContentType as 'text' | 'video',
@@ -175,14 +157,11 @@ const ContentArea: React.FC<ContentAreaProps> = ({
     };
 
     if (selectedSub) {
-      // Adding content to a subsection
       updateCourseOutlineWithNewBlock(selected.id, selectedSub.id, newBlock);
     } else {
-      // Adding content to a module
       updateCourseOutlineWithNewBlock(selected.id, null, newBlock);
     }
 
-    // Reset states
     setAddingContentType('none');
     setNewTextContent('');
     setNewVideoUrl('');
@@ -223,7 +202,6 @@ const ContentArea: React.FC<ContentAreaProps> = ({
       prevOutline.map(module => {
         if (module.id === selected.id) {
           if (selectedSub) {
-            // Delete block from subsection
             return {
               ...module,
               subsections: module.subsections.map(sub =>
@@ -233,7 +211,6 @@ const ContentArea: React.FC<ContentAreaProps> = ({
               ),
             };
           } else {
-            // Delete block from module
             return {
               ...module,
               contentBlocks: module.contentBlocks.filter(b => b.id !== blockId),
@@ -245,17 +222,13 @@ const ContentArea: React.FC<ContentAreaProps> = ({
     );
   };
 
-  // Determine which content blocks to display and edit
   const currentContentBlocks = selectedSub ? selectedSub.contentBlocks : (selected ? selected.contentBlocks : []);
-
 
   return (
     <div className="flex-1 p-2 sm:p-3 md:p-8 relative">
-      {/* Save button at top right when editing a module (for module title/description) */}
       {selected && editingModuleId === selected.id}
 
       {selectedSub ? (
-        // Display for a selected subsection
         <>
           <div className="bg-white rounded-xl shadow p-2 sm:p-6 mb-4">
             {editingSubId === selectedSub.id ? (
@@ -269,13 +242,13 @@ const ContentArea: React.FC<ContentAreaProps> = ({
                 </h3>
                 <div className="flex gap-2 mb-4 mt-2">
                   <button
-                    className="bg-[#08228d] text-white px-2 py-1 rounded text-xs sm:text-base"
+                    className="bg-[#08228d] text-white px-2 py-1 rounded text-xs sm:text-base cursor-pointer"
                     onClick={() => selected && saveEditSub(selected.id, selectedSub.id)}
                   >
                     Save Subsection Title
                   </button>
                   <button
-                    className="bg-gray-300 text-[#08228d] px-2 py-1 rounded text-xs sm:text-base"
+                    className="bg-gray-300 text-[#08228d] px-2 py-1 rounded text-xs sm:text-base cursor-pointer"
                     onClick={cancelEditSub}
                   >
                     Cancel
@@ -287,7 +260,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
                 <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2 flex items-center justify-between">
                   {selectedSub.title}
                   <button
-                    className="ml-2 text-xs sm:text-sm text-[#08228d] underline hover:text-[#001f40]"
+                    className="ml-2 text-xs sm:text-sm text-[#08228d] underline hover:text-[#001f40] cursor-pointer"
                     onClick={() => startEditSub(selectedSub)}
                   >
                     Edit Title
@@ -297,10 +270,8 @@ const ContentArea: React.FC<ContentAreaProps> = ({
             )}
           </div>
 
-          {/* Render existing content blocks for the selected subsection */}
           {currentContentBlocks.map(block => (
             <div key={block.id} className="bg-white rounded-xl shadow p-2 sm:p-6 mb-4">
-              {/* --- ContentBlockEditor: Handles editing a single content block --- */}
               <ContentBlockEditor
                 block={block}
                 editingBlockId={editingBlockId}
@@ -309,8 +280,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
                 onSave={handleSaveEditedBlock}
                 onCancel={handleCancelEditBlock}
               />
-              
-              {/* --- ContentBlockDisplay: Handles displaying a single content block --- */}
+
               <ContentBlockDisplay
                 block={block}
                 onEdit={() => handleStartEditBlock(block)}
@@ -319,7 +289,6 @@ const ContentArea: React.FC<ContentAreaProps> = ({
             </div>
           ))}
 
-          {/* Add New Content Block Area for Subsection */}
           <AddContentBlock
             addingContentType={addingContentType}
             newTextContent={newTextContent}
@@ -330,18 +299,17 @@ const ContentArea: React.FC<ContentAreaProps> = ({
             onCancel={handleCancelNewContent}
           />
 
-          {/* Add Content button for subsection */}
           <div className="mt-6 flex justify-start gap-2">
             {addingContentType === 'none' && (
               <>
                 <button
-                  className="bg-[#2d208a] text-white px-4 py-2 rounded font-semibold"
+                  className="bg-[#2d208a] text-white px-4 py-2 rounded font-semibold cursor-pointer"
                   onClick={() => setAddingContentType('text')}
                 >
                   + Add Text Block
                 </button>
                 <button
-                  className="bg-[#2d208a] text-white px-4 py-2 rounded font-semibold"
+                  className="bg-[#2d208a] text-white px-4 py-2 rounded font-semibold cursor-pointer"
                   onClick={() => setAddingContentType('video')}
                 >
                   + Add Video Block
@@ -351,7 +319,6 @@ const ContentArea: React.FC<ContentAreaProps> = ({
           </div>
         </>
       ) : selected ? (
-        // Display for a selected module
         <>
           <div className="bg-white rounded-xl shadow p-2 sm:p-6 mb-4">
             {editingModuleId === selected.id ? (
@@ -365,13 +332,13 @@ const ContentArea: React.FC<ContentAreaProps> = ({
                 </h3>
                 <div className="flex gap-2 mb-4 mt-2">
                   <button
-                    className="bg-[#08228d] text-white px-2 py-1 rounded text-xs sm:text-base"
+                    className="bg-[#08228d] text-white px-2 py-1 rounded text-xs sm:text-base cursor-pointer"
                     onClick={() => saveEditModule(selected.id)}
                   >
                     Save Module Info
                   </button>
                   <button
-                    className="bg-gray-300 text-[#08228d] px-2 py-1 rounded text-xs sm:text-base"
+                    className="bg-gray-300 text-[#08228d] px-2 py-1 rounded text-xs sm:text-base cursor-pointer"
                     onClick={cancelEditModule}
                   >
                     Cancel
@@ -383,7 +350,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
                 <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2 flex items-center justify-between">
                   {selected.title}
                   <button
-                    className="ml-2 text-xs sm:text-sm text-[#08228d] underline hover:text-[#001f40]"
+                    className="ml-2 text-xs sm:text-sm text-[#08228d] underline hover:text-[#001f40] cursor-pointer"
                     onClick={() => startEditModule(selected)}
                   >
                     Edit Module Info
@@ -393,7 +360,6 @@ const ContentArea: React.FC<ContentAreaProps> = ({
             )}
           </div>
 
-          {/* Render existing content blocks for the selected module */}
           {currentContentBlocks.map(block => (
             <div key={block.id} className="bg-white rounded-xl shadow p-2 sm:p-6 mb-4">
               <ContentBlockEditor
@@ -412,7 +378,6 @@ const ContentArea: React.FC<ContentAreaProps> = ({
             </div>
           ))}
 
-          {/* Add New Content Block Area for Module */}
           <AddContentBlock
             addingContentType={addingContentType}
             newTextContent={newTextContent}
@@ -423,18 +388,17 @@ const ContentArea: React.FC<ContentAreaProps> = ({
             onCancel={handleCancelNewContent}
           />
 
-          {/* Add Content button for module */}
           <div className="mt-6 flex justify-start gap-2">
             {addingContentType === 'none' && (
               <>
                 <button
-                  className="bg-[#2d208a] text-white px-4 py-2 rounded font-semibold"
+                  className="bg-[#2d208a] text-white px-4 py-2 rounded font-semibold cursor-pointer"
                   onClick={() => setAddingContentType('text')}
                 >
                   + Add Text Block
                 </button>
                 <button
-                  className="bg-[#2d208a] text-white px-4 py-2 rounded font-semibold"
+                  className="bg-[#2d208a] text-white px-4 py-2 rounded font-semibold cursor-pointer"
                   onClick={() => setAddingContentType('video')}
                 >
                   + Add Video Block

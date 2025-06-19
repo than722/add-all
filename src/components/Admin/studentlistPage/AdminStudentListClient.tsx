@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import StudentsSection from './StudentSection';
 import Profile from '@/components/ui/Modals/ProfileModals/profileview';
 import PendingModal from '@/components/ui/Modals/AdminModals/pendingModal';
+import ArchiveModal from '@/components/ui/Modals/AdminModals/archiveModal'; // Import ArchiveModal
 
 import {
   students as initialStudents,
@@ -95,9 +96,9 @@ export default function AdminStudentListClient() {
   }>(null);
 
   const [pendingModal, setPendingModal] = useState<PendingApplication | null>(null);
-  const [pendingApps, setPendingApps] = useState<PendingApplication[]>(dummyPendingApps); // ADD
-  const [archivedStudents, setArchivedStudents] = useState<string[]>([]); // ADD
-  const [archivePrompt, setArchivePrompt] = useState<ArchivePrompt | null>(null); // ADD
+  const [pendingApps, setPendingApps] = useState<PendingApplication[]>(dummyPendingApps);
+  const [archivedStudents, setArchivedStudents] = useState<string[]>([]);
+  const [archivePrompt, setArchivePrompt] = useState<ArchivePrompt | null>(null); // State for ArchiveModal
 
   const handleApproveApplication = (email: string, program: string) => {
     setAllStudentRecords(prev =>
@@ -114,11 +115,13 @@ export default function AdminStudentListClient() {
     setAllStudentRecords(prev =>
       prev.map(record =>
         record.email === email && record.program === program && record.status === 'pending'
-          ? { ...record, status: 'registered' }
+          ? { ...record, status: 'registered' } // Change status to registered if declined from pending
           : record
       )
     );
-};
+    setPendingModal(null); // Close modal on decline
+  };
+
 
   const handleViewStudentProfile = (student: StudentRecord) => {
     setProfileModal({
@@ -131,6 +134,14 @@ export default function AdminStudentListClient() {
     });
   };
 
+  // Handler for confirming student archive
+  const handleArchiveStudent = (studentName: string) => {
+    setArchivedStudents((prev) => [...prev, studentName]);
+    setArchivePrompt(null); // Close the archive modal
+    // Optional: Also remove from allStudentRecords if you want it completely gone from the active view
+    // setAllStudentRecords(prev => prev.filter(student => student.name !== studentName));
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8">
       <StudentsSection
@@ -141,7 +152,7 @@ export default function AdminStudentListClient() {
         setPendingApps={setPendingApps}
         setProfileModal={setProfileModal}
         archivedStudents={archivedStudents}
-        setArchivePrompt={setArchivePrompt}
+        setArchivePrompt={setArchivePrompt} // Pass setArchivePrompt to StudentsSection
       />
 
       {profileModal && (
@@ -158,6 +169,22 @@ export default function AdminStudentListClient() {
           pendingModal={pendingModal}
           onClose={() => setPendingModal(null)}
           onConfirm={(email, program) => handleApproveApplication(email, program)}
+        />
+      )}
+
+      {/* Archive Modal for Students */}
+      {archivePrompt && (
+        <ArchiveModal
+          isOpen={!!archivePrompt.open}
+          type={archivePrompt.type}
+          name={archivePrompt.name}
+          onConfirm={() => {
+            if (archivePrompt.type === 'student') {
+              handleArchiveStudent(archivePrompt.name);
+            }
+            setArchivePrompt(null); // Ensure modal closes after action
+          }}
+          onCancel={() => setArchivePrompt(null)}
         />
       )}
     </div>

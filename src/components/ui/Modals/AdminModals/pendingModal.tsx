@@ -14,107 +14,106 @@ interface PendingApplication {
 
 interface PendingModalProps {
   pendingModal: PendingApplication | null;
-  // removed viewedReceipt prop
   onClose: () => void;
-  // onConfirm now takes email and program to pass back to parent
   onConfirm: (email: string, program: string) => void;
+  // onDecline prop has been removed
 }
 
 const PendingModal: React.FC<PendingModalProps> = ({
   pendingModal,
   onClose,
   onConfirm,
+  // onDecline is no longer destructured here
 }) => {
-  // Internal state for controlling the visibility of the receipt image
   const [showReceiptImage, setShowReceiptImage] = useState(false);
-  // Internal state for controlling the visibility of the validation modal
   const [showValidation, setShowValidation] = useState(false);
 
   if (!pendingModal) return null;
 
-  // Handler to show the receipt image
   const handleViewReceipt = () => {
     setShowReceiptImage(true);
   };
 
-  // Handler to close the receipt image
   const handleCloseReceipt = () => {
     setShowReceiptImage(false);
   };
 
-  // Handler for the final confirmation of enrollment
   const handleFinalConfirmEnrollment = () => {
     setShowValidation(false); // Close validation modal
-    // Call the parent's onConfirm with email and program
     onConfirm(pendingModal.email, pendingModal.program);
     setShowReceiptImage(false); // Also hide receipt if it was open
   };
 
+  // handleDeclineEnrollment logic has been removed
+
   return (
     <>
-      <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-2 sm:px-0">
-        <div className="bg-white p-4 sm:p-6 rounded-lg shadow-xl w-full max-w-xs sm:max-w-md flex flex-col gap-3 sm:gap-4 relative">
+      <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+        <div className="bg-white p-6 sm:p-8 rounded-xl shadow-2xl w-full max-w-sm flex flex-col gap-5 relative transform transition-all duration-300 ease-out scale-95 opacity-0 animate-scale-in">
           <button
-            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
+            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl font-semibold cursor-pointer transition-colors"
             onClick={() => {
-              onClose(); // Close the main pending modal
-              setShowValidation(false); // Ensure validation modal is hidden
-              setShowReceiptImage(false); // Ensure receipt image is hidden
+              onClose();
+              setShowValidation(false);
+              setShowReceiptImage(false);
             }}
             aria-label="Close pending modal"
           >
             ✕
           </button>
-          <h3 className="text-base sm:text-lg font-bold text-[#08228d] mb-1 sm:mb-2">Pending Application</h3>
-          <div className="mb-1 sm:mb-2 text-center">
-            <span className="font-semibold text-[#08228d] text-base sm:text-lg block">{pendingModal.name}</span>
-            <span className="block text-xs sm:text-sm text-gray-500">{pendingModal.email}</span>
+          <h3 className="text-xl sm:text-2xl font-extrabold text-[#08228d] text-center mb-2">Pending Application</h3>
+
+          <div className="text-center">
+            <p className="font-bold text-[#08228d] text-lg sm:text-xl">{pendingModal.name}</p>
+            <p className="text-sm sm:text-base text-gray-600">{pendingModal.email}</p>
           </div>
-          <div className="mb-1 sm:mb-2 flex flex-col gap-1">
-            <span className="text-xs text-gray-700">Program: <span className="font-semibold text-[#08228d]">{pendingModal.program}</span></span>
-            <span className="text-xs text-gray-700">Payment: <span className="font-semibold text-[#08228d]">{pendingModal.paymentType}</span></span>
+
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-sm text-gray-700">Program: <span className="font-semibold text-[#08228d]">{pendingModal.program}</span></p>
+            <p className="text-sm text-gray-700">Payment: <span className="font-semibold text-[#08228d]">{pendingModal.paymentType}</span></p>
           </div>
-          <div className="mb-1 sm:mb-2 flex justify-center">
-            <button
-              className="text-[#08228d] underline text-xs mb-2 hover:text-[#1a3d7c]"
-              onClick={handleViewReceipt} // Call internal handler to show receipt
-            >
-              View Receipt
-            </button>
-          </div>
+
           <button
-            className="w-full bg-[#92D0D3] text-white py-2 rounded hover:bg-[#6bb7bb] transition font-semibold text-xs sm:text-base"
+            className="text-[#08228d] text-sm font-medium underline hover:text-[#1a3d7c] transition-colors duration-200 cursor-pointer"
+            onClick={handleViewReceipt}
+          >
+            View Receipt
+          </button>
+
+          <button
+            className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-all duration-200 font-bold text-base sm:text-lg cursor-pointer shadow-md hover:shadow-lg"
             onClick={() => setShowValidation(true)} // Show the validation modal
           >
             Confirm Enrollment
           </button>
+          {/* Decline button and its onClick handler have been removed */}
         </div>
       </div>
 
-      {/* Validation Modal - Moved inside the main PendingModal's render */}
+      {/* Validation Modal */}
       {showValidation && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-2 sm:px-0">
-          <div className="bg-white p-4 sm:p-6 rounded-lg shadow-xl w-full max-w-xs flex flex-col gap-3 sm:gap-4 relative">
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+          <div className="bg-white p-6 sm:p-8 rounded-xl shadow-2xl w-full max-w-xs flex flex-col gap-5 relative transform transition-all duration-300 ease-out scale-95 opacity-0 animate-scale-in">
             <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl font-semibold cursor-pointer transition-colors"
               onClick={() => setShowValidation(false)}
               aria-label="Close validation modal"
             >
               ✕
             </button>
-            <h4 className="text-sm sm:text-md font-bold text-[#08228d] mb-1 sm:mb-2">Confirm Enrollment</h4>
-            <p className="text-gray-700 mb-2 sm:mb-4 text-center text-xs sm:text-base">
-              Do you want to confirm the enrollment of Mr./Ms {pendingModal.name}?
+            <h4 className="text-xl sm:text-2xl font-extrabold text-[#08228d] text-center mb-2">Confirm Enrollment</h4>
+            <p className="text-gray-700 text-center text-sm sm:text-base">
+              Do you want to confirm the enrollment of Mr./Ms <span className="font-semibold">{pendingModal.name}</span>?
             </p>
-            <div className="flex gap-2 sm:gap-4 justify-center">
+            <div className="flex gap-4 sm:gap-6 justify-center">
               <button
-                className="bg-[#92D0D3] text-white px-3 sm:px-4 py-2 rounded hover:bg-[#6bb7bb] font-semibold text-xs sm:text-base"
-                onClick={handleFinalConfirmEnrollment} // Call the final confirmation handler
+                className="bg-green-600 text-white px-5 sm:px-6 py-2.5 rounded-lg hover:bg-green-700 font-bold text-base sm:text-lg cursor-pointer shadow-md hover:shadow-lg transition-all duration-200"
+                onClick={handleFinalConfirmEnrollment}
               >
                 Yes
               </button>
               <button
-                className="bg-gray-200 text-[#08228d] px-3 sm:px-4 py-2 rounded hover:bg-gray-300 font-semibold text-xs sm:text-base"
+                className="bg-gray-200 text-[#08228d] px-5 sm:px-6 py-2.5 rounded-lg hover:bg-gray-300 font-bold text-base sm:text-lg cursor-pointer shadow-md hover:shadow-lg transition-all duration-200"
                 onClick={() => setShowValidation(false)}
               >
                 No
@@ -124,26 +123,48 @@ const PendingModal: React.FC<PendingModalProps> = ({
         </div>
       )}
 
-      {/* Receipt Modal - Moved inside the main PendingModal's render */}
-      {showReceiptImage && ( // Condition now uses internal state
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-2 sm:px-0">
-          <div className="bg-white rounded-lg shadow-xl p-4 sm:p-6 max-w-xs w-full relative">
+      {/* Receipt Modal */}
+      {showReceiptImage && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-2xl p-6 sm:p-8 max-w-sm sm:max-w-md w-full relative transform transition-all duration-300 ease-out scale-95 opacity-0 animate-scale-in">
             <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
-              onClick={handleCloseReceipt} // Call internal handler to close receipt
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl font-semibold cursor-pointer transition-colors"
+              onClick={handleCloseReceipt}
               aria-label="Close receipt modal"
             >
               ✕
             </button>
-            {/* Use next/image for optimization if the receipt is a static asset, else fallback to img */}
             {pendingModal.receiptUrl.endsWith('.jpg') || pendingModal.receiptUrl.endsWith('.png') || pendingModal.receiptUrl.startsWith('/') ? (
-              <Image src={pendingModal.receiptUrl} alt="Receipt" width={320} height={240} className="w-full rounded" />
+              <Image
+                src={pendingModal.receiptUrl}
+                alt="Receipt"
+                width={400}
+                height={300}
+                className="w-full h-auto rounded-lg object-contain"
+                quality={85}
+              />
             ) : (
-              <img src={pendingModal.receiptUrl} alt="Receipt" className="w-full rounded" />
+              <img src={pendingModal.receiptUrl} alt="Receipt" className="w-full h-auto rounded-lg object-contain" />
             )}
           </div>
         </div>
       )}
+
+      <style jsx>{`
+        @keyframes scaleIn {
+          from {
+            transform: scale(0.95);
+            opacity: 0;
+          }
+          to {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+        .animate-scale-in {
+          animation: scaleIn 0.2s ease-out forwards;
+        }
+      `}</style>
     </>
   );
 };

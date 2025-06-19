@@ -23,14 +23,12 @@ const StudentListClient = () => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       if (programName && demoStudentListData[programName]) {
-        // Always seed localStorage with demo data for development/testing
         localStorage.setItem(
           `pendingApps_${programName}`,
           JSON.stringify(demoStudentListData[programName])
         );
         setStudents(demoStudentListData[programName].filter((app) => app.status === "enrolled"));
       } else if (!programName) {
-        // No program specified: show all enrolled students from all demo data
         const allEnrolled: PendingApplication[] = Object.values(demoStudentListData)
           .flat()
           .filter((app) => app.status === "enrolled");
@@ -63,7 +61,7 @@ const StudentListClient = () => {
                 <div className="mt-2 sm:mt-0 flex gap-2 items-center">
                   <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">Enrolled</span>
                   <button
-                    className="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-200 transition"
+                    className="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-200 transition cursor-pointer"
                     onClick={() => setSelectedStudent(student)}
                     aria-label={`View profile of ${student.name}`}
                   >
@@ -75,12 +73,11 @@ const StudentListClient = () => {
           </ul>
         )}
       </div>
-      {/* Simple Profile Modal */}
       {selectedStudent && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-2 sm:px-0">
           <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-xs sm:max-w-lg flex flex-col items-center relative">
             <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl sm:text-2xl"
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl sm:text-2xl cursor-pointer"
               onClick={() => setSelectedStudent(null)}
               aria-label="Close profile modal"
             >
@@ -98,7 +95,6 @@ const StudentListClient = () => {
             {selectedStudent.contactNo && (
               <p className="text-xs sm:text-sm text-gray-500 mb-1">{selectedStudent.contactNo}</p>
             )}
-            {/* Add more fields if available, e.g. bio */}
           </div>
         </div>
       )}

@@ -1,4 +1,3 @@
-// components/LoginComponents/signin.tsx
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
@@ -44,32 +43,32 @@ const SignInModal: React.FC<SignInModalProps> = ({ isOpen, onClose }) => {
         <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 text-[#08228d] text-center">Sign In As</h3>
         <div className="flex flex-col gap-3 sm:gap-4">
           <button
-            className="bg-[#92D0D3] text-white px-4 py-2 rounded hover:bg-[#6bb7bb] transition font-semibold text-sm sm:text-base"
+            className="bg-[#92D0D3] text-white px-4 py-2 rounded hover:bg-[#6bb7bb] transition font-semibold text-sm sm:text-base cursor-pointer" // Added cursor-pointer
             onClick={() => handleSignIn(1)} // Student role
           >
             Student
           </button>
           <button
-            className="bg-[#08228d] text-white px-4 py-2 rounded hover:bg-[#001f40] transition font-semibold text-sm sm:text-base"
+            className="bg-[#08228d] text-white px-4 py-2 rounded hover:bg-[#001f40] transition font-semibold text-sm sm:text-base cursor-pointer" // Added cursor-pointer
             onClick={() => handleSignIn(2)} // instructor role
           >
             Instructor
           </button>
           <button
-            className="bg-[#FFC72C] text-[#08228d] px-4 py-2 rounded hover:bg-yellow-400 transition font-semibold text-sm sm:text-base"
+            className="bg-[#FFC72C] text-[#08228d] px-4 py-2 rounded hover:bg-yellow-400 transition font-semibold text-sm sm:text-base cursor-pointer" // Added cursor-pointer
             onClick={() => handleSignIn(3)} // Admin role
           >
             Admin
           </button>
           <button
-            className="bg-[#1E3A5F] text-white px-4 py-2 rounded hover:bg-[#16325c] transition font-semibold text-sm sm:text-base"
+            className="bg-[#1E3A5F] text-white px-4 py-2 rounded hover:bg-[#16325c] transition font-semibold text-sm sm:text-base cursor-pointer" // Added cursor-pointer
             onClick={() => handleSignIn(4)} // SuperAdmin role
           >
             SuperAdmin
           </button>
         </div>
         <button
-          className="mt-4 sm:mt-6 text-[#08228d] font-bold w-full text-sm sm:text-base"
+          className="mt-4 sm:mt-6 text-[#08228d] font-bold w-full text-sm sm:text-base cursor-pointer" // Added cursor-pointer
           onClick={onClose}
         >
           Cancel
