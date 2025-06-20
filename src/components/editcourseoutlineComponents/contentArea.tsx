@@ -1,7 +1,9 @@
+// app/components/courseoutlineComponents/ContentArea.tsx
+'use client';
+
 import React, { useState } from 'react';
-import ContentBlockEditor from './contentblockEditor';
-import ContentBlockDisplay from './contentblockDisplay';
-import AddContentBlock from './AddContentBlock';
+import ContentBlockSection from './ContentBlockSection';
+import styles from '../../styles/EditCourseOutlineStyle.module.css';
 
 interface ContentBlock {
   id: number;
@@ -64,30 +66,19 @@ const ContentArea: React.FC<ContentAreaProps> = ({
   setCourseOutline,
   setSelectedModule,
 }) => {
-  if (selected && lockedModules.includes(selected.id)) {
-    return (
-      <div className="flex-1 p-8">
-        <div className="bg-white rounded-xl shadow p-6 text-center text-red-500 font-bold">
-          This module is locked and cannot be accessed.
-        </div>
-      </div>
-    );
-  }
-
   const [addingContentType, setAddingContentType] = useState<'none' | 'text' | 'video'>('none');
-  const [newTextContent, setNewTextContent] = useState<string>('');
-  const [newVideoUrl, setNewVideoUrl] = useState<string>('');
-
+  const [newTextContent, setNewTextContent] = useState('');
+  const [newVideoUrl, setNewVideoUrl] = useState('');
   const [editingBlockId, setEditingBlockId] = useState<number | null>(null);
-  const [editingBlockValue, setEditingBlockValue] = useState<string>('');
+  const [editingBlockValue, setEditingBlockValue] = useState('');
 
   const updateCourseOutlineWithNewBlock = (
     moduleId: number,
     subsectionId: number | null,
     newBlock: ContentBlock
   ) => {
-    setCourseOutline(prevOutline =>
-      prevOutline.map(module => {
+    setCourseOutline(prev =>
+      prev.map(module => {
         if (module.id === moduleId) {
           if (subsectionId === null) {
             return {
@@ -116,8 +107,8 @@ const ContentArea: React.FC<ContentAreaProps> = ({
     blockId: number,
     newValue: string
   ) => {
-    setCourseOutline(prevOutline =>
-      prevOutline.map(module => {
+    setCourseOutline(prev =>
+      prev.map(module => {
         if (module.id === moduleId) {
           if (subsectionId === null) {
             return {
@@ -132,11 +123,11 @@ const ContentArea: React.FC<ContentAreaProps> = ({
               subsections: module.subsections.map(sub =>
                 sub.id === subsectionId
                   ? {
-                    ...sub,
-                    contentBlocks: sub.contentBlocks.map(block =>
-                      block.id === blockId ? { ...block, value: newValue } : block
-                    ),
-                  }
+                      ...sub,
+                      contentBlocks: sub.contentBlocks.map(block =>
+                        block.id === blockId ? { ...block, value: newValue } : block
+                      ),
+                    }
                   : sub
               ),
             };
@@ -148,20 +139,13 @@ const ContentArea: React.FC<ContentAreaProps> = ({
   };
 
   const handleSaveNewContent = () => {
-    if (!selected) return;
-    if (addingContentType === 'none') return;
+    if (!selected || addingContentType === 'none') return;
     const newBlock: ContentBlock = {
       id: Date.now(),
-      type: addingContentType as 'text' | 'video',
+      type: addingContentType,
       value: addingContentType === 'text' ? newTextContent : newVideoUrl,
     };
-
-    if (selectedSub) {
-      updateCourseOutlineWithNewBlock(selected.id, selectedSub.id, newBlock);
-    } else {
-      updateCourseOutlineWithNewBlock(selected.id, null, newBlock);
-    }
-
+    updateCourseOutlineWithNewBlock(selected.id, selectedSub?.id ?? null, newBlock);
     setAddingContentType('none');
     setNewTextContent('');
     setNewVideoUrl('');
@@ -180,12 +164,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
 
   const handleSaveEditedBlock = () => {
     if (!selected || editingBlockId === null) return;
-
-    if (selectedSub) {
-      updateCourseOutlineBlock(selected.id, selectedSub.id, editingBlockId, editingBlockValue);
-    } else {
-      updateCourseOutlineBlock(selected.id, null, editingBlockId, editingBlockValue);
-    }
+    updateCourseOutlineBlock(selected.id, selectedSub?.id ?? null, editingBlockId, editingBlockValue);
     setEditingBlockId(null);
     setEditingBlockValue('');
   };
@@ -197,9 +176,8 @@ const ContentArea: React.FC<ContentAreaProps> = ({
 
   const handleDeleteBlock = (blockId: number) => {
     if (!selected) return;
-
-    setCourseOutline(prevOutline =>
-      prevOutline.map(module => {
+    setCourseOutline(prev =>
+      prev.map(module => {
         if (module.id === selected.id) {
           if (selectedSub) {
             return {
@@ -222,193 +200,121 @@ const ContentArea: React.FC<ContentAreaProps> = ({
     );
   };
 
-  const currentContentBlocks = selectedSub ? selectedSub.contentBlocks : (selected ? selected.contentBlocks : []);
+  const currentContentBlocks = selectedSub ? selectedSub.contentBlocks : selected?.contentBlocks || [];
+
+  if (selected && lockedModules.includes(selected.id)) {
+    return (
+      <div className="flex-1 p-8">
+        <div className={`bg-white rounded-xl shadow p-6 text-center text-red-500 font-bold ${styles.contentBlockEnterActive}`}>
+          This module is locked and cannot be accessed.
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex-1 p-2 sm:p-3 md:p-8 relative">
-      {selected && editingModuleId === selected.id}
-
+    <div className={`flex-1 p-2 sm:p-3 md:p-8 relative ${styles.transitionAllEase}`}>
       {selectedSub ? (
-        <>
-          <div className="bg-white rounded-xl shadow p-2 sm:p-6 mb-4">
-            {editingSubId === selectedSub.id ? (
-              <>
-                <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2">
-                  <input
-                    className="w-full px-2 py-1 border rounded text-xs sm:text-base"
-                    value={editSubTitle}
-                    onChange={e => setEditSubTitle(e.target.value)}
-                  />
-                </h3>
-                <div className="flex gap-2 mb-4 mt-2">
-                  <button
-                    className="bg-[#08228d] text-white px-2 py-1 rounded text-xs sm:text-base cursor-pointer"
-                    onClick={() => selected && saveEditSub(selected.id, selectedSub.id)}
-                  >
-                    Save Subsection Title
-                  </button>
-                  <button
-                    className="bg-gray-300 text-[#08228d] px-2 py-1 rounded text-xs sm:text-base cursor-pointer"
-                    onClick={cancelEditSub}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2 flex items-center justify-between">
-                  {selectedSub.title}
-                  <button
-                    className="ml-2 text-xs sm:text-sm text-[#08228d] underline hover:text-[#001f40] cursor-pointer"
-                    onClick={() => startEditSub(selectedSub)}
-                  >
-                    Edit Title
-                  </button>
-                </h3>
-              </>
-            )}
-          </div>
-
-          {currentContentBlocks.map(block => (
-            <div key={block.id} className="bg-white rounded-xl shadow p-2 sm:p-6 mb-4">
-              <ContentBlockEditor
-                block={block}
-                editingBlockId={editingBlockId}
-                editingBlockValue={editingBlockValue}
-                onChange={setEditingBlockValue}
-                onSave={handleSaveEditedBlock}
-                onCancel={handleCancelEditBlock}
-              />
-
-              <ContentBlockDisplay
-                block={block}
-                onEdit={() => handleStartEditBlock(block)}
-                onDelete={() => handleDeleteBlock(block.id)}
-              />
-            </div>
-          ))}
-
-          <AddContentBlock
-            addingContentType={addingContentType}
-            newTextContent={newTextContent}
-            setNewTextContent={setNewTextContent}
-            newVideoUrl={newVideoUrl}
-            setNewVideoUrl={setNewVideoUrl}
-            onSave={handleSaveNewContent}
-            onCancel={handleCancelNewContent}
-          />
-
-          <div className="mt-6 flex justify-start gap-2">
-            {addingContentType === 'none' && (
-              <>
+        <div className={`bg-white rounded-xl shadow p-2 sm:p-6 mb-4 ${styles.contentBlockEnterActive}`}>
+          {editingSubId === selectedSub.id ? (
+            <>
+              <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2">
+                <input
+                  className={`w-full px-2 py-1 border rounded text-xs sm:text-base ${styles.inputFocusRing}`}
+                  value={editSubTitle}
+                  onChange={e => setEditSubTitle(e.target.value)}
+                />
+              </h3>
+              <div className="flex gap-2 mb-4 mt-2">
                 <button
-                  className="bg-[#2d208a] text-white px-4 py-2 rounded font-semibold cursor-pointer"
-                  onClick={() => setAddingContentType('text')}
+                  className={`bg-[#08228d] text-white px-2 py-1 rounded text-xs sm:text-base cursor-pointer ${styles.btnHoverScale}`}
+                  onClick={() => selected && saveEditSub(selected.id, selectedSub.id)}
                 >
-                  + Add Text Block
+                  Save Subsection Title
                 </button>
                 <button
-                  className="bg-[#2d208a] text-white px-4 py-2 rounded font-semibold cursor-pointer"
-                  onClick={() => setAddingContentType('video')}
+                  className={`bg-gray-300 text-[#08228d] px-2 py-1 rounded text-xs sm:text-base cursor-pointer ${styles.btnHoverScale}`}
+                  onClick={cancelEditSub}
                 >
-                  + Add Video Block
+                  Cancel
                 </button>
-              </>
-            )}
-          </div>
-        </>
+              </div>
+            </>
+          ) : (
+            <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2 flex items-center justify-between">
+              {selectedSub.title}
+              <button
+                className={`ml-2 text-xs sm:text-sm text-[#08228d] underline hover:text-[#001f40] cursor-pointer ${styles.transitionAllEase}`}
+                onClick={() => startEditSub(selectedSub)}
+              >
+                Edit Title
+              </button>
+            </h3>
+          )}
+        </div>
       ) : selected ? (
-        <>
-          <div className="bg-white rounded-xl shadow p-2 sm:p-6 mb-4">
-            {editingModuleId === selected.id ? (
-              <>
-                <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2">
-                  <input
-                    className="w-full px-2 py-1 border rounded text-xs sm:text-base"
-                    value={editModuleTitle}
-                    onChange={e => setEditModuleTitle(e.target.value)}
-                  />
-                </h3>
-                <div className="flex gap-2 mb-4 mt-2">
-                  <button
-                    className="bg-[#08228d] text-white px-2 py-1 rounded text-xs sm:text-base cursor-pointer"
-                    onClick={() => saveEditModule(selected.id)}
-                  >
-                    Save Module Info
-                  </button>
-                  <button
-                    className="bg-gray-300 text-[#08228d] px-2 py-1 rounded text-xs sm:text-base cursor-pointer"
-                    onClick={cancelEditModule}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2 flex items-center justify-between">
-                  {selected.title}
-                  <button
-                    className="ml-2 text-xs sm:text-sm text-[#08228d] underline hover:text-[#001f40] cursor-pointer"
-                    onClick={() => startEditModule(selected)}
-                  >
-                    Edit Module Info
-                  </button>
-                </h3>
-              </>
-            )}
-          </div>
-
-          {currentContentBlocks.map(block => (
-            <div key={block.id} className="bg-white rounded-xl shadow p-2 sm:p-6 mb-4">
-              <ContentBlockEditor
-                block={block}
-                editingBlockId={editingBlockId}
-                editingBlockValue={editingBlockValue}
-                onChange={setEditingBlockValue}
-                onSave={handleSaveEditedBlock}
-                onCancel={handleCancelEditBlock}
-              />
-              <ContentBlockDisplay
-                block={block}
-                onEdit={() => handleStartEditBlock(block)}
-                onDelete={() => handleDeleteBlock(block.id)}
-              />
-            </div>
-          ))}
-
-          <AddContentBlock
-            addingContentType={addingContentType}
-            newTextContent={newTextContent}
-            setNewTextContent={setNewTextContent}
-            newVideoUrl={newVideoUrl}
-            setNewVideoUrl={setNewVideoUrl}
-            onSave={handleSaveNewContent}
-            onCancel={handleCancelNewContent}
-          />
-
-          <div className="mt-6 flex justify-start gap-2">
-            {addingContentType === 'none' && (
-              <>
+        <div className={`bg-white rounded-xl shadow p-2 sm:p-6 mb-4 ${styles.contentBlockEnterActive}`}>
+          {editingModuleId === selected.id ? (
+            <>
+              <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2">
+                <input
+                  className={`w-full px-2 py-1 border rounded text-xs sm:text-base ${styles.inputFocusRing}`}
+                  value={editModuleTitle}
+                  onChange={e => setEditModuleTitle(e.target.value)}
+                />
+              </h3>
+              <div className="flex gap-2 mb-4 mt-2">
                 <button
-                  className="bg-[#2d208a] text-white px-4 py-2 rounded font-semibold cursor-pointer"
-                  onClick={() => setAddingContentType('text')}
+                  className={`bg-[#08228d] text-white px-2 py-1 rounded text-xs sm:text-base cursor-pointer ${styles.btnHoverScale}`}
+                  onClick={() => saveEditModule(selected.id)}
                 >
-                  + Add Text Block
+                  Save Module Info
                 </button>
                 <button
-                  className="bg-[#2d208a] text-white px-4 py-2 rounded font-semibold cursor-pointer"
-                  onClick={() => setAddingContentType('video')}
+                  className={`bg-gray-300 text-[#08228d] px-2 py-1 rounded text-xs sm:text-base cursor-pointer ${styles.btnHoverScale}`}
+                  onClick={cancelEditModule}
                 >
-                  + Add Video Block
+                  Cancel
                 </button>
-              </>
-            )}
-          </div>
-        </>
+              </div>
+            </>
+          ) : (
+            <h3 className="text-base sm:text-2xl font-bold text-[#08228d] mb-2 flex items-center justify-between">
+              {selected.title}
+              <button
+                className={`ml-2 text-xs sm:text-sm text-[#08228d] underline hover:text-[#001f40] cursor-pointer ${styles.transitionAllEase}`}
+                onClick={() => startEditModule(selected)}
+              >
+                Edit Module Info
+              </button>
+            </h3>
+          )}
+        </div>
       ) : (
-        <div className="text-gray-500 italic text-xs sm:text-base">Select a module to view its content.</div>
+        <div className={`text-gray-500 italic text-xs sm:text-base ${styles.contentBlockEnterActive}`}>
+          Select a module to view its content.
+        </div>
+      )}
+
+      {selected && (
+        <ContentBlockSection
+          blocks={currentContentBlocks}
+          addingContentType={addingContentType}
+          setAddingContentType={setAddingContentType}
+          newTextContent={newTextContent}
+          setNewTextContent={setNewTextContent}
+          newVideoUrl={newVideoUrl}
+          setNewVideoUrl={setNewVideoUrl}
+          editingBlockId={editingBlockId}
+          editingBlockValue={editingBlockValue}
+          setEditingBlockValue={setEditingBlockValue}
+          onSaveNew={handleSaveNewContent}
+          onCancelNew={handleCancelNewContent}
+          onEdit={handleStartEditBlock}
+          onSaveEdit={handleSaveEditedBlock}
+          onCancelEdit={handleCancelEditBlock}
+          onDelete={handleDeleteBlock}
+        />
       )}
     </div>
   );

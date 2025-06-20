@@ -52,14 +52,14 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onClose, pr
           <div className="flex gap-2 mt-3 sm:mt-4">
             <button
               type="button"
-              className="flex-1 bg-gray-200 text-[#08228d] py-2 rounded hover:bg-gray-300 transition text-sm"
+              className="flex-1 bg-gray-200 text-[#08228d] py-2 rounded hover:bg-gray-300 transition text-sm cursor-pointer"
               onClick={onClose}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 bg-[#08228d] text-white py-2 rounded hover:bg-[#1a3d7c] transition text-sm"
+              className="flex-1 bg-[#08228d] text-white py-2 rounded hover:bg-[#1a3d7c] transition text-sm cursor-pointer"
             >
               Save
             </button>

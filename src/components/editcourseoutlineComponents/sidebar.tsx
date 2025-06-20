@@ -1,13 +1,10 @@
-// app/components/courseoutlineComponents/sidebar.tsx
-// This component displays the sidebar for the course outline,
-// including modules, subsections, search, and editing controls.
-
-'use client'; // This component uses useState, so it must be a client component.
+// app/components/courseoutlineComponents/Sidebar.tsx
+'use client';
 
 import React, { useState, Dispatch, SetStateAction, useEffect } from 'react';
-import ProgressCircle from './progressCircle'; // Ensure this path is correct
+import ProgressCircle from './ProgressCircle';
+import styles from '../../styles/EditCourseOutlineStyle.module.css'; // Import the CSS Module
 
-// Update Sidebar types to match new Module/Subsection structure
 interface ContentBlock {
   id: number;
   type: 'text' | 'video';
@@ -89,7 +86,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   onBackClick,
   backButtonText,
 }) => {
-  // Handler for adding a new module
   const handleAddModule = () => {
     const newId = Date.now();
     const newModule: Module = {
@@ -105,7 +101,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     startEditModule(newModule);
   };
 
-  // Handler for adding a new subsection to the currently selected module
   const handleAddSubsection = () => {
     if (selectedModule === null) return;
     setCourseOutline(prevOutline => prevOutline.map(mod => {
@@ -125,7 +120,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     }));
   };
 
-  // Handler for deleting a module
   const handleDeleteModule = (modId: number) => {
     if (window.confirm('Are you sure you want to delete this module and all its subsections?')) {
       setCourseOutline(prev => {
@@ -140,7 +134,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
-  // Handler for deleting a subsection
   const handleDeleteSubsection = (modId: number, subId: number) => {
     if (window.confirm('Are you sure you want to delete this subsection?')) {
       setCourseOutline(prevOutline => prevOutline.map(mod => {
@@ -159,16 +152,14 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   return (
-    <aside className="w-full md:w-1/3 bg-white shadow-lg p-4 sm:p-6 sticky top-0 overflow-y-auto max-h-[60vh] md:max-h-screen z-10">
+    <aside className={`w-full md:w-1/3 bg-white shadow-lg p-4 sm:p-6 sticky top-0 overflow-y-auto max-h-[60vh] md:max-h-screen z-10 ${styles.sidebarEnterActive}`}>
       <div className="flex flex-col sm:flex-row items-start sm:items-center mb-3 sm:mb-4 gap-2">
-        {/* Back button now uses props */}
         <button
-          className="px-3 py-1 bg-blue-700 text-white rounded-full font-semibold text-xs sm:text-sm shadow hover:bg-blue-800 transition cursor-pointer"
+          className={`px-3 py-1 bg-blue-700 text-white rounded-full font-semibold text-xs sm:text-sm shadow hover:bg-blue-800 ${styles.transitionAllEase} ${styles.btnHoverScale}`}
           onClick={onBackClick}
         >
           {backButtonText}
         </button>
-        {/* The Course Outline title remains */}
         <h2 className="sm:ml-4 text-lg sm:text-xl font-bold text-blue-700">Course Outline</h2>
       </div>
       <input
@@ -176,17 +167,17 @@ const Sidebar: React.FC<SidebarProps> = ({
         placeholder="Search modules..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full mb-3 sm:mb-4 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition placeholder-gray-900 text-gray-900 text-sm sm:text-base"
+        className={`w-full mb-3 sm:mb-4 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 ${styles.transitionAllEase} placeholder-gray-900 text-gray-900 text-sm sm:text-base ${styles.inputFocusRing}`}
       />
       <div className="flex justify-between mb-4">
         <button
-          className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition text-sm cursor-pointer"
+          className={`bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 ${styles.transitionAllEase} text-sm cursor-pointer ${styles.btnHoverShadow}`}
           onClick={handleAddModule}
         >
           + Add Module
         </button>
         <button
-          className="bg-purple-600 text-white px-3 py-1 rounded-md hover:bg-purple-700 transition text-sm cursor-pointer"
+          className={`bg-purple-600 text-white px-3 py-1 rounded-md hover:bg-purple-700 ${styles.transitionAllEase} text-sm cursor-pointer ${styles.btnHoverShadow}`}
           onClick={handleAddSubsection}
           disabled={selectedModule === null}
         >
@@ -195,12 +186,12 @@ const Sidebar: React.FC<SidebarProps> = ({
       </div>
       <ul className="space-y-2 sm:space-y-3">
         {filteredModules.length === 0 && (
-          <li className="text-gray-400 italic text-xs sm:text-sm">No modules found.</li>
+          <li className={`text-gray-400 italic text-xs sm:text-sm ${styles.moduleItemEnterActive}`}>No modules found.</li>
         )}
         {filteredModules.map((mod) => (
-          <li key={mod.id} className="mb-1 sm:mb-2">
+          <li key={mod.id} className={`mb-1 sm:mb-2 ${styles.moduleItemEnterActive}`}>
             <div
-              className={`w-full flex flex-col sm:flex-row justify-between items-start sm:items-center px-3 sm:px-4 py-2 rounded-lg transition ${
+              className={`w-full flex flex-col sm:flex-row justify-between items-start sm:items-center px-3 sm:px-4 py-2 rounded-lg ${styles.transitionAllEase} ${
                 selectedModule === mod.id
                   ? 'bg-blue-100 text-blue-700 font-semibold shadow-inner'
                   : 'hover:bg-gray-100 text-gray-800'
@@ -211,7 +202,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                 setSelectedSubsection(null);
               }}
             >
-              {/* Module Title or Input Field */}
               {editingModuleId === mod.id ? (
                 <input
                   type="text"
@@ -222,7 +212,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     if (e.key === 'Enter') saveEditModule(mod.id);
                     if (e.key === 'Escape') cancelEditModule();
                   }}
-                  className="w-full bg-blue-50 border border-blue-300 rounded px-2 py-1 text-sm focus:outline-none"
+                  className={`w-full bg-blue-50 border border-blue-300 rounded px-2 py-1 text-sm focus:outline-none ${styles.inputFocusRing}`}
                   autoFocus
                   onClick={e => e.stopPropagation()}
                 />
@@ -239,34 +229,30 @@ const Sidebar: React.FC<SidebarProps> = ({
                   </div>
                   <div className="text-xs text-gray-500 mt-1 text-right">{moduleProgress[mod.id] || 0}%</div>
                 </div>
-                {/* Lock/Unlock Button - Simplified */}
                 <button
                   onClick={(e) => { e.stopPropagation(); toggleLockModule(mod.id); }}
                   className={`ml-2 p-1 rounded-full text-white flex items-center justify-center text-sm
                     ${lockedModules.includes(mod.id) ? 'bg-red-500 hover:bg-red-600' : 'bg-gray-400 hover:bg-gray-500'}
-                    transition w-6 h-6 sm:w-7 sm:h-7 focus:outline-none focus:ring-2 focus:ring-offset-2
+                    ${styles.transitionAllEase} w-6 h-6 sm:w-7 sm:h-7 focus:outline-none focus:ring-2 focus:ring-offset-2
                     ${lockedModules.includes(mod.id) ? 'focus:ring-red-500' : 'focus:ring-gray-400'}
-                    cursor-pointer
+                    cursor-pointer ${styles.btnHoverScale}
                   `}
                   title={lockedModules.includes(mod.id) ? 'Unlock Module' : 'Lock Module'}
                 >
                   {lockedModules.includes(mod.id) ? (
-                    // Simple unlock icon (open lock)
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
                     </svg>
                   ) : (
-                    // Simple lock icon (closed lock)
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
                       <path strokeLinecap="round" strokeLinejoin="round" d="M11 5.093V3.75A1.75 1.75 0 009.25 2h-4.5A1.75 1.75 0 003 3.75V5.093m.5 8.157L6 14.5a1.75 1.75 0 003.5 0l2.5-1.25" />
                     </svg>
                   )}
                 </button>
-                {/* Delete Module Button */}
                 <button
                   onClick={(e) => { e.stopPropagation(); handleDeleteModule(mod.id); }}
-                  className="ml-1 p-1 rounded-full bg-red-500 text-white hover:bg-red-600 transition cursor-pointer"
+                  className={`ml-1 p-1 rounded-full bg-red-500 text-white hover:bg-red-600 ${styles.transitionAllEase} cursor-pointer ${styles.btnHoverScale}`}
                   title="Delete Module"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -274,12 +260,12 @@ const Sidebar: React.FC<SidebarProps> = ({
                   </svg>
                 </button>
               </div>
-            </div> {/* End of the outer div for module item */}
+            </div>
             {expandedModule === mod.id && (
               <ul className="mt-1 sm:mt-2 ml-2 sm:ml-4 space-y-1 sm:space-y-2">
                 {mod.subsections.map((sub) => (
-                  <li key={sub.id}>
-                    <div className={`flex items-center p-2 rounded-lg transition hover:bg-gray-100 ${selectedSubsection?.modId === mod.id && selectedSubsection?.subId === sub.id ? 'bg-blue-50' : ''}`}>
+                  <li key={sub.id} className={styles.subsectionItemEnterActive}>
+                    <div className={`flex items-center p-2 rounded-lg ${styles.transitionAllEase} hover:bg-gray-100 ${selectedSubsection?.modId === mod.id && selectedSubsection?.subId === sub.id ? 'bg-blue-50' : ''}`}>
                       <ProgressCircle percent={subsectionProgress[sub.id] || 0} />
                       <div className="ml-2 sm:ml-3 flex-1 flex items-center justify-between">
                         {editingSubId === sub.id ? (
@@ -292,7 +278,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                               if (e.key === 'Enter') saveEditSub(mod.id, sub.id);
                               if (e.key === 'Escape') cancelEditSub();
                             }}
-                            className="w-full bg-blue-50 border border-blue-300 rounded px-2 py-1 text-sm focus:outline-none"
+                            className={`w-full bg-blue-50 border border-blue-300 rounded px-2 py-1 text-sm focus:outline-none ${styles.inputFocusRing}`}
                             autoFocus
                           />
                         ) : (
@@ -300,20 +286,18 @@ const Sidebar: React.FC<SidebarProps> = ({
                         )}
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-gray-400">{subsectionProgress[sub.id] || 0}%</span>
-                          {/* Edit Subsection Button */}
                           <button
                             onClick={(e) => { e.stopPropagation(); startEditSub(sub); }}
-                            className="ml-1 p-1 rounded-full bg-blue-400 text-white hover:bg-blue-500 transition cursor-pointer"
+                            className={`ml-1 p-1 rounded-full bg-blue-400 text-white hover:bg-blue-500 ${styles.transitionAllEase} cursor-pointer ${styles.btnHoverScale}`}
                             title="Edit Subsection"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                               <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.38-2.828-2.829z" />
                             </svg>
                           </button>
-                          {/* Delete Subsection Button */}
                           <button
                             onClick={(e) => { e.stopPropagation(); handleDeleteSubsection(mod.id, sub.id); }}
-                            className="ml-1 p-1 rounded-full bg-red-400 text-white hover:bg-red-500 transition cursor-pointer"
+                            className={`ml-1 p-1 rounded-full bg-red-400 text-white hover:bg-red-500 ${styles.transitionAllEase} cursor-pointer ${styles.btnHoverScale}`}
                             title="Delete Subsection"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">

@@ -37,13 +37,13 @@ const AdminRoleConfirmModal: React.FC<AdminRoleConfirmModalProps> = ({
         <p className="mb-6 text-gray-700 text-center">{message}</p>
         <div className="flex justify-center space-x-3">
           <button
-            className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition"
+            className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition cursor-pointer"
             onClick={onClose}
           >
             Cancel
           </button>
           <button
-            className={`${confirmButtonClass} text-white px-4 py-2 rounded transition font-semibold`}
+            className={`${confirmButtonClass} text-white px-4 py-2 rounded transition font-semibold cursor-pointer`}
             onClick={onConfirm}
           >
             {confirmButtonText}

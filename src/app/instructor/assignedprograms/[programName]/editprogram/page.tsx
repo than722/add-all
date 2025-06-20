@@ -13,7 +13,7 @@ export default async function TeacherEditOutlinePage({ params }: TeacherEditOutl
   return (
     <div className="min-h-screen bg-gray-100"> {/* Consistent background */}
       {/* Pass programName and role as 'instructor' */}
-      <EditCourseOutlineClient programName={programName} role="instructor" />
+      <EditCourseOutlineClient programName={programName} />
     </div>
   );
 }

@@ -1,5 +1,5 @@
-import Admin from "@/components/Admin/adminClient";
+import {redirect} from 'next/navigation';
 
-export default function AdminPage() {
-  return <Admin initialTab="programs" />;
+export default function AdminRootPage() {
+  redirect('/admin/programlist');
 }

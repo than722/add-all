@@ -1,19 +1,19 @@
-import EditCourseOutlineClient from '@/components/Programs/EditCourseOutlineClient'; // Import the unified client component
+// app/admin/programs/[programName]/edit/page.tsx
+
+import AdminEditCourseOutlineClient from '@/components/Admin/programlistPage/AdminEditCourseOutline'; // Use a dedicated Admin client component
 
 interface AdminEditOutlinePageProps {
   params: {
-    programName: string; // The dynamic segment from the URL
+    programName: string;
   };
 }
 
-// This page is a pure Server Component
 export default async function AdminEditOutlinePage({ params }: AdminEditOutlinePageProps) {
   const { programName } = params;
 
   return (
-    <div className="min-h-screen bg-gray-100"> {/* Consistent background */}
-      {/* Pass programName and role as 'admin' */}
-      <EditCourseOutlineClient programName={programName} role="admin" />
+    <div className="min-h-screen bg-gray-100">
+      <AdminEditCourseOutlineClient programName={programName} />
     </div>
   );
 }

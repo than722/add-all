@@ -267,7 +267,20 @@ export interface Program {
   sessions: string;
   description: string;
   thumbnail: string;
+  curriculum?: string[]; // Optional curriculum field for programs
 }
+export const blankProgramForm: Program = {
+  program: '',
+  category: '',
+  instructor: '',
+  date: '',
+  time: '',
+  sessions: '',
+  description: '',
+  thumbnail: '',
+  curriculum: [],
+};
+
 
 // UserRole from roles/role.ts (assuming external definition)
 export type UserRole = 'superadmin' | 'admin' | 'teacher' | 'student' | 'guest';

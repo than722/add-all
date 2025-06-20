@@ -28,7 +28,7 @@ const AddContentBlock: React.FC<AddContentBlockProps> = ({ addingContentType, ne
           placeholder="Paste Video Link (YouTube/Vimeo)"
           value={newVideoUrl}
           onChange={e => setNewVideoUrl(e.target.value)}
-          className="block w-full border rounded px-2 py-1 text-xs sm:text-sm mb-2"
+          className="block w-full border rounded px-2 py-1 text-xs sm:text-sm mb-2 text-gray-900"
         />
       )}
       <div className="flex gap-2">

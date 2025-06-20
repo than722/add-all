@@ -28,13 +28,13 @@ const StatusModal: React.FC<StatusModalProps> = ({
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4">
           <button
-            className="bg-[#08228d] text-white px-4 py-2 rounded hover:bg-[#1a3d7c] text-sm sm:text-base"
+            className="bg-[#08228d] text-white px-4 py-2 rounded hover:bg-[#1a3d7c] text-sm sm:text-base cursor-pointer"
             onClick={onConfirm}
           >
             Yes
           </button>
           <button
-            className="bg-gray-200 text-[#08228d] px-4 py-2 rounded hover:bg-gray-300 text-sm sm:text-base"
+            className="bg-gray-200 text-[#08228d] px-4 py-2 rounded hover:bg-gray-300 text-sm sm:text-base cursor-pointer"
             onClick={onCancel}
           >
             No

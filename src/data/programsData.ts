@@ -1,3 +1,6 @@
+import { Program } from './data'; // Make sure the path is correct based on your project structure
+
+// Define categories for filtering or UI use
 export const programCategories = [
   {
     category: 'ARTS AND DESIGN',
@@ -27,14 +30,44 @@ export const programCategories = [
       'Customer Grouping',
     ],
   },
-  // You can add more categories and programs here as needed
 ];
 
-// This flattens the structured categories into a single list of programs,
-// where each program object includes its category, suitable for direct display.
-export const programsList = programCategories.flatMap(({ category, programs }) =>
-  programs.map((program) => ({
-    program,
-    category,
-  }))
-);
+// Create a detailed list of programs aligned with the `Program` interface
+export const programsList: Program[] = [
+  {
+    program: 'Floristry',
+    category: 'ARTS AND DESIGN',
+    instructor: 'John Doe',
+    date: 'June 10, 2025',
+    time: '2:00 PM - 5:00 PM',
+    sessions: '6',
+    description: 'Learn the art of floral design from the basics to advanced techniques.',
+    thumbnail: '/images/programs/floristry.jpg',
+    curriculum: 'Module 1: Basics of Floristry\nModule 2: Flower Arrangement',
+  },
+  {
+    program: 'Basic Soap Making',
+    category: 'ARTS AND DESIGN',
+    instructor: 'Jane Smith',
+    date: 'July 5, 2025',
+    time: '9:00 AM - 12:00 PM',
+    sessions: '5',
+    description: 'Create handmade soaps using safe and creative techniques.',
+    thumbnail: '/images/programs/soapmaking.jpg',
+  },
+  {
+    program: 'Investment Analysis',
+    category: 'Business and Finance',
+    instructor: 'Jane Smith',
+    date: 'August 15, 2025',
+    time: '1:00 PM - 4:00 PM',
+    sessions: '4',
+    description: 'Learn techniques to analyze investment opportunities effectively.',
+    thumbnail: '/images/programs/investment.jpg',
+  },
+  // ✅ Add more full program entries here as needed
+];
+
+// Optional: export a utility to get program by name (e.g., in ProgramActionsClient)
+export const getProgramByName = (name: string): Program | undefined =>
+  programsList.find((p) => p.program.toLowerCase() === name.toLowerCase());
