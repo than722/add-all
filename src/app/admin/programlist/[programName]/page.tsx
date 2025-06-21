@@ -8,7 +8,7 @@ interface AdminProgramDetailsPageProps {
 }
 
 export default async function AdminProgramDetailsPage({ params }: AdminProgramDetailsPageProps) {
-  const programName = decodeURIComponent(params.programName);
+    const programName = decodeURIComponent(params.programName);
 
   return (
     <div className="min-h-screen bg-gray-100">
