@@ -42,8 +42,13 @@ export const programsList: Program[] = [
     time: '2:00 PM - 5:00 PM',
     sessions: '6',
     description: 'Learn the art of floral design from the basics to advanced techniques.',
-    thumbnail: '/images/programs/floristry.jpg',
-    curriculum: 'Module 1: Basics of Floristry\nModule 2: Flower Arrangement',
+    thumbnail: '/floristry.jpg',
+    curriculum: [
+      'Module 1: Basics of Floristry',
+      'Module 2: Flower Arrangement',
+      'Module 3: Event Design',
+      'Module 4: Practical Showcase',
+    ],
   },
   {
     program: 'Basic Soap Making',
@@ -53,20 +58,19 @@ export const programsList: Program[] = [
     time: '9:00 AM - 12:00 PM',
     sessions: '5',
     description: 'Create handmade soaps using safe and creative techniques.',
-    thumbnail: '/images/programs/soapmaking.jpg',
+    thumbnail: '/soapmaking.jpg',
+    curriculum: [
+      'Intro to Soap Making',
+      'Cold Process Basics',
+      'Essential Oils and Additives',
+      'Mold and Curing',
+      'Packaging & Safety',
+    ],
   },
-  {
-    program: 'Investment Analysis',
-    category: 'Business and Finance',
-    instructor: 'Jane Smith',
-    date: 'August 15, 2025',
-    time: '1:00 PM - 4:00 PM',
-    sessions: '4',
-    description: 'Learn techniques to analyze investment opportunities effectively.',
-    thumbnail: '/images/programs/investment.jpg',
-  },
-  // ✅ Add more full program entries here as needed
+  // ...other programs
 ];
+
+
 
 // Optional: export a utility to get program by name (e.g., in ProgramActionsClient)
 export const getProgramByName = (name: string): Program | undefined =>

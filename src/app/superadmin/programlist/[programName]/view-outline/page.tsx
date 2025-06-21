@@ -6,7 +6,7 @@ interface SuperAdminViewOutlinePageProps {
   };
 }
 export default async function SuperAdminViewOutlinePage({ params }: SuperAdminViewOutlinePageProps) {
-  const { programName } = params;
+   const programName = decodeURIComponent(params.programName);
 
   return (
     <div className="min-h-screen bg-gray-100"> {/* Consistent background */}

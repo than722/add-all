@@ -111,16 +111,6 @@ export default function AdminStudentListClient() {
     setPendingModal(null);
   };
 
-  const handleDeclineApplication = (email: string, program: string) => {
-    setAllStudentRecords(prev =>
-      prev.map(record =>
-        record.email === email && record.program === program && record.status === 'pending'
-          ? { ...record, status: 'registered' } // Change status to registered if declined from pending
-          : record
-      )
-    );
-    setPendingModal(null); // Close modal on decline
-  };
 
 
   const handleViewStudentProfile = (student: StudentRecord) => {
@@ -138,8 +128,7 @@ export default function AdminStudentListClient() {
   const handleArchiveStudent = (studentName: string) => {
     setArchivedStudents((prev) => [...prev, studentName]);
     setArchivePrompt(null); // Close the archive modal
-    // Optional: Also remove from allStudentRecords if you want it completely gone from the active view
-    // setAllStudentRecords(prev => prev.filter(student => student.name !== studentName));
+
   };
 
   return (

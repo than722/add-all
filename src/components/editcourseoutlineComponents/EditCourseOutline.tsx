@@ -32,7 +32,6 @@ export interface EditCourseOutlineProps {
 }
 
 export default function EditCourseOutline({
-  programName,
   onBackClick,
   backButtonText,
 }: EditCourseOutlineProps) {
@@ -184,7 +183,7 @@ export default function EditCourseOutline({
                 </div>
                 <button
                     onClick={handleSave}
-                    className="bg-green-600 text-white py-2 px-6 rounded-full hover:bg-green-700 transition font-semibold"
+                    className="bg-green-600 text-white py-2 px-6 rounded-full hover:bg-green-700 transition font-semibold cursor-pointer"
                 >
                     Save All Changes
                 </button>

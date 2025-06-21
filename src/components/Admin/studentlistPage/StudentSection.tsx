@@ -1,116 +1,71 @@
-// AdminSections/StudentsSection.tsx
-import React, { useState, Dispatch, SetStateAction } from 'react'; // Import Dispatch, SetStateAction
+import React, { useState, Dispatch, SetStateAction } from 'react';
 import Image from 'next/image';
-import type { PendingApplication } from '@/data/data'; // Import PendingApplication type
+import type { PendingApplication } from '@/data/data';
+import SearchBar from '@/components/ui/SearchBar/SearchBar'; 
 
-// Define a consolidated StudentRecord type for this component's props
-// This interface combines student details with application-specific info for display
 interface StudentRecord {
   name: string;
   email: string;
-  img: string; // Must be present
+  img: string;
   bio: string;
-  contact: string; // Must be present
-  status: 'registered' | 'pending' | 'enrolled'; // Overall status
-  program?: string; // Program they applied/enrolled in
-  receiptUrl?: string; // If they have a pending application
-  paymentType?: string; // If they have a pending application
+  contact: string;
+  status: 'registered' | 'pending' | 'enrolled';
+  program?: string;
+  receiptUrl?: string;
+  paymentType?: string;
 }
 
 interface StudentsSectionProps {
-  allStudentRecords: StudentRecord[]; // Consolidated list of all student records
-  onViewProfile: (student: StudentRecord) => void; // Callback to open Profile modal
-  onViewPending: (application: PendingApplication) => void; // Callback to open PendingModal for a specific application
-  
-  // Props added to resolve the TypeScript error from the parent component
-  pendingApps: PendingApplication[]; // List of pending applications
-  setPendingApps: Dispatch<SetStateAction<PendingApplication[]>>; // Setter for pending applications
-  setProfileModal: Dispatch<SetStateAction<{ name: string; email: string; img: string; bio: string; contact?: string; type?: "instructor" | "student" | undefined; } | null>>;
-  
-  // Assuming these are also passed from SuperAdminClient, if not, they might be removed later
-  archivedStudents: string[]; // List of archived student names/emails
+  allStudentRecords: StudentRecord[];
+  onViewProfile: (student: StudentRecord) => void;
+  onViewPending: (application: PendingApplication) => void;
+  pendingApps: PendingApplication[];
+  setPendingApps: Dispatch<SetStateAction<PendingApplication[]>>;
+  setProfileModal: Dispatch<SetStateAction<{ name: string; email: string; img: string; bio: string; contact?: string; type?: "instructor" | "student" } | null>>;
+  archivedStudents: string[];
   setArchivePrompt: Dispatch<SetStateAction<{ open: boolean; type: 'program' | 'instructor' | 'student'; name: string } | null>>;
 }
 
 export default function StudentsSection({
   allStudentRecords,
-  onViewProfile,
   onViewPending,
-  pendingApps, // Destructure the newly added props
-  setPendingApps, // Destructure the newly added props
-  setProfileModal, // Destructure the newly added prop
-  archivedStudents, // Destructure if passed
-  setArchivePrompt, // Destructure if passed
+  setProfileModal,
+  archivedStudents,
+  setArchivePrompt,
 }: StudentsSectionProps) {
-  // Removed internal pendingModal and viewedReceipt states
-  // const [pendingModal, setPendingModal] = useState<PendingApplication | null>(null);
-  // const [viewedReceipt, setViewedReceipt] = useState<string | null>(null);
-
-  // State for search query
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Filter student records based on searchQuery
   const filteredStudentRecords = allStudentRecords
-    .filter((record) =>
-      // Exclude archived students if archivedStudents prop is provided
-      !archivedStudents.includes(record.name) // Assuming archived by name, adjust if by email
-    )
+    .filter((record) => !archivedStudents.includes(record.name))
     .filter((record) =>
       record.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       record.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (record.program && record.program.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
-  // Removed handleConfirmEnrollment as it's now handled by parent
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-  };
-
   return (
     <div>
       <h2 className="text-lg sm:text-xl font-bold mb-4 text-[#08228d]">Students</h2>
 
-      {/* Search Bar with Icon */}
-      <div className="mb-6 relative w-full sm:w-96 md:w-1/2 lg:w-1/3 max-w-lg">
-        <input
-          type="text"
-          placeholder="Search students..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className="w-full p-3 pl-10 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 text-black"
-        />
-        {/* Search Icon (SVG) */}
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="currentColor"
-            className="w-5 h-5"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-            />
-          </svg>
-        </div>
-      </div>
+    
+      <SearchBar
+        placeholder="Search students..."
+        value={searchQuery}
+        onChange={setSearchQuery}
+      />
 
       <ul className="space-y-2 sm:space-y-3">
         {filteredStudentRecords.length === 0 ? (
           <li className="text-gray-500 italic text-sm p-4">No students found.</li>
         ) : (
-          filteredStudentRecords.map((record, idx) => (
+          filteredStudentRecords.map((record) => (
             <li
-              key={record.email + (record.program || '')} // Unique key based on email and program if applicable
+              key={record.email + (record.program || '')}
               className="bg-white rounded shadow p-3 sm:p-4 flex items-center gap-3 sm:gap-4 hover:bg-gray-100 transition"
             >
               <div
                 className="flex items-center flex-grow cursor-pointer"
-                onClick={() => setProfileModal({ ...record, type: 'student' })} // Use setProfileModal from props
+                onClick={() => setProfileModal({ ...record, type: 'student' })}
                 aria-label={`View profile of ${record.name}`}
               >
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-[#08228d] flex-shrink-0">
@@ -128,12 +83,12 @@ export default function StudentsSection({
                   {record.program && <span className="block text-gray-500 text-xs sm:text-sm italic">({record.program})</span>}
                 </div>
               </div>
-              {/* Status display and action button */}
+
               <div className="flex items-center gap-2">
                 {record.status === 'pending' && record.receiptUrl && record.program ? (
                   <button
                     className="ml-auto bg-yellow-400 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-yellow-500 cursor-pointer"
-                    onClick={e => {
+                    onClick={(e) => {
                       e.stopPropagation();
                       onViewPending({
                         name: record.name,
@@ -152,12 +107,11 @@ export default function StudentsSection({
                 ) : (
                   <span className="ml-auto bg-gray-400 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold">Registered</span>
                 )}
-                {/* Archive Button for Students */}
                 <button
                   className="ml-2 bg-red-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-red-700 cursor-pointer"
-                  onClick={e => {
-                    e.stopPropagation(); // Prevent parent li's click
-                    setArchivePrompt({ open: true, type: 'student', name: record.name }); // Use setArchivePrompt from props
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setArchivePrompt({ open: true, type: 'student', name: record.name });
                   }}
                 >
                   Archive
@@ -167,7 +121,6 @@ export default function StudentsSection({
           ))
         )}
       </ul>
-      {/* Removed PendingModal rendering from here */}
     </div>
   );
 }

@@ -148,7 +148,7 @@ export default function Navbar() {
             ) : (
               <button
                 onClick={() => setShowSignInModal(true)}
-                className="bg-[#FFC72C] text-[#08228d] px-4 py-2 rounded-full font-bold hover:bg-yellow-400 transition duration-300 text-base cursor-pointer" // Added cursor-pointer
+               className="bg-[#FFC72C] text-[#08228d] px-4 py-2 rounded-full font-bold hover:bg-yellow-400 transition duration-300 text-base cursor-pointer" // Added cursor-pointer
               >
                 Sign In
               </button>
@@ -186,11 +186,11 @@ export default function Navbar() {
               </>
             ) : (
               <button
-                onClick={() => setShowSignInModal(true)}
-                className="ml-2 bg-[#FFC72C] text-[#08228d] px-4 py-2 rounded-full font-bold hover:bg-yellow-400 transition duration-300 text-sm cursor-pointer" // Added cursor-pointer
-              >
-                Sign In
-              </button>
+            onClick={() => setShowSignInModal(true)}
+            className="ml-1 px-3 py-1 text-xs sm:ml-2 sm:px-4 sm:py-2 sm:text-sm bg-[#FFC72C] text-[#08228d] rounded-full font-bold hover:bg-yellow-400 transition duration-300 cursor-pointer"
+          >
+            Sign In
+          </button>
             )}
           </div>
           {/* Mobile Nav Links Dropdown */}

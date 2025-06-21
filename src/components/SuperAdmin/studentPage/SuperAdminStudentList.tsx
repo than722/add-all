@@ -106,20 +106,7 @@ export default function SuperAdminStudentListClient() {
     setPendingModal(null);
   };
 
-  const handleDeclineApplication = (email: string, program: string) => {
-    // Remove the application from pendingApps
-    setPendingApps(prev => prev.filter(app => !(app.email === email && app.program === program)));
-
-    // Update allStudentRecords based on the declined application
-    setAllStudentRecords(prev =>
-      prev.map(record =>
-        record.email === email && record.program === program && record.status === 'pending'
-          ? { ...record, status: 'registered', program: undefined, receiptUrl: undefined, paymentType: undefined } // Reset application-specific fields
-          : record
-      )
-    );
-    setPendingModal(null);
-  };
+  
 
   const handleViewStudentProfile = (student: StudentRecord) => {
     setProfileModal({

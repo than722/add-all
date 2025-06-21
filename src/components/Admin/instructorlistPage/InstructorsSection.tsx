@@ -1,14 +1,15 @@
-// AdminSections/InstructorsSection.tsx
-import React, { useState, Dispatch, SetStateAction } from 'react';
+'use client';
+
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import Image from 'next/image';
 import AddInstructorModal from '@/components/ui/Modals/AdminModals/addinstructorModal';
 import type { Instructor } from '@/data/data';
+import SearchBar from '@/components/ui/SearchBar/SearchBar';
 
 interface InstructorStatus {
   [email: string]: 'active' | 'inactive';
 }
 
-// Define the type for the status modal data, as it's still being passed up to Profile
 interface StatusModalData {
   isOpen: boolean;
   instructorName: string;
@@ -25,9 +26,16 @@ interface ArchivePrompt {
 interface InstructorsSectionProps {
   instructorsList: Instructor[];
   setInstructorsList: React.Dispatch<React.SetStateAction<Instructor[]>>;
-  setProfileModal: React.Dispatch<React.SetStateAction<null | { name: string; email: string; img: string; bio: string; contact?: string; type?: 'instructor' | 'student' }>>;
+  setProfileModal: React.Dispatch<React.SetStateAction<null | {
+    name: string;
+    email: string;
+    img: string;
+    bio: string;
+    contact?: string;
+    type?: 'instructor' | 'student';
+  }>>;
   instructorStatus: InstructorStatus;
-  // Added the missing props:
+  setInstructorStatus: Dispatch<SetStateAction<InstructorStatus>>; // ✅ added
   archivedInstructors: string[];
   setArchivePrompt: Dispatch<SetStateAction<ArchivePrompt | null>>;
   setStatusModal: Dispatch<SetStateAction<StatusModalData | null>>;
@@ -38,17 +46,27 @@ export default function InstructorsSection({
   setInstructorsList,
   setProfileModal,
   instructorStatus,
-  archivedInstructors, // Destructure the new prop
-  setArchivePrompt, // Destructure the new prop
-  setStatusModal, // Destructure setStatusModal as it's passed from parent
+  setInstructorStatus, // ✅ added
+  archivedInstructors,
+  setArchivePrompt,
 }: InstructorsSectionProps) {
   const [showAddInstructorModal, setShowAddInstructorModal] = useState(false);
-  // State for search query
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Filter instructors based on searchQuery and archived status
+  // ✅ Ensure all instructors have a default 'active' status
+  useEffect(() => {
+    instructorsList.forEach((inst) => {
+      if (!instructorStatus[inst.email]) {
+        setInstructorStatus((prev) => ({
+          ...prev,
+          [inst.email]: 'active',
+        }));
+      }
+    });
+  }, [instructorsList, instructorStatus, setInstructorStatus]);
+
   const filteredInstructors = instructorsList
-    .filter((inst) => !archivedInstructors.includes(inst.name)) // Filter out archived instructors
+    .filter((inst) => !archivedInstructors.includes(inst.name))
     .filter((inst) =>
       inst.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       inst.email.toLowerCase().includes(searchQuery.toLowerCase())
@@ -57,13 +75,16 @@ export default function InstructorsSection({
   const handleAddInstructor = (instructor: { name: string; email: string; contact: string; img: string }) => {
     setInstructorsList((prev) => [
       ...prev,
-      { ...instructor, bio: 'New instructor.' }, // Default bio for new instructor
+      { ...instructor, bio: 'New instructor.' },
     ]);
-    setShowAddInstructorModal(false);
-  };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
+    // ✅ Set new instructor's status to 'active'
+    setInstructorStatus((prev) => ({
+      ...prev,
+      [instructor.email]: 'active',
+    }));
+
+    setShowAddInstructorModal(false);
   };
 
   return (
@@ -78,33 +99,11 @@ export default function InstructorsSection({
         </button>
       </div>
 
-      {/* Search Bar with Icon */}
-      <div className="mb-6 relative w-full sm:w-96 md:w-1/2 lg:w-1/3 max-w-lg">
-        <input
-          type="text"
-          placeholder="Search instructors..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className="w-full p-3 pl-10 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 text-black"
-        />
-        {/* Search Icon (SVG) */}
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="currentColor"
-            className="w-5 h-5"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-            />
-          </svg>
-        </div>
-      </div>
+      <SearchBar
+        placeholder="Search instructors..."
+        value={searchQuery}
+        onChange={setSearchQuery}
+      />
 
       <ul className="space-y-2 sm:space-y-3">
         {filteredInstructors.length === 0 && (
@@ -116,8 +115,14 @@ export default function InstructorsSection({
             className="bg-white rounded shadow p-3 sm:p-4 flex items-center gap-3 sm:gap-4 hover:bg-gray-100 transition"
           >
             <div
-              className="flex items-center flex-grow cursor-pointer" // Added cursor-pointer here
-              onClick={() => setProfileModal({ ...inst, bio: inst.bio || 'No bio provided.', type: 'instructor' })}
+              className="flex items-center flex-grow cursor-pointer"
+              onClick={() =>
+                setProfileModal({
+                  ...inst,
+                  bio: inst.bio || 'No bio provided.',
+                  type: 'instructor',
+                })
+              }
               aria-label={`View profile of ${inst.name}`}
             >
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-[#08228d] flex-shrink-0">
@@ -134,20 +139,21 @@ export default function InstructorsSection({
                 <span className="block text-gray-500 text-xs sm:text-sm">{inst.email}</span>
               </div>
             </div>
-            {/* Status display with a button to trigger status change modal */}
+
             <div className="flex items-center gap-2">
               <span
-                className={`ml-auto px-2 py-1 rounded text-xs font-semibold
-                  ${instructorStatus[inst.email] === 'active' ? 'bg-green-200 text-green-800' : 'bg-gray-200 text-gray-600'}
-                  transition`}
+                className={`ml-auto px-2 py-1 rounded text-xs font-semibold ${
+                  instructorStatus[inst.email] === 'active'
+                    ? 'bg-green-200 text-green-800'
+                    : 'bg-gray-200 text-gray-600'
+                } transition`}
               >
                 {instructorStatus[inst.email]}
               </span>
-              {/* Archive Button */}
               <button
-                className="ml-2 bg-red-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-red-700 cursor-pointer" // Added cursor-pointer here
-                onClick={e => {
-                  e.stopPropagation(); // Prevent opening profile modal
+                className="ml-2 bg-red-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-red-700 cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
                   setArchivePrompt({ open: true, type: 'instructor', name: inst.name });
                 }}
               >
@@ -157,12 +163,12 @@ export default function InstructorsSection({
           </li>
         ))}
       </ul>
+
       <AddInstructorModal
         isOpen={showAddInstructorModal}
         onClose={() => setShowAddInstructorModal(false)}
         onAdd={handleAddInstructor}
       />
-      
     </div>
   );
 }

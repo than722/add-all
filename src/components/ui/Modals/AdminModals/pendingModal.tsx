@@ -16,14 +16,14 @@ interface PendingModalProps {
   pendingModal: PendingApplication | null;
   onClose: () => void;
   onConfirm: (email: string, program: string) => void;
-  // onDecline prop has been removed
+ 
 }
 
 const PendingModal: React.FC<PendingModalProps> = ({
   pendingModal,
   onClose,
   onConfirm,
-  // onDecline is no longer destructured here
+
 }) => {
   const [showReceiptImage, setShowReceiptImage] = useState(false);
   const [showValidation, setShowValidation] = useState(false);
@@ -43,8 +43,6 @@ const PendingModal: React.FC<PendingModalProps> = ({
     onConfirm(pendingModal.email, pendingModal.program);
     setShowReceiptImage(false); // Also hide receipt if it was open
   };
-
-  // handleDeclineEnrollment logic has been removed
 
   return (
     <>
@@ -86,7 +84,7 @@ const PendingModal: React.FC<PendingModalProps> = ({
           >
             Confirm Enrollment
           </button>
-          {/* Decline button and its onClick handler have been removed */}
+      
         </div>
       </div>
 

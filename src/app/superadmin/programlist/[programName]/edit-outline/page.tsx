@@ -8,7 +8,7 @@ interface SuperAdminEditOutlinePageProps {
 
 // This page is a pure Server Component
 export default async function SuperAdminEditOutlinePage({ params }: SuperAdminEditOutlinePageProps) {
-  const { programName } = params;
+   const programName = decodeURIComponent(params.programName);
 
   return (
     <div className="min-h-screen bg-gray-100"> {/* Consistent background */}

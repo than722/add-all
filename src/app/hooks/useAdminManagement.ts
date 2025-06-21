@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { admins, instructors, students } from '@/data/data'; // Import raw data
+import { admins } from '@/data/data'; // Only import 'admins' now
 
 // Define the User interface, matching what AdminsTable and other components expect
 interface User {
@@ -17,49 +17,23 @@ export const useAdminManagement = () => {
     const uniqueUsersMap = new Map<string, User>();
 
     // Add initial admins from data.ts
+    // These are considered "employees" in this context
     admins.forEach(admin => {
       uniqueUsersMap.set(admin.email, {
-        name: admin.name, email: admin.email, contact: admin.contact || 'N/A',
-        position: admin.position || 'Admin', isAdmin: admin.isAdmin || false, img: admin.img || '/profileicon.png'
+        name: admin.name,
+        email: admin.email,
+        contact: admin.contact || 'N/A',
+        position: admin.position || 'Admin',
+        isAdmin: admin.isAdmin || false,
+        img: admin.img || '/profileicon.png'
       });
     });
 
-    // Add initial instructors, merging if email already exists
-    instructors.forEach(inst => {
-      if (!uniqueUsersMap.has(inst.email)) {
-        uniqueUsersMap.set(inst.email, {
-          name: inst.name, email: inst.email, contact: inst.contact || 'N/A',
-          position: 'Instructor', isAdmin: false, img: inst.img || '/profileicon.png'
-        });
-      } else {
-        const existingUser = uniqueUsersMap.get(inst.email)!;
-        uniqueUsersMap.set(inst.email, {
-          ...existingUser, contact: inst.contact || existingUser.contact,
-          position: existingUser.position === 'Employee' || existingUser.position === 'Admin' ? existingUser.position : 'Instructor',
-          img: inst.img || existingUser.img || '/profileicon.png', isAdmin: existingUser.isAdmin || false,
-        });
-      }
-    });
-
-    // Add initial students, merging if email already exists
-    students.forEach(stud => {
-      if (!uniqueUsersMap.has(stud.email)) {
-        uniqueUsersMap.set(stud.email, {
-          name: stud.name, email: stud.email, contact: stud.contact || 'N/A',
-          position: 'Student', isAdmin: false, img: stud.img || '/profileicon.png'
-        });
-      } else {
-        const existingUser = uniqueUsersMap.get(stud.email)!;
-        uniqueUsersMap.set(stud.email, {
-          ...existingUser, contact: stud.contact || existingUser.contact,
-          position: existingUser.position || 'Student', img: stud.img || existingUser.img || '/profileicon.png',
-          isAdmin: existingUser.isAdmin || false,
-        });
-      }
-    });
+    // We explicitly exclude instructors and students from this initial list
+    // because the request is to list only employees for admin management.
 
     return Array.from(uniqueUsersMap.values());
-  }, []);
+  }, []); // Depend on nothing as initial data is static
 
   const [uniqueUsers, setUniqueUsers] = useState<User[]>(initialUniqueUsers);
 
@@ -99,7 +73,10 @@ export const useAdminManagement = () => {
   // Handle adding a new employee (who can then be made an admin via toggle)
   const handleAddEmployee = (employee: { name: string; email: string; contact: string; img: string; position: string }) => {
     const exists = uniqueUsers.some(u => u.email === employee.email);
-    if (exists) { alert('An employee with this email already exists.'); return; } // Consider custom modal/toast
+    if (exists) {
+      alert('An employee with this email already exists.'); // Consider custom modal/toast for better UX
+      return;
+    }
     const newUser: User = { ...employee, isAdmin: false, img: employee.img || '/profileicon.png' };
     setUniqueUsers((prev) => [...prev, newUser]);
     setShowAddAdminModal(false);

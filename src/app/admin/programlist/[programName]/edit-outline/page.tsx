@@ -9,7 +9,7 @@ interface AdminEditOutlinePageProps {
 }
 
 export default async function AdminEditOutlinePage({ params }: AdminEditOutlinePageProps) {
-  const { programName } = params;
+   const programName = decodeURIComponent(params.programName);
 
   return (
     <div className="min-h-screen bg-gray-100">

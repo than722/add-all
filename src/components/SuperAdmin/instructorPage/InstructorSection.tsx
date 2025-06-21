@@ -2,8 +2,9 @@
 
 import React, { useState, Dispatch, SetStateAction } from "react";
 import Image from "next/image";
-import AddInstructorModal from '@/components/ui/Modals/AdminModals/addinstructorModal'; // Assuming correct path
-import type { Instructor } from '@/data/data'; // Import Instructor type
+import AddInstructorModal from '@/components/ui/Modals/AdminModals/addinstructorModal';
+import SearchBar from '@/components/ui/SearchBar/SearchBar'
+import type { Instructor } from '@/data/data';
 
 interface InstructorStatus {
   [email: string]: 'active' | 'inactive';
@@ -24,9 +25,9 @@ interface StatusModalData {
 
 interface InstructorsSectionSuperAdminProps {
   instructorsList: Instructor[];
-  setInstructorsList: React.Dispatch<React.SetStateAction<Instructor[]>>; // For adding new instructors
+  setInstructorsList: React.Dispatch<React.SetStateAction<Instructor[]>>;
   archivedInstructors: string[];
-  setProfileModal: Dispatch<SetStateAction<{ name: string; email: string; img: string; bio: string; type?: "instructor" | "student" | undefined; contact?: string; } | null>>;
+  setProfileModal: Dispatch<SetStateAction<{ name: string; email: string; img: string; bio: string; type?: "instructor" | "student"; contact?: string; } | null>>;
   setArchivePrompt: Dispatch<SetStateAction<ArchivePrompt | null>>;
   instructorStatus: InstructorStatus;
   setStatusModal: Dispatch<SetStateAction<StatusModalData | null>>;
@@ -39,12 +40,10 @@ export default function InstructorsSectionSuperAdmin({
   setProfileModal,
   setArchivePrompt,
   instructorStatus,
-  setStatusModal,
 }: InstructorsSectionSuperAdminProps) {
   const [showAddInstructorModal, setShowAddInstructorModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Filter instructors based on searchQuery and archived status
   const filteredInstructors = instructorsList
     .filter((inst: Instructor) => !archivedInstructors.includes(inst.name))
     .filter((inst) =>
@@ -55,13 +54,9 @@ export default function InstructorsSectionSuperAdmin({
   const handleAddInstructor = (instructor: { name: string; email: string; contact: string; img: string }) => {
     setInstructorsList((prev) => [
       ...prev,
-      { ...instructor, bio: 'New instructor.' }, // Default bio for new instructor
+      { ...instructor, bio: 'New instructor.' },
     ]);
     setShowAddInstructorModal(false);
-  };
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
   };
 
   return (
@@ -76,33 +71,11 @@ export default function InstructorsSectionSuperAdmin({
         </button>
       </div>
 
-      {/* Search Bar with Icon */}
-      <div className="mb-6 relative w-full sm:w-96 md:w-1/2 lg:w-1/3 max-w-lg">
-        <input
-          type="text"
-          placeholder="Search instructors..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className="w-full p-3 pl-10 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 text-black"
-        />
-        {/* Search Icon (SVG) */}
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="currentColor"
-            className="w-5 h-5"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-            />
-          </svg>
-        </div>
-      </div>
+      <SearchBar
+        placeholder="Search instructors..."
+        value={searchQuery}
+        onChange={setSearchQuery}
+      />
 
       <ul className="space-y-2 sm:space-y-3">
         {filteredInstructors.length === 0 && (
@@ -113,12 +86,12 @@ export default function InstructorsSectionSuperAdmin({
             key={idx}
             className="bg-white rounded shadow p-3 sm:p-4 flex items-center gap-3 sm:gap-4 cursor-pointer hover:bg-gray-100 transition"
             onClick={() => setProfileModal({
-                name: inst.name,
-                email: inst.email,
-                img: inst.img,
-                bio: inst.bio || 'Instructor Bio Placeholder', // Use actual bio if available, else placeholder
-                type: 'instructor',
-                contact: inst.contact || 'N/A' // Ensure contact is passed
+              name: inst.name,
+              email: inst.email,
+              img: inst.img,
+              bio: inst.bio || 'Instructor Bio Placeholder',
+              type: 'instructor',
+              contact: inst.contact || 'N/A'
             })}
             aria-label={`View profile of ${inst.name}`}
           >
@@ -135,18 +108,19 @@ export default function InstructorsSectionSuperAdmin({
               <span className="font-semibold text-[#08228d] text-sm sm:text-base">{inst.name}</span>
               <span className="block text-gray-500 text-xs sm:text-sm">{inst.email}</span>
             </div>
-            {/* Status pill with onClick to change status via setStatusModal */}
             <span
-                className={`ml-auto px-2 py-1 rounded text-xs font-semibold
-                  ${instructorStatus[inst.email] === 'active' ? 'bg-green-200 text-green-800' : 'bg-gray-200 text-gray-600'}
-                  transition`}
-              >
-                {instructorStatus[inst.email]}
-              </span>
+              className={`ml-auto px-2 py-1 rounded text-xs font-semibold ${
+                instructorStatus[inst.email] === 'active'
+                  ? 'bg-green-200 text-green-800'
+                  : 'bg-gray-200 text-gray-600'
+              } transition`}
+            >
+              {instructorStatus[inst.email]}
+            </span>
             <button
-              className="ml-2 bg-red-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-red-700 cursor-pointer "
+              className="ml-2 bg-red-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-red-700 cursor-pointer"
               onClick={e => {
-                e.stopPropagation(); // Prevent opening profile modal
+                e.stopPropagation();
                 setArchivePrompt({ open: true, type: 'instructor', name: inst.name });
               }}
             >
@@ -155,6 +129,7 @@ export default function InstructorsSectionSuperAdmin({
           </li>
         ))}
       </ul>
+
       <AddInstructorModal
         isOpen={showAddInstructorModal}
         onClose={() => setShowAddInstructorModal(false)}

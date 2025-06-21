@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import AddProgramModal from '@/components/ui/Modals/AdminModals/addprogramModal';
 import EnrollModal from '@/components/ui/Modals/EnrollmentModal/enrollmentModal';
 import { programsList } from '@/data/programsData';

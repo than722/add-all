@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { programsList } from '@/data/programsData'; // ✅ Adjust this import path if needed
+import { programsList } from '@/data/programsData'; 
 
 interface ProgramDetailsBaseProps {
   programName: string;
@@ -93,10 +93,12 @@ const ProgramDetailsBase: React.FC<ProgramDetailsBaseProps> = ({ programName }) 
       {/* Program Curriculum Section */}
       <div className="max-w-4xl mx-auto bg-white p-4 sm:p-8 mt-4 sm:mt-6 rounded-xl shadow">
         <h2 className="text-lg sm:text-xl font-bold text-[#08228d] mb-3 sm:mb-4">Program Curriculum</h2>
-        {curriculum ? (
-          <p className="text-gray-700 text-sm sm:text-base whitespace-pre-line">
-            {curriculum}
-          </p>
+        {curriculum && curriculum.length > 0 ? (
+          <ul className="list-disc list-inside text-gray-700 space-y-1 sm:space-y-2 text-sm sm:text-base">
+            {curriculum.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
         ) : (
           <p className="text-gray-500 text-sm italic">No curriculum provided.</p>
         )}

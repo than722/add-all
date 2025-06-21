@@ -8,7 +8,7 @@ export default function InstructorEditCourseOutlineClient({ programName }: { pro
     <EditCourseOutline
       programName={programName}
       onBackClick={() => router.push(`/instructor/assignedprograms/${programName}`)}
-      backButtonText={`← Back to ${decodeURIComponent(programName)} Details`}
+      backButtonText={`← Back to ${decodeURIComponent(programName)}`}
     />
   );
 }

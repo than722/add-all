@@ -99,7 +99,7 @@ export default function RegisterModal({
         <button
           onClick={onClose}
           aria-label="Close modal"
-          className="absolute top-2 right-2 sm:top-4 sm:right-4 text-gray-600 hover:text-gray-900 focus:outline-none"
+          className="absolute top-2 right-2 sm:top-4 sm:right-4 text-gray-600 hover:text-gray-900 focus:outline-none cursor-pointer"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -173,7 +173,7 @@ export default function RegisterModal({
 
           <button
             type="submit"
-            className="w-full bg-primary text-white py-2 rounded-lg font-semibold hover:bg-primary-dark transition text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-primary text-white py-2 rounded-lg font-semibold hover:bg-primary-dark transition text-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             Register
           </button>

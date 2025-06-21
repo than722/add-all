@@ -8,7 +8,7 @@ interface SuperAdminProgramDetailsPageProps {
 }
 
 export default async function SuperAdminProgramDetailsPage({ params }: SuperAdminProgramDetailsPageProps) {
-  const { programName } = params;
+  const programName = decodeURIComponent(params.programName);
 
   return (
     <div className="min-h-screen bg-gray-100">
