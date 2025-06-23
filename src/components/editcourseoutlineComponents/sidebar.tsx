@@ -1,9 +1,8 @@
-// app/components/courseoutlineComponents/Sidebar.tsx
 'use client';
 
-import React, { useState, Dispatch, SetStateAction, useEffect } from 'react';
+import React, { useState, Dispatch, SetStateAction } from 'react';
 import ProgressCircle from './ProgressCircle';
-import styles from '../../styles/EditCourseOutlineStyle.module.css'; // Import the CSS Module
+import styles from '../../styles/EditCourseOutlineStyle.module.css';
 
 interface ContentBlock {
   id: number;
@@ -101,25 +100,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     startEditModule(newModule);
   };
 
-  const handleAddSubsection = () => {
-    if (selectedModule === null) return;
-    setCourseOutline(prevOutline => prevOutline.map(mod => {
-      if (mod.id === selectedModule) {
-        const newSubId = Date.now() + Math.random();
-        const newSubsection: Subsection = {
-          id: newSubId,
-          title: `New Subsection ${mod.subsections.length + 1}`,
-          contentBlocks: [{ id: Date.now() + 0.2, type: 'text', value: 'Content for new subsection.' }]
-        };
-        return {
-          ...mod,
-          subsections: [...mod.subsections, newSubsection]
-        };
-      }
-      return mod;
-    }));
-  };
-
   const handleDeleteModule = (modId: number) => {
     if (window.confirm('Are you sure you want to delete this module and all its subsections?')) {
       setCourseOutline(prev => {
@@ -169,19 +149,12 @@ const Sidebar: React.FC<SidebarProps> = ({
         onChange={(e) => setSearch(e.target.value)}
         className={`w-full mb-3 sm:mb-4 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 ${styles.transitionAllEase} placeholder-gray-900 text-gray-900 text-sm sm:text-base ${styles.inputFocusRing}`}
       />
-      <div className="flex justify-between mb-4">
+      <div className="flex justify-start mb-4">
         <button
           className={`bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 ${styles.transitionAllEase} text-sm cursor-pointer ${styles.btnHoverShadow}`}
           onClick={handleAddModule}
         >
           + Add Module
-        </button>
-        <button
-          className={`bg-purple-600 text-white px-3 py-1 rounded-md hover:bg-purple-700 ${styles.transitionAllEase} text-sm cursor-pointer ${styles.btnHoverShadow}`}
-          onClick={handleAddSubsection}
-          disabled={selectedModule === null}
-        >
-          + Add Subsection
         </button>
       </div>
       <ul className="space-y-2 sm:space-y-3">
@@ -192,9 +165,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           <li key={mod.id} className={`mb-1 sm:mb-2 ${styles.moduleItemEnterActive}`}>
             <div
               className={`w-full flex flex-col sm:flex-row justify-between items-start sm:items-center px-3 sm:px-4 py-2 rounded-lg ${styles.transitionAllEase} ${
-                selectedModule === mod.id
-                  ? 'bg-blue-100 text-blue-700 font-semibold shadow-inner'
-                  : 'hover:bg-gray-100 text-gray-800'
+                selectedModule === mod.id ? 'bg-blue-100 text-blue-700 font-semibold shadow-inner' : 'hover:bg-gray-100 text-gray-800'
               } cursor-pointer`}
               onClick={() => {
                 setExpandedModule(expandedModule === mod.id ? null : mod.id);
@@ -222,10 +193,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               <div className="flex items-center gap-2">
                 <div className="w-full sm:w-24 mt-2 sm:mt-0">
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className="bg-blue-500 h-2 rounded-full"
-                      style={{ width: `${moduleProgress[mod.id] || 0}%`, transition: 'width 0.3s' }}
-                    />
+                    <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${moduleProgress[mod.id] || 0}%`, transition: 'width 0.3s' }} />
                   </div>
                   <div className="text-xs text-gray-500 mt-1 text-right">{moduleProgress[mod.id] || 0}%</div>
                 </div>
@@ -262,54 +230,80 @@ const Sidebar: React.FC<SidebarProps> = ({
               </div>
             </div>
             {expandedModule === mod.id && (
-              <ul className="mt-1 sm:mt-2 ml-2 sm:ml-4 space-y-1 sm:space-y-2">
-                {mod.subsections.map((sub) => (
-                  <li key={sub.id} className={styles.subsectionItemEnterActive}>
-                    <div className={`flex items-center p-2 rounded-lg ${styles.transitionAllEase} hover:bg-gray-100 ${selectedSubsection?.modId === mod.id && selectedSubsection?.subId === sub.id ? 'bg-blue-50' : ''}`}>
-                      <ProgressCircle percent={subsectionProgress[sub.id] || 0} />
-                      <div className="ml-2 sm:ml-3 flex-1 flex items-center justify-between">
-                        {editingSubId === sub.id ? (
-                          <input
-                            type="text"
-                            value={editSubTitle}
-                            onChange={(e) => setEditSubTitle(e.target.value)}
-                            onBlur={() => saveEditSub(mod.id, sub.id)}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter') saveEditSub(mod.id, sub.id);
-                              if (e.key === 'Escape') cancelEditSub();
-                            }}
-                            className={`w-full bg-blue-50 border border-blue-300 rounded px-2 py-1 text-sm focus:outline-none ${styles.inputFocusRing}`}
-                            autoFocus
-                          />
-                        ) : (
-                          <span className="font-bold text-xs sm:text-base text-gray-900 cursor-pointer" onClick={() => setSelectedSubsection({ modId: mod.id, subId: sub.id })}>{sub.title}</span>
-                        )}
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-gray-400">{subsectionProgress[sub.id] || 0}%</span>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); startEditSub(sub); }}
-                            className={`ml-1 p-1 rounded-full bg-blue-400 text-white hover:bg-blue-500 ${styles.transitionAllEase} cursor-pointer ${styles.btnHoverScale}`}
-                            title="Edit Subsection"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                              <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.38-2.828-2.829z" />
-                            </svg>
-                          </button>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleDeleteSubsection(mod.id, sub.id); }}
-                            className={`ml-1 p-1 rounded-full bg-red-400 text-white hover:bg-red-500 ${styles.transitionAllEase} cursor-pointer ${styles.btnHoverScale}`}
-                            title="Delete Subsection"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                              <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1z" clipRule="evenodd" />
-                            </svg>
-                          </button>
+              <>
+                <ul className="mt-1 sm:mt-2 ml-2 sm:ml-4 space-y-1 sm:space-y-2">
+                  {mod.subsections.map((sub) => (
+                    <li key={sub.id} className={styles.subsectionItemEnterActive}>
+                      <div className={`flex items-center p-2 rounded-lg ${styles.transitionAllEase} hover:bg-gray-100 ${selectedSubsection?.modId === mod.id && selectedSubsection?.subId === sub.id ? 'bg-blue-50' : ''}`}>
+                        <ProgressCircle percent={subsectionProgress[sub.id] || 0} />
+                        <div className="ml-2 sm:ml-3 flex-1 flex items-center justify-between">
+                          {editingSubId === sub.id ? (
+                            <input
+                              type="text"
+                              value={editSubTitle}
+                              onChange={(e) => setEditSubTitle(e.target.value)}
+                              onBlur={() => saveEditSub(mod.id, sub.id)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') saveEditSub(mod.id, sub.id);
+                                if (e.key === 'Escape') cancelEditSub();
+                              }}
+                              className={`w-full bg-blue-50 border border-blue-300 rounded px-2 py-1 text-sm focus:outline-none ${styles.inputFocusRing}`}
+                              autoFocus
+                            />
+                          ) : (
+                            <span className="font-bold text-xs sm:text-base text-gray-900 cursor-pointer" onClick={() => setSelectedSubsection({ modId: mod.id, subId: sub.id })}>{sub.title}</span>
+                          )}
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-gray-400">{subsectionProgress[sub.id] || 0}%</span>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); startEditSub(sub); }}
+                              className={`ml-1 p-1 rounded-full bg-blue-400 text-white hover:bg-blue-500 ${styles.transitionAllEase} cursor-pointer ${styles.btnHoverScale}`}
+                              title="Edit Subsection"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.38-2.828-2.829z" />
+                              </svg>
+                            </button>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleDeleteSubsection(mod.id, sub.id); }}
+                              className={`ml-1 p-1 rounded-full bg-red-400 text-white hover:bg-red-500 ${styles.transitionAllEase} cursor-pointer ${styles.btnHoverScale}`}
+                              title="Delete Subsection"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1z" clipRule="evenodd" />
+                              </svg>
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-2 ml-8">
+                  <button
+                    onClick={() => {
+                      const newSubId = Date.now() + Math.random();
+                      const newSubsection: Subsection = {
+                        id: newSubId,
+                        title: `New Subsection ${mod.subsections.length + 1}`,
+                        contentBlocks: [{ id: Date.now() + 0.2, type: 'text', value: 'Content for new subsection.' }]
+                      };
+                      setCourseOutline(prevOutline => prevOutline.map(m => {
+                        if (m.id === mod.id) {
+                          return {
+                            ...m,
+                            subsections: [...m.subsections, newSubsection]
+                          };
+                        }
+                        return m;
+                      }));
+                    }}
+                    className="bg-purple-600 text-white text-xs px-3 py-1 rounded hover:bg-purple-700 transition-all"
+                  >
+                    + Add Subsection
+                  </button>
+                </div>
+              </>
             )}
           </li>
         ))}
