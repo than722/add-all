@@ -69,7 +69,7 @@ export default function SuperAdminInstructorListClient() {
         instructorStatus={instructorStatus}
         archivedInstructors={archivedInstructors}
         setArchivePrompt={setArchivePrompt}
-        setStatusModal={setStatusModal}
+        setInstructorStatus={setInstructorStatus}
       />
 
       {profileModal && (

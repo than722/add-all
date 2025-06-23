@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import type { Instructor } from '@/data/data';
 import SearchBar from '@/components/ui/SearchBar/SearchBar';
-import CardInstructorList from '@/components/ui/CardList/CardInstructorList'; // ✅ Import the card list
+import CardInstructorList from '@/components/ui/CardList/CardInstructorList';
+import AddInstructorModal from '@/components/ui/Modals/AdminModals/addinstructorModal';
 
 interface InstructorStatus {
   [email: string]: 'active' | 'inactive';
@@ -18,6 +18,7 @@ interface ArchivePrompt {
 
 interface SuperAdminInstructorsSectionProps {
   instructorsList: Instructor[];
+  setInstructorsList: React.Dispatch<React.SetStateAction<Instructor[]>>;
   setProfileModal: React.Dispatch<React.SetStateAction<{
     name: string;
     email: string;
@@ -34,6 +35,7 @@ interface SuperAdminInstructorsSectionProps {
 
 export default function SuperAdminInstructorsSection({
   instructorsList,
+  setInstructorsList,
   setProfileModal,
   instructorStatus,
   setInstructorStatus,
@@ -41,8 +43,8 @@ export default function SuperAdminInstructorsSection({
   setArchivePrompt,
 }: SuperAdminInstructorsSectionProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [showAddInstructorModal, setShowAddInstructorModal] = useState(false);
 
-  // Initialize instructor status if missing
   useEffect(() => {
     instructorsList.forEach((inst) => {
       if (!instructorStatus[inst.email]) {
@@ -61,10 +63,30 @@ export default function SuperAdminInstructorsSection({
       inst.email.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+  const handleAddInstructor = (instructor: { name: string; email: string; contact: string; img: string }) => {
+    setInstructorsList((prev) => [
+      ...prev,
+      { ...instructor, bio: 'New instructor.' },
+    ]);
+
+    setInstructorStatus((prev) => ({
+      ...prev,
+      [instructor.email]: 'active',
+    }));
+
+    setShowAddInstructorModal(false);
+  };
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
         <h2 className="text-lg sm:text-xl font-bold mb-0 text-[#08228d]">Instructors</h2>
+        <button
+          className="bg-[#08228d] text-white px-3 py-2 sm:px-4 sm:py-2 rounded hover:bg-[#1a3d7c] w-full sm:w-auto cursor-pointer"
+          onClick={() => setShowAddInstructorModal(true)}
+        >
+          + Add Instructor
+        </button>
       </div>
 
       <SearchBar
@@ -81,6 +103,12 @@ export default function SuperAdminInstructorsSection({
           setArchivePrompt={setArchivePrompt}
         />
       </ul>
+
+      <AddInstructorModal
+        isOpen={showAddInstructorModal}
+        onClose={() => setShowAddInstructorModal(false)}
+        onAdd={handleAddInstructor}
+      />
     </div>
   );
 }

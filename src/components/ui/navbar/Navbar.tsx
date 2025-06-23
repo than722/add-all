@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import Profile from '../Modals/ProfileModals/profileview';
 import SignInModal from '../Modals/signin';
 import { useAuth } from '@/components/contexts/authContext';
+import { MdGppGood } from 'react-icons/md';
 
 // Define a consistent type for navigation links
 interface NavLink {
@@ -148,9 +149,16 @@ export default function Navbar() {
             ) : (
               <button
                 onClick={() => setShowSignInModal(true)}
-               className="bg-[#FFC72C] text-[#08228d] px-4 py-2 rounded-full font-bold hover:bg-yellow-400 transition duration-300 text-base cursor-pointer" // Added cursor-pointer
+                className="bg-[#FFC72C] text-[#08228d] px-4 py-2 rounded-full font-bold hover:bg-yellow-400 transition duration-300 text-base cursor-pointer flex items-center justify-center gap-2"
               >
-                Sign In
+                <span>Sign In with Google</span>
+                <Image
+                  src="/google-logo.png"
+                  alt="Google"
+                  width={40}
+                  height={40}
+                  className="inline-block"
+                />
               </button>
             )}
           </div>
@@ -186,11 +194,18 @@ export default function Navbar() {
               </>
             ) : (
               <button
-            onClick={() => setShowSignInModal(true)}
-            className="ml-1 px-3 py-1 text-xs sm:ml-2 sm:px-4 sm:py-2 sm:text-sm bg-[#FFC72C] text-[#08228d] rounded-full font-bold hover:bg-yellow-400 transition duration-300 cursor-pointer"
-          >
-            Sign In
-          </button>
+                onClick={() => setShowSignInModal(true)}
+                className="ml-1 px-3 py-1 text-xs sm:ml-2 sm:px-4 sm:py-2 sm:text-sm bg-[#FFC72C] text-[#08228d] rounded-full font-bold hover:bg-yellow-400 transition duration-300 cursor-pointer flex items-center gap-2"
+              >
+                <span>Sign In</span>
+                <Image
+                  src="/google-logo.png"
+                  alt="Google"
+                  width={16}
+                  height={16}
+                  className="inline-block"
+                />
+              </button>
             )}
           </div>
           {/* Mobile Nav Links Dropdown */}
