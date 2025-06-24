@@ -133,6 +133,12 @@ const ProgramActionsClient: React.FC<ProgramActionsClientProps> = ({ programName
             List of Students
           </button>
           <button
+            className="bg-blue-500 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full hover:bg-blue-700 transition text-sm sm:text-base cursor-pointer"
+            onClick={() => window.location.href = `/instructor/assignedprograms/${encodeURIComponent(programData.program)}/viewoutline`}
+          >
+            View Outline
+          </button>
+          <button
             className="bg-[#08228d] text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full hover:bg-[#001f40] transition text-sm sm:text-base cursor-pointer"
             onClick={() => window.location.href = `/instructor/assignedprograms/${encodeURIComponent(programData.program)}/editprogram`}
           >

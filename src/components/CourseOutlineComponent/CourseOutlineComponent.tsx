@@ -11,6 +11,7 @@ interface CourseOutlineProps {
   backRoute: string;
   backLabel: string;
   welcomeMessage: string;
+  readOnly?: boolean;
 }
 
 export default function CourseOutline({
