@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 import Profile from '../Modals/ProfileModals/profileview';
 import SignInModal from '../Modals/signin';
 import { useAuth } from '@/components/contexts/authContext';
-import { MdGppGood } from 'react-icons/md';
 
 // Define a consistent type for navigation links
 interface NavLink {
@@ -19,7 +18,6 @@ interface NavLink {
 }
 
 export default function Navbar() {
-  const pathname = usePathname();
   const router = useRouter();
   const { role } = useAuth();
 
@@ -59,6 +57,7 @@ export default function Navbar() {
       { label: 'Home', href: '/' },
       { label: 'Vision', scrollId: 'vision-section' },
       { label: 'About Us', scrollId: 'aboutus-section' },
+      {label: 'Contact Us', }
     ],
     default: [
       { label: 'Home', href: '/' },
@@ -122,10 +121,15 @@ export default function Navbar() {
         <div className={`${desktopClass} items-center justify-between w-full px-6 py-4 relative`}>
           {/* Left: Logo and School Name */}
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 overflow-hidden rounded-full cursor-pointer"> {/* Added cursor-pointer */}
-              <Image src="/add-all logo bg.png" alt="Logo" width={48} height={48} className="object-cover" />
+            <div className="flex items-center space-x-2">
+              <div className="w-14 h-14 rounded-full overflow-hidden">
+                <Image src="/addu logo.png" alt="ADDU Logo" width={56} height={56} className="object-cover" />
+              </div>
+              <div className="w-14 h-14 rounded-full overflow-hidden">
+                <Image src="/add-all logo bg.png" alt="ADD-ALL Logo" width={56} height={56} className="object-cover" />
+              </div>
             </div>
-            <div className="leading-snug cursor-pointer"> {/* Added cursor-pointer */}
+            <div className="leading-snug"> 
               <h1 className="text-white font-extrabold tracking-wide text-lg">Ateneo de Davao</h1>
               <h2 className="text-white font-bold text-sm uppercase tracking-widest">Academy of Lifelong Learning</h2>
             </div>
@@ -165,11 +169,16 @@ export default function Navbar() {
         </div>
         {/* Mobile Layout */}
         <div className={`${mobileClass} flex-col w-full px-3 py-3`}>
-          <div className="flex items-center w-full z-10">
-            <div className="w-10 h-10 overflow-hidden rounded-full cursor-pointer"> {/* Added cursor-pointer */}
-              <Image src="/add-all logo bg.png" alt="Logo" width={48} height={48} className="object-cover" />
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <div className="w-14 h-14 rounded-full overflow-hidden">
+                <Image src="/addu logo.png" alt="ADDU Logo" width={56} height={56} className="object-cover" />
+              </div>
+              <div className="w-14 h-14 rounded-full overflow-hidden">
+                <Image src="/add-all logo bg.png" alt="ADD-ALL Logo" width={56} height={56} className="object-cover" />
+              </div>
             </div>
-            <div className="leading-snug ml-3 cursor-pointer"> {/* Added cursor-pointer */}
+            <div className="leading-snug ml-3">
               <h1 className="text-white font-extrabold tracking-wide text-sm">Ateneo de Davao</h1>
               <h2 className="text-white font-bold text-xs uppercase tracking-widest">Academy of Lifelong Learning</h2>
             </div>

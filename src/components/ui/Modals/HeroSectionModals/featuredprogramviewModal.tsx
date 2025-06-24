@@ -26,7 +26,7 @@ const FeaturedProgramViewModal: React.FC<FeaturedProgramViewModalProps> = ({ pro
       <div className="bg-white p-0 sm:p-0 rounded-2xl shadow-2xl w-full max-w-4xl min-h-[400px] flex flex-col md:flex-row overflow-hidden relative animate-fade-in">
         {/* Close button */}
         <button
-          className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-2xl font-bold z-10"
+          className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-2xl font-bold z-10 cursor-pointer"
           onClick={onClose}
           aria-label="Close program modal"
         >
