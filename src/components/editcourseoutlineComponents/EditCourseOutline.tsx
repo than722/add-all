@@ -2,8 +2,11 @@
 
 import React, { useState, useMemo } from 'react';
 import { initialCourseOutline, moduleProgress, subsectionProgress } from '@/data/data';
-import Sidebar from '@/components/editcourseoutlineComponents/Sidebar';
+import Sidebar from '@/components/editcourseoutlineComponents/Sidebar'; // Explicit .tsx extension
 import ContentArea from '@/components/editcourseoutlineComponents/ContentArea';
+// Import the delete modals
+import DeleteModuleModal from '@/components/ui/Modals/AdminModals/DeleteModuleModal'; // Explicit .tsx extension
+import DeleteSubsectionModal from '@/components/ui/Modals/AdminModals/DeleteSubsectionModal'; // Explicit .tsx extension
 
 interface ContentBlock {
   id: number;
@@ -57,6 +60,15 @@ export default function EditCourseOutline({
   const [editSubTitle, setEditSubTitle] = useState('');
   const [saveMessage, setSaveMessage] = useState('');
   const [lockedModules, setLockedModules] = useState<number[]>([]);
+
+  // State for Module Delete Modal
+  const [showDeleteModuleModal, setShowDeleteModuleModal] = useState(false);
+  const [moduleToDelete, setModuleToDelete] = useState<Module | null>(null);
+
+  // State for Subsection Delete Modal
+  const [showDeleteSubsectionModal, setShowDeleteSubsectionModal] = useState(false);
+  const [subsectionToDelete, setSubsectionToDelete] = useState<{ modId: number; subId: number; title: string } | null>(null);
+
 
   const filteredModules = useMemo(
     () =>
@@ -132,15 +144,97 @@ export default function EditCourseOutline({
     setTimeout(() => setSaveMessage(''), 2000);
   };
 
+  /**
+   * Initiates the module deletion process by opening the confirmation modal.
+   * Stores the module to be deleted in state.
+   * @param mod The Module object to be deleted.
+   */
+  const handleDeleteModuleClick = (mod: Module) => {
+    setModuleToDelete(mod); // Store the module data
+    setShowDeleteModuleModal(true); // Open the modal
+  };
+
+  /**
+   * Confirms the deletion of a module after user confirmation from the modal.
+   * Filters out the module and its subsections from the course outline.
+   * Adjusts selected module/subsection if the deleted module was active.
+   */
+  const confirmDeleteModule = () => {
+    if (moduleToDelete) {
+      const modId = moduleToDelete.id;
+      setCourseOutline(prev => {
+        const updatedOutline = prev.filter(mod => mod.id !== modId);
+        // If the deleted module was selected, select the first available module or none
+        if (selectedModule === modId) {
+          setSelectedModule(updatedOutline.length > 0 ? updatedOutline[0].id : 0);
+          setSelectedSubsection(null); // Clear selected subsection
+        }
+        setExpandedModule(null); // Collapse any expanded module
+        return updatedOutline;
+      });
+    }
+    setModuleToDelete(null); // Clear the module to delete
+    setShowDeleteModuleModal(false); // Close the modal
+  };
+
+  /**
+   * Cancels the module deletion process, closing the modal without deleting.
+   */
+  const cancelDeleteModule = () => {
+    setModuleToDelete(null);
+    setShowDeleteModuleModal(false);
+  };
+
+  /**
+   * Initiates the subsection deletion process by opening the confirmation modal.
+   * Stores the subsection details (module ID, subsection ID, and title) in state.
+   * @param modId The ID of the parent module.
+   * @param sub The Subsection object to be deleted.
+   */
+  const handleDeleteSubsectionClick = (modId: number, sub: Subsection) => {
+    setSubsectionToDelete({ modId: modId, subId: sub.id, title: sub.title }); // Store subsection data
+    setShowDeleteSubsectionModal(true); // Open the modal
+  };
+
+  /**
+   * Confirms the deletion of a subsection after user confirmation from the modal.
+   * Filters out the subsection from its parent module's subsections.
+   * Adjusts selected subsection if the deleted subsection was active.
+   */
+  const confirmDeleteSubsection = () => {
+    if (subsectionToDelete) {
+      const { modId, subId } = subsectionToDelete;
+      setCourseOutline(prevOutline => prevOutline.map(mod => {
+        if (mod.id === modId) {
+          return {
+            ...mod,
+            subsections: mod.subsections.filter(sub => sub.id !== subId)
+          };
+        }
+        return mod;
+      }));
+      // If the deleted subsection was selected, clear the selection
+      if (selectedSubsection?.modId === modId && selectedSubsection?.subId === subId) {
+        setSelectedSubsection(null);
+      }
+    }
+    setSubsectionToDelete(null); // Clear the subsection to delete
+    setShowDeleteSubsectionModal(false); // Close the modal
+  };
+
+  /**
+   * Cancels the subsection deletion process, closing the modal without deleting.
+   */
+  const cancelDeleteSubsection = () => {
+    setSubsectionToDelete(null);
+    setShowDeleteSubsectionModal(false);
+  };
+
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      {/* Top Header/Navbar placeholder (if you have one above this component) */}
-      {/* Assuming there's a navigation bar like in your screenshot above this component */}
-
       {/* Main content area below the absolute header */}
-      <div className="flex flex-1"> {/* This div now stretches */}
-        {/* Sidebar Component with adjusted positioning if needed */}
-        {/* The Sidebar itself is fixed at the top-left portion of the main content area */}
+      <div className="flex flex-1">
         <Sidebar
           search={search}
           setSearch={setSearch}
@@ -170,48 +264,64 @@ export default function EditCourseOutline({
           setCourseOutline={setCourseOutline}
           onBackClick={onBackClick}
           backButtonText={backButtonText}
+          // Pass the new delete handlers down to Sidebar
+          handleDeleteModuleClick={handleDeleteModuleClick}
+          handleDeleteSubsectionClick={handleDeleteSubsectionClick}
         />
 
-        {/* This div represents the right-hand content section, including its header */}
-        <div className="flex-1 flex flex-col bg-gray-100"> {/* Matches outer background */}
-            {/* Header for the content area on the right */}
-            <div className="w-full bg-white shadow-md p-4 flex justify-between items-center z-10 sticky top-0">
-                <div className="flex items-center">
-                    {saveMessage && (
-                        <span className="ml-4 text-green-600 font-semibold">{saveMessage}</span>
-                    )}
-                </div>
-                <button
-                    onClick={handleSave}
-                    className="bg-green-600 text-white py-2 px-6 rounded-full hover:bg-green-700 transition font-semibold cursor-pointer"
-                >
-                    Save All Changes
-                </button>
+        <div className="flex-1 flex flex-col bg-gray-100">
+          <div className="w-full bg-white shadow-md p-4 flex justify-between items-center z-10 sticky top-0">
+            <div className="flex items-center">
+              {saveMessage && (
+                <span className="ml-4 text-green-600 font-semibold">{saveMessage}</span>
+              )}
             </div>
+            <button
+              onClick={handleSave}
+              className="bg-green-600 text-white py-2 px-6 rounded-full hover:bg-green-700 transition font-semibold cursor-pointer"
+            >
+              Save All Changes
+            </button>
+          </div>
 
-            {/* Main Content Area */}
-            <ContentArea
-                selected={selected}
-                selectedSub={selectedSub}
-                editingModuleId={editingModuleId}
-                editModuleTitle={editModuleTitle}
-                setEditModuleTitle={setEditModuleTitle}
-                saveEditModule={saveEditModule}
-                cancelEditModule={cancelEditModule}
-                editingSubId={editingSubId}
-                editSubTitle={editSubTitle}
-                setEditSubTitle={setEditSubTitle}
-                saveEditSub={saveEditSub}
-                cancelEditSub={cancelEditSub}
-                startEditSub={startEditSub}
-                setSelectedSubsection={setSelectedSubsection}
-                lockedModules={lockedModules}
-                startEditModule={startEditModule}
-                setCourseOutline={setCourseOutline}
-                setSelectedModule={setSelectedModule}
-            />
+          <ContentArea
+            selected={selected}
+            selectedSub={selectedSub}
+            editingModuleId={editingModuleId}
+            editModuleTitle={editModuleTitle}
+            setEditModuleTitle={setEditModuleTitle}
+            saveEditModule={saveEditModule}
+            cancelEditModule={cancelEditModule}
+            editingSubId={editingSubId}
+            editSubTitle={editSubTitle}
+            setEditSubTitle={setEditSubTitle}
+            saveEditSub={saveEditSub}
+            cancelEditSub={cancelEditSub}
+            startEditSub={startEditSub}
+            setSelectedSubsection={setSelectedSubsection}
+            lockedModules={lockedModules}
+            startEditModule={startEditModule}
+            setCourseOutline={setCourseOutline}
+            setSelectedModule={setSelectedModule}
+          />
         </div>
       </div>
+
+      {/* Delete Module Confirmation Modal - Rendered at the top level */}
+      <DeleteModuleModal
+        isOpen={showDeleteModuleModal}
+        moduleName={moduleToDelete?.title || ''}
+        onConfirm={confirmDeleteModule}
+        onCancel={cancelDeleteModule}
+      />
+
+      {/* Delete Subsection Confirmation Modal - Rendered at the top level */}
+      <DeleteSubsectionModal
+        isOpen={showDeleteSubsectionModal}
+        subsectionName={subsectionToDelete?.title || ''}
+        onConfirm={confirmDeleteSubsection}
+        onCancel={cancelDeleteSubsection}
+      />
     </div>
   );
 }

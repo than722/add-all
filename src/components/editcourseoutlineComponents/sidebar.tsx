@@ -3,6 +3,7 @@
 import React, { useState, Dispatch, SetStateAction } from 'react';
 import ProgressCircle from './ProgressCircle';
 import styles from '../../styles/EditCourseOutlineStyle.module.css';
+// Removed modal imports as they are now handled by the parent component
 
 interface ContentBlock {
   id: number;
@@ -53,6 +54,9 @@ interface SidebarProps {
   setCourseOutline: Dispatch<SetStateAction<Module[]>>;
   onBackClick: () => void;
   backButtonText: string;
+  // New props for handling delete modals from parent
+  handleDeleteModuleClick: (mod: Module) => void;
+  handleDeleteSubsectionClick: (modId: number, sub: Subsection) => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -84,51 +88,28 @@ const Sidebar: React.FC<SidebarProps> = ({
   setCourseOutline,
   onBackClick,
   backButtonText,
+  // Destructure new props
+  handleDeleteModuleClick,
+  handleDeleteSubsectionClick,
 }) => {
+  /**
+   * Handles adding a new module to the course outline.
+   * Generates a new ID, creates a new module object, adds it to the outline,
+   * sets it as selected and expanded, and starts editing its title.
+   */
   const handleAddModule = () => {
-    const newId = Date.now();
+    const newId = Date.now(); // Unique ID for the new module
     const newModule: Module = {
       id: newId,
-      title: `New Module ${filteredModules.length + 1}`,
+      title: `New Module ${filteredModules.length + 1}`, // Default title
       contentBlocks: [{ id: Date.now() + 0.1, type: 'text', value: 'Content for new module.' }],
-      subsections: []
+      subsections: [] // New modules start with no subsections
     };
-    setCourseOutline(prev => [...prev, newModule]);
-    setSelectedModule(newId);
-    setExpandedModule(newId);
-    setEditModuleTitle(newModule.title);
-    startEditModule(newModule);
-  };
-
-  const handleDeleteModule = (modId: number) => {
-    if (window.confirm('Are you sure you want to delete this module and all its subsections?')) {
-      setCourseOutline(prev => {
-        const updatedOutline = prev.filter(mod => mod.id !== modId);
-        if (selectedModule === modId) {
-          setSelectedModule(updatedOutline.length > 0 ? updatedOutline[0].id : 0);
-          setSelectedSubsection(null);
-        }
-        setExpandedModule(null);
-        return updatedOutline;
-      });
-    }
-  };
-
-  const handleDeleteSubsection = (modId: number, subId: number) => {
-    if (window.confirm('Are you sure you want to delete this subsection?')) {
-      setCourseOutline(prevOutline => prevOutline.map(mod => {
-        if (mod.id === modId) {
-          return {
-            ...mod,
-            subsections: mod.subsections.filter(sub => sub.id !== subId)
-          };
-        }
-        return mod;
-      }));
-      if (selectedSubsection?.modId === modId && selectedSubsection?.subId === subId) {
-        setSelectedSubsection(null);
-      }
-    }
+    setCourseOutline(prev => [...prev, newModule]); // Add new module to the state
+    setSelectedModule(newId); // Select the new module
+    setExpandedModule(newId); // Expand the new module
+    setEditModuleTitle(newModule.title); // Set the editing title to the new module's title
+    startEditModule(newModule); // Start editing the new module
   };
 
   return (
@@ -185,7 +166,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   }}
                   className={`w-full bg-blue-50 border border-blue-300 rounded px-2 py-1 text-sm focus:outline-none ${styles.inputFocusRing}`}
                   autoFocus
-                  onClick={e => e.stopPropagation()}
+                  onClick={e => e.stopPropagation()} // Prevent module click when editing
                 />
               ) : (
                 <span className="text-sm sm:text-base">{mod.title}</span>
@@ -219,7 +200,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   )}
                 </button>
                 <button
-                  onClick={(e) => { e.stopPropagation(); handleDeleteModule(mod.id); }}
+                  onClick={(e) => { e.stopPropagation(); handleDeleteModuleClick(mod); }} // Use the new click handler
                   className={`ml-1 p-1 rounded-full bg-red-500 text-white hover:bg-red-600 ${styles.transitionAllEase} cursor-pointer ${styles.btnHoverScale}`}
                   title="Delete Module"
                 >
@@ -265,7 +246,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                               </svg>
                             </button>
                             <button
-                              onClick={(e) => { e.stopPropagation(); handleDeleteSubsection(mod.id, sub.id); }}
+                              onClick={(e) => { e.stopPropagation(); handleDeleteSubsectionClick(mod.id, sub); }} // Use the new click handler
                               className={`ml-1 p-1 rounded-full bg-red-400 text-white hover:bg-red-500 ${styles.transitionAllEase} cursor-pointer ${styles.btnHoverScale}`}
                               title="Delete Subsection"
                             >

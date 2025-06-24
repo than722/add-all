@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import AddProgramModal from '@/components/ui/Modals/AdminModals/addprogramModal';
 import ArchiveModal from '@/components/ui/Modals/AdminModals/archiveModal';
@@ -105,7 +104,7 @@ const ProgramListComponent: React.FC<ProgramListComponentProps> = ({ role, allPr
                     alt="Thumbnail"
                     width={320}
                     height={160}
-                    className="object-cover w-full h-full"
+                    className="object-cover w-50 h-50"
                     unoptimized={p.thumbnail?.startsWith('http')}
                   />
                 </div>
