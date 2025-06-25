@@ -1,18 +1,37 @@
-// HeroSection.tsx
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import RegisterModal from '../ui/Modals/HeroSectionModals/registration';
 import InquireModal from '../ui/Modals/HeroSectionModals/InquireModal';
 import Image from 'next/image';
 
 const HeroSection: React.FC = () => {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-  // New state for the Inquire Modal
   const [isInquireOpen, setIsInquireOpen] = useState(false);
 
-  // Determine if any modal is open to apply blur effects
   const isAnyModalOpen = isRegisterOpen || isInquireOpen;
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Automatically scroll if a scrollTarget param exists (from redirected links like /aboutus or /vision)
+  useEffect(() => {
+    const scrollTarget = searchParams.get('scrollTarget');
+    if (scrollTarget) {
+      const el = document.getElementById(scrollTarget);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }, 100); // Small delay to ensure DOM is ready
+
+        // Remove the scrollTarget param from the URL after scrolling
+        const newUrl = `${pathname}`;
+        router.replace(newUrl);
+      }
+    }
+  }, [searchParams, pathname, router]);
 
   const scrollToPrograms = useCallback(() => {
     const element = document.getElementById('programs');
@@ -28,11 +47,10 @@ const HeroSection: React.FC = () => {
         <div
           className="absolute inset-0 bg-[url('/landingpagebg.png')] bg-cover bg-center z-0"
           style={{
-            filter: isAnyModalOpen ? 'blur(4px)' : 'none', // Apply blur if any modal is open
+            filter: isAnyModalOpen ? 'blur(4px)' : 'none',
             transition: 'filter 0.3s ease',
           }}
         />
-        {/* Dark overlay, hidden when a modal is open to allow modal overlay to show */}
         <div
           className="absolute inset-0 bg-black/50 z-10"
           style={{ display: isAnyModalOpen ? 'none' : 'block' }}
@@ -42,7 +60,7 @@ const HeroSection: React.FC = () => {
         <div
           className="relative z-20 flex flex-col lg:flex-row justify-between items-start w-full max-w-7xl mx-auto gap-6 sm:gap-10"
           style={{
-            filter: isAnyModalOpen ? 'blur(4px)' : 'none', // Apply blur if any modal is open
+            filter: isAnyModalOpen ? 'blur(4px)' : 'none',
             transition: 'filter 0.3s ease',
           }}
         >
@@ -70,9 +88,8 @@ const HeroSection: React.FC = () => {
               learners aged 25 and above...
             </p>
             <div className="flex flex-wrap gap-3 sm:gap-4">
-              {/* Inquire now! button - now opens the Inquire Modal */}
               <button
-                onClick={() => setIsInquireOpen(true)} // Set isInquireOpen to true
+                onClick={() => setIsInquireOpen(true)}
                 className="px-4 sm:px-6 py-2 sm:py-3 bg-[#FFC72C] text-[#08228d] font-bold rounded-full shadow hover:bg-yellow-400 transition duration-300 text-sm sm:text-base cursor-pointer font-inter"
               >
                 Inquire now!
@@ -95,17 +112,8 @@ const HeroSection: React.FC = () => {
         </div>
       </section>
 
-      {/* Existing Register Modal */}
-      <RegisterModal
-        isOpen={isRegisterOpen}
-        onClose={() => setIsRegisterOpen(false)}
-      />
-
-      {/* New Inquire Modal */}
-      <InquireModal
-        isOpen={isInquireOpen} // Pass the state to the InquireModal
-        onClose={() => setIsInquireOpen(false)} // Pass the setter to close the modal
-      />
+      <RegisterModal isOpen={isRegisterOpen} onClose={() => setIsRegisterOpen(false)} />
+      <InquireModal isOpen={isInquireOpen} onClose={() => setIsInquireOpen(false)} />
     </>
   );
 };

@@ -10,6 +10,7 @@ export default function AdminCourseOutlineViewClient({ programName }: { programN
       backRoute={`/admin/programlist/${encodeURIComponent(programName)}`}
       backLabel={`Back to ${decodeURIComponent(programName)}`}
       welcomeMessage="Select a module from the left to view its content and subsections."
+      forumRoute={`/admin/programlist/${programName}/forum`}
     />
   );
 }

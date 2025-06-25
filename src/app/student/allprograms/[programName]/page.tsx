@@ -7,7 +7,6 @@ interface StudentProgramDetailsPageProps {
   };
 }
 
-// This page is now a pure Server Component (removed 'use client;')
 export default async function StudentProgramDetailsPage({ params }: StudentProgramDetailsPageProps) {
   const { programName } = params;
 

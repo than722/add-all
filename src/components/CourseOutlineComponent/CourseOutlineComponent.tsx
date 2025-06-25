@@ -5,12 +5,15 @@ import { useRouter } from 'next/navigation';
 import { initialCourseOutline, moduleProgress, subsectionProgress } from '@/data/data';
 import ProgressCircle from '@/components/editcourseoutlineComponents/ProgressCircle';
 import '@/styles/CourseOutlineStyle.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft, faComments } from '@fortawesome/free-solid-svg-icons';
 
 interface CourseOutlineProps {
   programName: string;
   backRoute: string;
   backLabel: string;
   welcomeMessage: string;
+  forumRoute: string;         
   readOnly?: boolean;
 }
 
@@ -19,9 +22,10 @@ export default function CourseOutline({
   backRoute,
   backLabel,
   welcomeMessage,
+  forumRoute,                
 }: CourseOutlineProps) {
   const router = useRouter();
-  const [expandedModule, setExpandedModule] = useState<number | null>(null);
+  const [expandedModule, setExpandedModule] = useState<number | null>(initialCourseOutline[0]?.id || null);
   const [selectedModule, setSelectedModule] = useState<number | null>(initialCourseOutline[0]?.id || null);
   const [selectedSubsection, setSelectedSubsection] = useState<{ modId: number; subId: number } | null>(null);
   const [search, setSearch] = useState('');
@@ -48,15 +52,28 @@ export default function CourseOutline({
       {/* Sidebar */}
       <aside className="course-outline-sidebar">
         <div className="flex flex-col sm:flex-row items-start sm:items-center mb-4 gap-3">
-          <button
-            onClick={() => router.push(backRoute)}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg font-medium text-sm shadow-md hover:bg-blue-700 transition duration-300 transform hover:scale-105 cursor-pointer"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            {backLabel}
-          </button>
+          <div className="flex space-x-2">
+            {/* Back Button */}
+            <button
+              onClick={() => router.push(backRoute)}
+              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg font-medium text-sm shadow-md hover:bg-blue-700 transition duration-300 transform hover:scale-105 cursor-pointer"
+              aria-label="Back"
+            >
+              <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+              {backLabel}
+            </button>
+
+            {/* Forum Button */}
+            <button
+              onClick={() => router.push(forumRoute)}         
+              className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg font-medium text-sm shadow-md hover:bg-green-700 transition duration-300 transform hover:scale-105 cursor-pointer"
+              aria-label="Forum"
+            >
+              <FontAwesomeIcon icon={faComments} className="mr-2" />
+              Forum
+            </button>
+          </div>
+
           <h2 className="sm:ml-4 text-xl lg:text-2xl font-extrabold text-blue-800 break-words">
             {decodeURIComponent(programName)}
           </h2>
@@ -89,7 +106,10 @@ export default function CourseOutline({
                   <div className="flex items-center space-x-2">
                     <span className="text-sm text-blue-600 font-semibold">{moduleProgress[mod.id] || 0}%</span>
                     <div className="w-20 bg-gray-200 rounded-full h-2">
-                      <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${moduleProgress[mod.id] || 0}%` }} />
+                      <div
+                        className="bg-blue-500 h-2 rounded-full"
+                        style={{ width: `${moduleProgress[mod.id] || 0}%` }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -129,9 +149,7 @@ export default function CourseOutline({
               onClick={() => setSelectedSubsection(null)}
               className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
+              <FontAwesomeIcon icon={faArrowLeft} className="mr-1" />
               Back to module overview
             </button>
           </div>

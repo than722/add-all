@@ -10,6 +10,7 @@ export default function SuperAdminCourseOutlineView({ programName }: { programNa
       backRoute={`/admin/programlist/${encodeURIComponent(programName)}`}
       backLabel={`Back to ${decodeURIComponent(programName)}`}
       welcomeMessage="Select a module from the left to view its content and subsections."
+      forumRoute={`/superadmin/programlist/${programName}/forum`}
     />
   );
 }

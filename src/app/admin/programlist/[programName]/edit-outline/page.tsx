@@ -1,4 +1,4 @@
-// app/admin/programs/[programName]/edit/page.tsx
+
 
 import AdminEditCourseOutlineClient from '@/components/Admin/programlistPage/AdminEditCourseOutline'; // Use a dedicated Admin client component
 

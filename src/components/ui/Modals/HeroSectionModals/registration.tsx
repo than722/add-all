@@ -12,50 +12,50 @@ import React, { useState } from 'react';
 export default function RegisterModal({
   isOpen,
   onClose,
-  onRegister, // Added an optional onRegister prop for parent communication
+  onRegister,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onRegister?: (userData: { fullName: string; email: string; contact: string }) => void;
+  onRegister?: (userData: {
+    fullName: string;
+    email: string;
+    contact: string;
+    companyName: string;
+    designation: string;
+  }) => void;
 }) {
-  // State for form inputs
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [contact, setContact] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [designation, setDesignation] = useState('');
 
-  // State for validation errors
   const [fullNameError, setFullNameError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [contactError, setContactError] = useState<string | null>(null);
 
-  // Helper function to validate email format
   const validateEmail = (email: string): boolean => {
     return /\S+@\S+\.\S+/.test(email);
   };
 
-  // Helper function to validate contact number (basic check for digits, could be expanded)
   const validateContact = (contact: string): boolean => {
-    // Allows for basic digits, spaces, hyphens, and parentheses
-    return /^[0-9\s\-()+]+$/.test(contact) && contact.trim().length >= 7; // Minimum 7 digits
+    return /^[0-9\s\-()+]+$/.test(contact) && contact.trim().length >= 7;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Reset all errors at the start of validation
     setFullNameError(null);
     setEmailError(null);
     setContactError(null);
 
     let isValid = true;
 
-    // Validate Full Name
     if (!fullName.trim()) {
       setFullNameError('Full Name is required.');
       isValid = false;
     }
 
-    // Validate Email
     if (!email.trim()) {
       setEmailError('Email is required.');
       isValid = false;
@@ -64,32 +64,36 @@ export default function RegisterModal({
       isValid = false;
     }
 
-    // Validate Contact No.
     if (!contact.trim()) {
       setContactError('Contact Number is required.');
       isValid = false;
     } else if (!validateContact(contact)) {
-      setContactError('Please enter a valid contact number (digits, spaces, hyphens, parentheses allowed, min 7 digits).');
+      setContactError('Please enter a valid contact number (min 7 digits).');
       isValid = false;
     }
 
     if (isValid) {
-      // If validation passes, call the onRegister callback (if provided)
-      if (onRegister) {
-        onRegister({ fullName, email, contact });
-      }
-      // Log for demonstration
-      console.log('Registration successful:', { fullName, email, contact });
+      const userData = {
+        fullName,
+        email,
+        contact,
+        companyName: companyName.trim() !== '' ? companyName : 'N/A',
+        designation: designation.trim() !== '' ? designation : 'N/A',
+      };
 
-      // Clear the form and close the modal
+      if (onRegister) onRegister(userData);
+
+      console.log('Registration successful:', userData);
+
       setFullName('');
       setEmail('');
       setContact('');
+      setCompanyName('');
+      setDesignation('');
       onClose();
     }
   };
 
-  // Return null to prevent rendering the modal when it is not open
   if (!isOpen) return null;
 
   return (
@@ -117,6 +121,7 @@ export default function RegisterModal({
           Register
         </h2>
         <form className="space-y-3 sm:space-y-4" onSubmit={handleSubmit}>
+          {/* Full Name */}
           <div>
             <label htmlFor="fullname" className="block text-gray-700 mb-1 font-semibold text-sm">
               Full Name
@@ -125,16 +130,17 @@ export default function RegisterModal({
               type="text"
               id="fullname"
               name="fullname"
-              className={`w-full border rounded-lg px-3 sm:px-4 py-2 focus:outline-none focus:ring-2 text-sm ${fullNameError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-primary'}`}
+              className={`w-full border rounded-lg px-3 py-2 text-sm ${fullNameError ? 'border-red-500' : 'border-gray-300'}`}
               value={fullName}
               onChange={(e) => {
                 setFullName(e.target.value);
-                setFullNameError(null); // Clear error on change
+                setFullNameError(null);
               }}
             />
             {fullNameError && <p className="text-red-500 text-xs mt-1">{fullNameError}</p>}
           </div>
 
+          {/* Email */}
           <div>
             <label htmlFor="email" className="block text-gray-700 mb-1 font-semibold text-sm">
               Email
@@ -143,32 +149,63 @@ export default function RegisterModal({
               type="email"
               id="email"
               name="email"
-              className={`w-full border rounded-lg px-3 sm:px-4 py-2 focus:outline-none focus:ring-2 text-sm ${emailError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-[#92D0D3]'}`}
+              className={`w-full border rounded-lg px-3 py-2 text-sm ${emailError ? 'border-red-500' : 'border-gray-300'}`}
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
-                setEmailError(null); // Clear error on change
+                setEmailError(null);
               }}
             />
             {emailError && <p className="text-red-500 text-xs mt-1">{emailError}</p>}
           </div>
 
+          {/* Contact No */}
           <div>
             <label htmlFor="contact" className="block text-gray-700 mb-1 font-semibold text-sm">
               Contact No.
             </label>
             <input
-              type="tel" // Use type="tel" for phone numbers
+              type="tel"
               id="contact"
               name="contact"
-              className={`w-full border rounded-lg px-3 sm:px-4 py-2 focus:outline-none focus:ring-2 text-sm ${contactError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-[#92D0D3]'}`}
+              className={`w-full border rounded-lg px-3 py-2 text-sm ${contactError ? 'border-red-500' : 'border-gray-300'}`}
               value={contact}
               onChange={(e) => {
                 setContact(e.target.value);
-                setContactError(null); // Clear error on change
+                setContactError(null);
               }}
             />
             {contactError && <p className="text-red-500 text-xs mt-1">{contactError}</p>}
+          </div>
+
+          {/* Company Name (Optional) */}
+          <div>
+            <label htmlFor="companyName" className="block text-gray-700 mb-1 font-semibold text-sm">
+              Company Name <span className="text-gray-500">(Optional - type N/A if not applicable)</span>
+            </label>
+            <input
+              type="text"
+              id="companyName"
+              name="companyName"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+            />
+          </div>
+
+          {/* Designation (Optional) */}
+          <div>
+            <label htmlFor="designation" className="block text-gray-700 mb-1 font-semibold text-sm">
+              Designation <span className="text-gray-500">(Optional - type N/A if not applicable)</span>
+            </label>
+            <input
+              type="text"
+              id="designation"
+              name="designation"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              value={designation}
+              onChange={(e) => setDesignation(e.target.value)}
+            />
           </div>
 
           <button

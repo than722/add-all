@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import AddProgramModal from '@/components/ui/Modals/AdminModals/addprogramModal';
 import EnrollModal from '@/components/ui/Modals/EnrollmentModal/enrollmentModal';
+import RegistrationModal from '@/components/ui/Modals/StudentModals/RegistrationModal';
+import CancelRegistrationModal from '@/components/ui/Modals/StudentModals/CancelRegistrationModal';
 import { programsList } from '@/data/programsData';
 import { instructors, programPrices } from '@/data/data';
 import { useAuth } from '@/components/contexts/authContext';
@@ -27,9 +29,13 @@ const ProgramActionsClient: React.FC<ProgramActionsClientProps> = ({ programName
 
   const [isEnrollOpen, setIsEnrollOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isRegistrationModalOpen, setIsRegistrationModalOpen] = useState(false);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+
   const [pendingApps, setPendingApps] = useState<PendingApplication[]>([]);
-  const price = programData ? programPrices[programData.program] || 0 : 0;
   const { role } = useAuth();
+
+  const price = programData ? programPrices[programData.program] || 0 : 0;
 
   const currentStudent = { name: 'Juan Dela Cruz', email: 'student@example.com' };
 
@@ -75,6 +81,29 @@ const ProgramActionsClient: React.FC<ProgramActionsClientProps> = ({ programName
     setIsEnrollOpen(false);
   };
 
+  const handleStudentRegistration = () => {
+    setPendingApps((prev) => [
+      ...prev,
+      {
+        name: currentStudent.name,
+        email: currentStudent.email,
+        receiptUrl: '',
+        paymentType: 'N/A',
+        status: 'pending',
+      },
+    ]);
+    setIsRegistrationModalOpen(false);
+  };
+
+  const handleCancelRegistration = () => {
+    setPendingApps((prev) =>
+      prev.filter(
+        (app) => !(app.email === currentStudent.email && app.status === 'pending')
+      )
+    );
+    setIsCancelModalOpen(false);
+  };
+
   const handleFieldChange = (field: string, value: string) => {
     setProgramForm((prev) => ({ ...prev, [field]: value }));
   };
@@ -101,17 +130,26 @@ const ProgramActionsClient: React.FC<ProgramActionsClientProps> = ({ programName
 
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-8 mt-4 sm:mt-6 mb-8 sm:mb-12 text-center">
+      {/* Admin Buttons */}
       {isAdminLike && (
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
           <button
             className="bg-blue-500 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full hover:bg-blue-700 transition text-sm sm:text-base cursor-pointer"
-            onClick={() => window.location.href = `/${role}/programlist/${encodeURIComponent(programData.program)}/view-outline`}
+            onClick={() =>
+              (window.location.href = `/${role}/programlist/${encodeURIComponent(
+                programData.program
+              )}/view-outline`)
+            }
           >
             View Outline
           </button>
           <button
             className="bg-green-500 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full hover:bg-green-700 transition text-sm sm:text-base cursor-pointer"
-            onClick={() => window.location.href = `/${role}/programlist/${encodeURIComponent(programData.program)}/edit-outline`}
+            onClick={() =>
+              (window.location.href = `/${role}/programlist/${encodeURIComponent(
+                programData.program
+              )}/edit-outline`)
+            }
           >
             Edit Outline
           </button>
@@ -124,47 +162,88 @@ const ProgramActionsClient: React.FC<ProgramActionsClientProps> = ({ programName
         </div>
       )}
 
+      {/* Instructor Buttons */}
       {role === 'instructor' && (
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
           <button
             className="bg-[#92D0D3] text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full hover:bg-[#6bb7b9] transition text-sm sm:text-base cursor-pointer"
-            onClick={() => window.location.href = `/instructor/assignedprograms/${encodeURIComponent(programData.program)}/enrolledstudents`}
+            onClick={() =>
+              (window.location.href = `/instructor/assignedprograms/${encodeURIComponent(
+                programData.program
+              )}/enrolledstudents`)
+            }
           >
             List of Students
           </button>
           <button
             className="bg-blue-500 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full hover:bg-blue-700 transition text-sm sm:text-base cursor-pointer"
-            onClick={() => window.location.href = `/instructor/assignedprograms/${encodeURIComponent(programData.program)}/viewoutline`}
+            onClick={() =>
+              (window.location.href = `/instructor/assignedprograms/${encodeURIComponent(
+                programData.program
+              )}/viewoutline`)
+            }
           >
             View Outline
           </button>
           <button
             className="bg-[#08228d] text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full hover:bg-[#001f40] transition text-sm sm:text-base cursor-pointer"
-            onClick={() => window.location.href = `/instructor/assignedprograms/${encodeURIComponent(programData.program)}/editprogram`}
+            onClick={() =>
+              (window.location.href = `/instructor/assignedprograms/${encodeURIComponent(
+                programData.program
+              )}/editprogram`)
+            }
           >
             Edit Course Outline
           </button>
         </div>
       )}
 
-      {role === 'student' &&
-        (studentPendingApp ? (
-          <span className="inline-block bg-yellow-400 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full cursor-not-allowed text-sm sm:text-base">
-            Pending Application
-          </span>
-        ) : studentEnrolledApp ? (
-          <span className="inline-block bg-green-500 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full text-sm sm:text-base">
-            Enrolled
-          </span>
-        ) : (
-          <button
-            className="bg-[#08228d] text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full hover:bg-[#001f40] transition duration-300 text-sm sm:text-base cursor-pointer"
-            onClick={() => setIsEnrollOpen(true)}
-          >
-            Enroll Now
-          </button>
-        ))}
+      {/* Student Buttons */}
+      {role === 'student' && (
+        <>
+          {studentPendingApp ? (
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+              <span className="inline-block bg-yellow-400 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full text-sm sm:text-base">
+                Pending Application
+              </span>
+              <button
+                className="bg-red-500 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full hover:bg-red-700 transition text-sm sm:text-base cursor-pointer"
+                onClick={() => setIsCancelModalOpen(true)}
+              >
+                Cancel Registration
+              </button>
+            </div>
+          ) : studentEnrolledApp ? (
+            <span className="inline-block bg-green-500 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full text-sm sm:text-base">
+              Enrolled
+            </span>
+          ) : (
+            <button
+              className="bg-[#08228d] text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full hover:bg-[#001f40] transition text-sm sm:text-base cursor-pointer"
+              onClick={() => setIsRegistrationModalOpen(true)}
+            >
+              Register Now
+            </button>
+          )}
 
+          {/* Registration Modal */}
+          <RegistrationModal
+            isOpen={isRegistrationModalOpen}
+            onClose={() => setIsRegistrationModalOpen(false)}
+            onConfirm={handleStudentRegistration}
+            programName={programData.program}
+          />
+
+          {/* Cancel Registration Confirmation Modal */}
+          <CancelRegistrationModal
+            isOpen={isCancelModalOpen}
+            onClose={() => setIsCancelModalOpen(false)}
+            onConfirm={handleCancelRegistration}
+          />
+        </>
+      )}
+
+      {/* Enrollment Modal */}
       {role === 'student' && programData && (
         <EnrollModal
           isOpen={isEnrollOpen}
@@ -175,6 +254,7 @@ const ProgramActionsClient: React.FC<ProgramActionsClientProps> = ({ programName
         />
       )}
 
+      {/* Admin Edit Program Modal */}
       {isAdminLike && (
         <AddProgramModal
           isOpen={isEditModalOpen}
