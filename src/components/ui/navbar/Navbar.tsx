@@ -96,7 +96,17 @@ export default function Navbar() {
       navLinks.default;
 
     return links.flatMap((link, i) => {
-      const commonClass = `text-white font-extrabold hover:text-[#FFC72C] ${isMobile ? 'text-base py-1 px-2' : 'text-sm py-1 px-1'} cursor-pointer whitespace-nowrap`;
+      // MODIFIED: Adjusted text sizes here for the desired "between sm and lg" effect
+      // Use text-sm for smaller mobile, text-base for larger mobile/default,
+      // and then text-base for desktop to be a slight increase from original text-sm.
+      const commonClass = `
+        text-white
+        font-extrabold
+        hover:text-[#FFC72C]
+        ${isMobile ? 'text-base py-1 px-2' : 'text-base py-1 px-1'} // Desktop now uses 'text-base' (16px) instead of 'text-sm' (14px)
+        cursor-pointer
+        whitespace-nowrap
+      `.trim().replace(/\s+/g, ' '); // Clean up extra spaces
 
       const linkElement = link.href && !link.onClick ? (
         <Link
@@ -121,6 +131,7 @@ export default function Navbar() {
       );
 
       // Optional visual separator for Superadmin
+      // Consider adjusting the spacing around the divider if text size changes significantly
       if (role === 'superadmin' && link.label === 'Programs' && !isMobile) {
         return [
           linkElement,
@@ -157,8 +168,9 @@ export default function Navbar() {
           </div>
 
           {/* Center Navigation Links */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-x-6 items-center whitespace-nowrap text-sm">
-            {renderLinks(false)}
+          {/* Keep gap-x-6 or adjust if needed with the new font size */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-x-6 items-center whitespace-nowrap">
+            {renderLinks(false)} {/* This will now render with text-base */}
           </div>
 
           <div className="flex items-center ml-auto">
@@ -226,7 +238,7 @@ export default function Navbar() {
 
           {navOpen && (
             <div className="flex flex-col w-full mt-2 gap-2 bg-[#08228d] rounded shadow-md z-20">
-              {renderLinks(true)}
+              {renderLinks(true)} {/* This will still render with 'text-base' for mobile links */}
             </div>
           )}
         </div>
