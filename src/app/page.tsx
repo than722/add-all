@@ -1,20 +1,16 @@
 import HeroSection from '../components/herosection/HeroSection';
-import Programs from '../components/herosection/programs';
-import Vision from '../components/herosection/vision';
-import AboutUs from '../components/herosection/aboutUs';
+import Featured from '../components/herosection/Featured';
+import Partnership from '../components/herosection/Partnership';
 
 export default function Page() {
   return (
     <main className="min-h-screen w-full bg-gray-50">
       <HeroSection />
-      <div className="px-2 sm:px-0" id="programs">
-        <Programs />
+      <div className="px-2 sm:px-0" id="featured">
+        <Featured />
       </div>
-      <div className="px-2 sm:px-0" id="vision-section">
-        <Vision />
-      </div>
-      <div className="px-2 sm:px-0" id="aboutus-section">
-        <AboutUs />
+      <div className="px-2 sm:px-0" id="partnership">
+        <Partnership />
       </div>
     </main>
   );

@@ -1,37 +1,38 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { demoStudentListData } from "@/data/data";
-import Profile from "@/components/ui/Modals/ProfileModals/profileview";
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { demoStudentListData } from '@/data/data';
+import SendRemarksModal from '@/components/ui/Modals/InstructorModal/RemarksModal';
 
 interface PendingApplication {
   name: string;
   email: string;
   receiptUrl: string;
   paymentType: string;
-  status: "pending" | "enrolled";
+  status: 'pending' | 'enrolled';
   contactNo?: string;
 }
 
 const StudentListClient = () => {
   const searchParams = useSearchParams();
-  const programName = searchParams?.get("program");
+  const programName = searchParams?.get('program');
   const [students, setStudents] = useState<PendingApplication[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<PendingApplication | null>(null);
+  const [remarksStudent, setRemarksStudent] = useState<PendingApplication | null>(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       if (programName && demoStudentListData[programName]) {
         localStorage.setItem(
           `pendingApps_${programName}`,
           JSON.stringify(demoStudentListData[programName])
         );
-        setStudents(demoStudentListData[programName].filter((app) => app.status === "enrolled"));
+        setStudents(demoStudentListData[programName].filter((app) => app.status === 'enrolled'));
       } else if (!programName) {
         const allEnrolled: PendingApplication[] = Object.values(demoStudentListData)
           .flat()
-          .filter((app) => app.status === "enrolled");
+          .filter((app) => app.status === 'enrolled');
         setStudents(allEnrolled);
       } else {
         setStudents([]);
@@ -39,11 +40,17 @@ const StudentListClient = () => {
     }
   }, [programName]);
 
+  const handleSendRemarks = (title: string, description: string) => {
+    console.log(`Remarks for ${remarksStudent?.name}:`, { title, description });
+    alert(`Remarks sent to ${remarksStudent?.name}:\n\nTitle: ${title}\nDescription: ${description}`);
+    setRemarksStudent(null);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-2xl mx-auto bg-white p-4 sm:p-8 mt-4 sm:mt-8 rounded-xl shadow">
         <h2 className="text-xl sm:text-2xl font-bold text-[#08228d] mb-4 sm:mb-6 text-center">
-          Enrolled Students{programName ? ` for ${programName}` : ""}
+          Enrolled Students{programName ? ` for ${programName}` : ''}
         </h2>
         {students.length === 0 ? (
           <div className="text-center text-gray-500 italic text-sm sm:text-base">No students enrolled yet.</div>
@@ -59,7 +66,9 @@ const StudentListClient = () => {
                   <span className="block sm:inline ml-0 sm:ml-2 text-gray-500 text-xs sm:text-sm">{student.email}</span>
                 </div>
                 <div className="mt-2 sm:mt-0 flex gap-2 items-center">
-                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">Enrolled</span>
+                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
+                    Enrolled
+                  </span>
                   <button
                     className="flex items-center justify-center w-12 h-12 rounded-full hover:bg-gray-200 transition cursor-pointer"
                     onClick={() => setSelectedStudent(student)}
@@ -67,12 +76,20 @@ const StudentListClient = () => {
                   >
                     <img src="/profileicon.png" alt="View Profile" className="w-8 h-8" />
                   </button>
+                  <button
+                    onClick={() => setRemarksStudent(student)}
+                    className="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 transition cursor-pointer"
+                  >
+                    Remarks
+                  </button>
                 </div>
               </li>
             ))}
           </ul>
         )}
       </div>
+
+      {/* Profile View Modal */}
       {selectedStudent && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-2 sm:px-0">
           <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-xs sm:max-w-lg flex flex-col items-center relative">
@@ -84,7 +101,7 @@ const StudentListClient = () => {
               ✕
             </button>
             <img
-              src={"/profileicon.png"}
+              src={'/profileicon.png'}
               alt={selectedStudent.name}
               width={120}
               height={120}
@@ -97,6 +114,16 @@ const StudentListClient = () => {
             )}
           </div>
         </div>
+      )}
+
+      {/* Send Remarks Modal */}
+      {remarksStudent && (
+        <SendRemarksModal
+          isOpen={remarksStudent !== null}
+          studentName={remarksStudent?.name || ''}
+          onClose={() => setRemarksStudent(null)}
+          onSubmit={handleSendRemarks}
+        />
       )}
     </div>
   );

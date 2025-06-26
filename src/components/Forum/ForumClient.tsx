@@ -116,11 +116,20 @@ const ForumClient: React.FC<ForumClientProps> = ({ programName, backRoute }) => 
     );
   };
 
-  const handleLikePost = (postId: string) => {
+  const handleLikePost = (postId: string, isLiked: boolean) => {
     setForumPosts(prev =>
-      prev.map(post =>
-        post.id === postId ? { ...post, likes: post.likes + 1 } : post
-      )
+      prev.map(post => {
+        if (post.id === postId) {
+          let newLikes = post.likes;
+          if (isLiked) {
+            newLikes = post.likes + 1;
+          } else {
+            newLikes = Math.max(0, post.likes - 1);
+          }
+          return { ...post, likes: newLikes };
+        }
+        return post;
+      })
     );
   };
 
@@ -148,7 +157,7 @@ const ForumClient: React.FC<ForumClientProps> = ({ programName, backRoute }) => 
             {isProgramSpecific && backRoute && (
               <button
                 onClick={handleBackToProgram}
-                className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded flex items-center gap-2"
+                className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded flex items-center gap-2 cursor-pointer"
               >
                 <FontAwesomeIcon icon={faArrowLeft} />
                 Back to {decodedProgramName}
@@ -158,7 +167,7 @@ const ForumClient: React.FC<ForumClientProps> = ({ programName, backRoute }) => 
             {currentView === 'list' && !isGuest && (
               <button
                 onClick={() => setShowCreatePostModal(true)}
-                className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded"
+                className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded cursor-pointer"
               >
                 Create New Post
               </button>
@@ -170,7 +179,7 @@ const ForumClient: React.FC<ForumClientProps> = ({ programName, backRoute }) => 
                   setSelectedPost(null);
                   setCurrentView('list');
                 }}
-                className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded"
+                className="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded cursor-pointer"
               >
                 Back to Forum List
               </button>

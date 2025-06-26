@@ -1,5 +1,6 @@
-import { redirect } from 'next/navigation';
+import AboutUs from '@/components//herosection/aboutUs';
+import React from 'react';
 
-export default function AboutUsRedirect() {
-  redirect('/?scrollTarget=aboutus-section');
+export default function AboutUsPage() {
+  return <AboutUs />;
 }

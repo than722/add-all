@@ -70,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           <div className="mb-5">
             <label
               htmlFor="program-select"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className={`block text-sm font-medium mb-2 ${selectedCategory === 'All Categories' ? 'text-gray-400' : 'text-gray-700'}`}
             >
               Filter by Specific Program:
             </label>
@@ -79,7 +79,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 id="program-select"
                 value={selectedProgram}
                 onChange={(e) => setSelectedProgram(e.target.value)}
-                className="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm appearance-none pr-8 cursor-pointer"
+                className={`block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm appearance-none pr-8 cursor-pointer ${selectedCategory === 'All Categories' ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : ''}`}
                 disabled={selectedCategory === 'All Categories'}
               >
                 {programsInSelectedCategory.map((progName) => (

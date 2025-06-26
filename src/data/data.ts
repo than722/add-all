@@ -50,7 +50,7 @@ export interface StudentRecord {
   img: string;
   bio: string;
   contact: string;
-  status: 'registered' | 'pending' | 'enrolled';
+  status: 'registered' | 'pending' | 'enrolled' | 'pendingPayment';
   program?: string;
   receiptUrl?: string;
   paymentType?: string;

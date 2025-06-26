@@ -10,7 +10,7 @@ interface StudentRecord {
   img: string;
   bio: string;
   contact: string;
-  status: 'registered' | 'pending' | 'enrolled';
+  status: 'registered' | 'pending' | 'enrolled' | 'pendingPayment';
   program?: string;
   receiptUrl?: string;
   paymentType?: string;
@@ -24,7 +24,8 @@ interface ArchivePrompt {
 
 interface CardStudentListProps {
   students: StudentRecord[];
-  onViewPending: (application: PendingApplication) => void;
+  onViewProfile?: (student: StudentRecord) => void;
+  onViewPending?: (application: PendingApplication) => void;
   setProfileModal: React.Dispatch<React.SetStateAction<{
     name: string;
     email: string;
@@ -33,14 +34,19 @@ interface CardStudentListProps {
     contact?: string;
     type?: 'instructor' | 'student';
   } | null>>;
-  setArchivePrompt: React.Dispatch<React.SetStateAction<ArchivePrompt | null>>;
+  setArchivePrompt?: React.Dispatch<React.SetStateAction<ArchivePrompt | null>>;
+  variant?: 'default' | 'registeredOnly';
+  onAllowPayment?: (studentEmail: string, studentName: string) => void;
 }
 
 export default function CardStudentList({
   students,
+  onViewProfile,
   onViewPending,
   setProfileModal,
   setArchivePrompt,
+  variant = 'default',
+  onAllowPayment,
 }: CardStudentListProps) {
   if (students.length === 0) {
     return <li className="text-gray-500 italic text-sm p-4">No students found.</li>;
@@ -55,7 +61,13 @@ export default function CardStudentList({
         >
           <div
             className="flex items-center flex-grow cursor-pointer"
-            onClick={() => setProfileModal({ ...record, type: 'student' })}
+            onClick={() => {
+              if (onViewProfile) {
+                onViewProfile(record);
+              } else {
+                setProfileModal({ ...record, type: 'student' });
+              }
+            }}
             aria-label={`View profile of ${record.name}`}
           >
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-[#08228d] flex-shrink-0">
@@ -79,12 +91,18 @@ export default function CardStudentList({
           </div>
 
           <div className="flex items-center gap-2">
-            {record.status === 'pending' && record.receiptUrl && record.program ? (
+            {variant === 'registeredOnly' ? (
+              record.status === 'pendingPayment' ? (
+                <span className="ml-auto bg-yellow-400 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold">Pending Payment</span>
+              ) : (
+                <span className="ml-auto bg-blue-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold">Registered</span>
+              )
+            ) : record.status === 'pending' && record.receiptUrl && record.program ? (
               <button
                 className="ml-auto bg-yellow-400 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-yellow-500 cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onViewPending({
+                  onViewPending && onViewPending({
                     name: record.name,
                     email: record.email,
                     receiptUrl: record.receiptUrl ?? '',
@@ -94,22 +112,29 @@ export default function CardStudentList({
                   });
                 }}
               >
-                Pending Application
+                Pending Confirmation
               </button>
             ) : record.status === 'enrolled' ? (
-              <span className="ml-auto bg-green-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold">Enrolled</span>
+              <span className="ml-auto flex items-center gap-2">
+                <span className="bg-green-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold">Enrolled</span>
+                {record.paymentType && record.paymentType.toLowerCase() === 'down payment' && (
+                  <span className="bg-yellow-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold">Down Payment</span>
+                )}
+              </span>
             ) : (
               <span className="ml-auto bg-gray-400 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold">Registered</span>
             )}
-            <button
-              className="ml-2 bg-red-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-red-700 cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                setArchivePrompt({ open: true, type: 'student', name: record.name });
-              }}
-            >
-              Archive
-            </button>
+            {variant !== 'registeredOnly' && (
+              <button
+                className="ml-2 bg-red-500 text-white px-2 sm:px-3 py-1 rounded text-xs font-semibold hover:bg-red-700 cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setArchivePrompt && setArchivePrompt({ open: true, type: 'student', name: record.name });
+                }}
+              >
+                Archive
+              </button>
+            )}
           </div>
         </li>
       ))}

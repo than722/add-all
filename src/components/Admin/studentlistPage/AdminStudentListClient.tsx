@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import StudentsSection from './StudentSection';
 import Profile from '@/components/ui/Modals/ProfileModals/profileview';
 import PendingModal from '@/components/ui/Modals/AdminModals/pendingModal';
-import ArchiveModal from '@/components/ui/Modals/AdminModals/archiveModal'; // Import ArchiveModal
+import ArchiveModal from '@/components/ui/Modals/AdminModals/archiveModal';
 
 import {
   students as initialStudents,
@@ -19,7 +19,7 @@ interface StudentRecord {
   img: string;
   bio: string;
   contact: string;
-  status: 'registered' | 'pending' | 'enrolled';
+  status: 'registered' | 'pending' | 'enrolled' | 'pendingPayment';
   program?: string;
   receiptUrl?: string;
   paymentType?: string;
@@ -98,20 +98,18 @@ export default function AdminStudentListClient() {
   const [pendingModal, setPendingModal] = useState<PendingApplication | null>(null);
   const [pendingApps, setPendingApps] = useState<PendingApplication[]>(dummyPendingApps);
   const [archivedStudents, setArchivedStudents] = useState<string[]>([]);
-  const [archivePrompt, setArchivePrompt] = useState<ArchivePrompt | null>(null); // State for ArchiveModal
+  const [archivePrompt, setArchivePrompt] = useState<ArchivePrompt | null>(null);
 
-  const handleApproveApplication = (email: string, program: string) => {
+  const handleConfirm = (email: string, program: string, paymentType: string) => {
     setAllStudentRecords(prev =>
-      prev.map(record =>
-        record.email === email && record.program === program && record.status === 'pending'
-          ? { ...record, status: 'enrolled' }
-          : record
+      prev.map(student =>
+        student.email === email && student.program === program
+          ? { ...student, status: 'enrolled', paymentType }
+          : student
       )
     );
     setPendingModal(null);
   };
-
-
 
   const handleViewStudentProfile = (student: StudentRecord) => {
     setProfileModal({
@@ -124,24 +122,22 @@ export default function AdminStudentListClient() {
     });
   };
 
-  // Handler for confirming student archive
   const handleArchiveStudent = (studentName: string) => {
     setArchivedStudents((prev) => [...prev, studentName]);
-    setArchivePrompt(null); // Close the archive modal
-
+    setArchivePrompt(null);
   };
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:p-6 md:p-8">
       <StudentsSection
         allStudentRecords={allStudentRecords}
-        onViewProfile={handleViewStudentProfile}
-        onViewPending={app => setPendingModal(app)}
+        onViewPending={(app: PendingApplication) => setPendingModal(app)}
         pendingApps={pendingApps}
         setPendingApps={setPendingApps}
         setProfileModal={setProfileModal}
         archivedStudents={archivedStudents}
-        setArchivePrompt={setArchivePrompt} // Pass setArchivePrompt to StudentsSection
+        setArchivePrompt={setArchivePrompt}
+        onViewProfile={handleViewStudentProfile}
       />
 
       {profileModal && (
@@ -157,11 +153,10 @@ export default function AdminStudentListClient() {
         <PendingModal
           pendingModal={pendingModal}
           onClose={() => setPendingModal(null)}
-          onConfirm={(email, program) => handleApproveApplication(email, program)}
+          onConfirm={handleConfirm}
         />
       )}
 
-      {/* Archive Modal for Students */}
       {archivePrompt && (
         <ArchiveModal
           isOpen={!!archivePrompt.open}
@@ -171,7 +166,7 @@ export default function AdminStudentListClient() {
             if (archivePrompt.type === 'student') {
               handleArchiveStudent(archivePrompt.name);
             }
-            setArchivePrompt(null); // Ensure modal closes after action
+            setArchivePrompt(null);
           }}
           onCancel={() => setArchivePrompt(null)}
         />

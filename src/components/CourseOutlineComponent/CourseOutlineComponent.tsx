@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { initialCourseOutline, moduleProgress, subsectionProgress } from '@/data/data';
 import ProgressCircle from '@/components/editcourseoutlineComponents/ProgressCircle';
+import CourseEvaluation from '@/components/CourseOutlineComponent/CourseEvaluation';
 import '@/styles/CourseOutlineStyle.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faComments } from '@fortawesome/free-solid-svg-icons';
@@ -13,7 +14,7 @@ interface CourseOutlineProps {
   backRoute: string;
   backLabel: string;
   welcomeMessage: string;
-  forumRoute: string;         
+  forumRoute: string;
   readOnly?: boolean;
 }
 
@@ -22,7 +23,7 @@ export default function CourseOutline({
   backRoute,
   backLabel,
   welcomeMessage,
-  forumRoute,                
+  forumRoute,
 }: CourseOutlineProps) {
   const router = useRouter();
   const [expandedModule, setExpandedModule] = useState<number | null>(initialCourseOutline[0]?.id || null);
@@ -30,6 +31,9 @@ export default function CourseOutline({
   const [selectedSubsection, setSelectedSubsection] = useState<{ modId: number; subId: number } | null>(null);
   const [search, setSearch] = useState('');
   const [courseOutline] = useState(initialCourseOutline);
+
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
 
   useEffect(() => {
     if (initialCourseOutline.length > 0) {
@@ -53,7 +57,6 @@ export default function CourseOutline({
       <aside className="course-outline-sidebar">
         <div className="flex flex-col sm:flex-row items-start sm:items-center mb-4 gap-3">
           <div className="flex space-x-2">
-            {/* Back Button */}
             <button
               onClick={() => router.push(backRoute)}
               className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg font-medium text-sm shadow-md hover:bg-blue-700 transition duration-300 transform hover:scale-105 cursor-pointer"
@@ -63,9 +66,8 @@ export default function CourseOutline({
               {backLabel}
             </button>
 
-            {/* Forum Button */}
             <button
-              onClick={() => router.push(forumRoute)}         
+              onClick={() => router.push(forumRoute)}
               className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg font-medium text-sm shadow-md hover:bg-green-700 transition duration-300 transform hover:scale-105 cursor-pointer"
               aria-label="Forum"
             >
@@ -87,59 +89,79 @@ export default function CourseOutline({
           className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 text-base focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
 
-        <ul className="flex-1 space-y-3 overflow-y-auto custom-scrollbar pr-2">
-          {filteredModules.length === 0 && (
-            <li className="text-gray-500 italic text-sm text-center py-4">No modules found matching your search.</li>
-          )}
-          {filteredModules.map((mod) => (
-            <li key={mod.id} className="border-b border-gray-200 pb-3 last:border-b-0 last:pb-0">
-              <button
-                className={`module-item-button ${selectedModule === mod.id ? 'selected' : ''}`}
-                onClick={() => {
-                  setExpandedModule(expandedModule === mod.id ? null : mod.id);
-                  setSelectedModule(mod.id);
-                  setSelectedSubsection(null);
-                }}
-              >
-                <div className="flex flex-col w-full space-y-1">
-                  <span className="text-base lg:text-lg break-words whitespace-normal">{mod.title}</span>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm text-blue-600 font-semibold">{moduleProgress[mod.id] || 0}%</span>
-                    <div className="w-20 bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-blue-500 h-2 rounded-full"
-                        style={{ width: `${moduleProgress[mod.id] || 0}%` }}
-                      />
+        <div className="flex flex-col space-y-3 overflow-y-auto custom-scrollbar pr-2">
+          <ul className="space-y-3">
+            {filteredModules.length === 0 && (
+              <li className="text-gray-500 italic text-sm text-center py-4">No modules found matching your search.</li>
+            )}
+            {filteredModules.map((mod) => (
+              <li key={mod.id} className="border-b border-gray-200 pb-3 last:border-b-0 last:pb-0">
+                <button
+                  className={`module-item-button ${selectedModule === mod.id ? 'selected' : ''}`}
+                  onClick={() => {
+                    setExpandedModule(expandedModule === mod.id ? null : mod.id);
+                    setSelectedModule(mod.id);
+                    setSelectedSubsection(null);
+                  }}
+                >
+                  <div className="flex flex-col w-full space-y-1">
+                    <span className="text-base lg:text-lg break-words whitespace-normal">{mod.title}</span>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm text-blue-600 font-semibold">{moduleProgress[mod.id] || 0}%</span>
+                      <div className="w-20 bg-gray-200 rounded-full h-2">
+                        <div
+                          className="bg-blue-500 h-2 rounded-full"
+                          style={{ width: `${moduleProgress[mod.id] || 0}%` }}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              </button>
-              {expandedModule === mod.id && (
-                <ul id={`module-subsections-${mod.id}`} className="mt-2 ml-4 border-l-2 border-blue-200 space-y-1 animate-fadeIn">
-                  {mod.subsections.map((sub) => (
-                    <li key={sub.id}>
-                      <button
-                        className={`subsection-item-button ${selectedSubsection?.modId === mod.id && selectedSubsection?.subId === sub.id ? 'selected' : ''}`}
-                        onClick={() => setSelectedSubsection({ modId: mod.id, subId: sub.id })}
-                      >
-                        <ProgressCircle percent={subsectionProgress[sub.id] || 0} />
-                        <div className="ml-3 flex-1 flex items-center justify-between">
-                          <span className="text-sm">{sub.title}</span>
-                          <span className="text-xs text-gray-500">{subsectionProgress[sub.id] || 0}%</span>
-                        </div>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
-        </ul>
+                </button>
+                {expandedModule === mod.id && (
+                  <ul id={`module-subsections-${mod.id}`} className="mt-2 ml-4 border-l-2 border-blue-200 space-y-1 animate-fadeIn">
+                    {mod.subsections.map((sub) => (
+                      <li key={sub.id}>
+                        <button
+                          className={`subsection-item-button ${selectedSubsection?.modId === mod.id && selectedSubsection?.subId === sub.id ? 'selected' : ''}`}
+                          onClick={() => setSelectedSubsection({ modId: mod.id, subId: sub.id })}
+                        >
+                          <ProgressCircle percent={subsectionProgress[sub.id] || 0} />
+                          <div className="ml-3 flex-1 flex items-center justify-between">
+                            <span className="text-sm">{sub.title}</span>
+                            <span className="text-xs text-gray-500">{subsectionProgress[sub.id] || 0}%</span>
+                          </div>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+
+          {/* Feedback Button - Placed Immediately After Module List */}
+          <div className="pt-4">
+            <button
+              onClick={() => setShowFeedbackForm(true)}
+              className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md font-medium text-sm shadow-md hover:bg-indigo-700 transition"
+            >
+              Give Course & Instructor Feedback
+            </button>
+          </div>
+        </div>
       </aside>
 
       {/* Main Content */}
       <main className="course-outline-main-content">
-        {selectedSub ? (
+        {showFeedbackForm ? (
+          <CourseEvaluation
+            onClose={() => setShowFeedbackForm(false)}
+            onSubmit={(feedback) => {
+              console.log('Feedback saved:', feedback);
+              setFeedbackSubmitted(true);
+            }}
+          />
+        ) : selectedSub ? (
           <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 max-w-3xl w-full animate-fadeInUp">
             <h3 className="text-2xl sm:text-3xl font-extrabold text-blue-800 mb-4 border-b pb-3 border-gray-200">
               {selectedSub.title}
@@ -175,6 +197,12 @@ export default function CourseOutline({
           <div className="text-gray-500 text-center mt-20 text-lg sm:text-xl p-6 rounded-lg bg-white shadow-md">
             <p className="mb-2">👋 Welcome!</p>
             <p>{welcomeMessage}</p>
+          </div>
+        )}
+
+        {feedbackSubmitted && (
+          <div className="fixed bottom-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-md">
+            ✅ Feedback submitted successfully!
           </div>
         )}
       </main>

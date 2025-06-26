@@ -14,7 +14,7 @@ interface PendingApplication {
   email: string;
   receiptUrl: string;
   paymentType: string;
-  status: 'pending' | 'enrolled';
+  status: 'pending' | 'enrolled' | 'pendingPayment' | 'pendingConfirmation';
 }
 
 interface ProgramActionsClientProps {
@@ -68,16 +68,22 @@ const ProgramActionsClient: React.FC<ProgramActionsClientProps> = ({ programName
 
   const handleEnrollmentSubmitted = (receiptFile: File, paymentType: string) => {
     const receiptUrl = URL.createObjectURL(receiptFile);
-    setPendingApps((prev) => [
-      ...prev,
-      {
-        name: currentStudent.name,
-        email: currentStudent.email,
-        receiptUrl,
-        paymentType,
-        status: 'pending',
-      },
-    ]);
+    setPendingApps((prev) => {
+      // Remove any previous pendingPayment for this student in this program
+      const filtered = prev.filter(
+        app => !(app.email === currentStudent.email && app.status === 'pendingPayment')
+      );
+      return [
+        ...filtered,
+        {
+          name: currentStudent.name,
+          email: currentStudent.email,
+          receiptUrl,
+          paymentType,
+          status: 'pendingConfirmation',
+        },
+      ];
+    });
     setIsEnrollOpen(false);
   };
 
@@ -126,6 +132,38 @@ const ProgramActionsClient: React.FC<ProgramActionsClientProps> = ({ programName
     (app) => app.email === currentStudent.email && app.status === 'enrolled'
   );
 
+  // Find if the current student has a pending payment status for this program
+  const studentPendingPayment = pendingApps.find(
+    (app) => app.email === currentStudent.email && app.status === 'pendingPayment'
+  );
+
+  // Simulate a pendingPayment status for the current student in 'Basic Soap Making' program
+  useEffect(() => {
+    if (decodedProgramName === 'Basic Soap Making') {
+      setPendingApps((prev) => {
+        // Only add if not already present
+        if (!prev.some(app => app.email === currentStudent.email && app.status === 'pendingPayment')) {
+          return [
+            ...prev,
+            {
+              name: currentStudent.name,
+              email: currentStudent.email,
+              receiptUrl: '',
+              paymentType: 'N/A',
+              status: 'pendingPayment',
+            },
+          ];
+        }
+        return prev;
+      });
+    }
+  }, [decodedProgramName, currentStudent.email, currentStudent.name]);
+
+  // Find if the current student has a pending confirmation status for this program
+  const studentPendingConfirmation = pendingApps.find(
+    (app) => app.email === currentStudent.email && app.status === 'pendingConfirmation'
+  );
+
   const isAdminLike = role === 'admin' || role === 'superadmin';
 
   return (
@@ -158,6 +196,14 @@ const ProgramActionsClient: React.FC<ProgramActionsClientProps> = ({ programName
             className="bg-yellow-600 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full hover:bg-yellow-700 transition text-sm sm:text-base cursor-pointer"
           >
             Edit Program
+          </button>
+          <button
+            className="bg-purple-600 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full hover:bg-purple-800 transition text-sm sm:text-base cursor-pointer"
+            onClick={() => {
+              window.location.href = `/${role}/programlist/${encodeURIComponent(programData.program)}/student-list`;
+            }}
+          >
+            View Students
           </button>
         </div>
       )}
@@ -201,7 +247,22 @@ const ProgramActionsClient: React.FC<ProgramActionsClientProps> = ({ programName
       {/* Student Buttons */}
       {role === 'student' && (
         <>
-          {studentPendingApp ? (
+          {studentPendingConfirmation ? (
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+              <span className="inline-block bg-blue-400 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full text-sm sm:text-base">
+                Pending Confirmation
+              </span>
+            </div>
+          ) : studentPendingPayment ? (
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+              <button
+                className="bg-green-600 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full hover:bg-green-700 transition text-sm sm:text-base cursor-pointer"
+                onClick={() => setIsEnrollOpen(true)}
+              >
+                Confirm Payment
+              </button>
+            </div>
+          ) : studentPendingApp ? (
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
               <span className="inline-block bg-yellow-400 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-full text-sm sm:text-base">
                 Pending Application

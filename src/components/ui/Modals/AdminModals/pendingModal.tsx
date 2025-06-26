@@ -15,7 +15,7 @@ interface PendingApplication {
 interface PendingModalProps {
   pendingModal: PendingApplication | null;
   onClose: () => void;
-  onConfirm: (email: string, program: string) => void;
+  onConfirm: (email: string, program: string, paymentType: string) => void;
  
 }
 
@@ -27,6 +27,7 @@ const PendingModal: React.FC<PendingModalProps> = ({
 }) => {
   const [showReceiptImage, setShowReceiptImage] = useState(false);
   const [showValidation, setShowValidation] = useState(false);
+  const [selectedPaymentType, setSelectedPaymentType] = useState<'full' | 'down' | null>(null);
 
   if (!pendingModal) return null;
 
@@ -40,7 +41,11 @@ const PendingModal: React.FC<PendingModalProps> = ({
 
   const handleFinalConfirmEnrollment = () => {
     setShowValidation(false); // Close validation modal
-    onConfirm(pendingModal.email, pendingModal.program);
+    onConfirm(
+      pendingModal.email,
+      pendingModal.program,
+      selectedPaymentType === 'down' ? 'down payment' : 'full payment'
+    );
     setShowReceiptImage(false); // Also hide receipt if it was open
   };
 
@@ -59,7 +64,7 @@ const PendingModal: React.FC<PendingModalProps> = ({
           >
             ✕
           </button>
-          <h3 className="text-xl sm:text-2xl font-extrabold text-[#08228d] text-center mb-2">Pending Application</h3>
+          <h3 className="text-xl sm:text-2xl font-extrabold text-[#08228d] text-center mb-2">Pending Confirmation</h3>
 
           <div className="text-center">
             <p className="font-bold text-[#08228d] text-lg sm:text-xl">{pendingModal.name}</p>
@@ -78,12 +83,21 @@ const PendingModal: React.FC<PendingModalProps> = ({
             View Receipt
           </button>
 
-          <button
-            className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-all duration-200 font-bold text-base sm:text-lg cursor-pointer shadow-md hover:shadow-lg"
-            onClick={() => setShowValidation(true)} // Show the validation modal
-          >
-            Confirm Enrollment
-          </button>
+          {/* Payment Action Buttons */}
+          <div className="flex gap-4 w-full mt-2">
+            <button
+              className="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-all duration-200 font-bold text-base sm:text-lg cursor-pointer shadow-md hover:shadow-lg"
+              onClick={() => { setSelectedPaymentType('full'); setShowValidation(true); }}
+            >
+              Full Payment
+            </button>
+            <button
+              className="flex-1 bg-yellow-500 text-white py-3 rounded-lg hover:bg-yellow-600 transition-all duration-200 font-bold text-base sm:text-lg cursor-pointer shadow-md hover:shadow-lg"
+              onClick={() => { setSelectedPaymentType('down'); setShowValidation(true); }}
+            >
+              Down Payment
+            </button>
+          </div>
       
         </div>
       </div>
@@ -101,7 +115,10 @@ const PendingModal: React.FC<PendingModalProps> = ({
             </button>
             <h4 className="text-xl sm:text-2xl font-extrabold text-[#08228d] text-center mb-2">Confirm Enrollment</h4>
             <p className="text-gray-700 text-center text-sm sm:text-base">
-              Do you want to confirm the enrollment of Mr./Ms <span className="font-semibold">{pendingModal.name}</span>?
+              Do you want to confirm the enrollment of Mr./Ms <span className="font-semibold">{pendingModal.name}</span> as{' '}
+              <span className="font-semibold">
+                {selectedPaymentType === 'full' ? 'Full Payment' : selectedPaymentType === 'down' ? 'Down Payment' : ''}?
+              </span>
             </p>
             <div className="flex gap-4 sm:gap-6 justify-center">
               <button

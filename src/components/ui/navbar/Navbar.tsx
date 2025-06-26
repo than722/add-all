@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Profile from '../Modals/ProfileModals/profileview';
 import SignInModal from '../Modals/signin';
+import RegisterModal from '../Modals/HeroSectionModals/registration';
 import { useAuth } from '@/components/contexts/authContext';
 
 interface NavLink {
@@ -22,20 +23,17 @@ export default function Navbar() {
 
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showSignInModal, setShowSignInModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
 
   useEffect(() => {
     console.log('Navbar: Rendered with role:', role);
   }, [role]);
 
-  const handleScrollNavigation = (targetId: string) => {
-    router.push(`/?scrollTo=${targetId}`);
-    setNavOpen(false);
-  };
-
   const navLinks: Record<string, NavLink[]> = {
     superadmin: [
       { label: 'Home', href: '/' },
+      { label: 'Announcements', href: '/announcements' },
       { label: 'Instructors', href: '/superadmin/instructorlist', anchor: true },
       { label: 'Students', href: '/superadmin/studentlist', anchor: true },
       { label: 'Programs', href: '/superadmin/programlist', anchor: true },
@@ -44,6 +42,7 @@ export default function Navbar() {
     ],
     admin: [
       { label: 'Home', href: '/' },
+      { label: 'Announcements', href: '/announcements' },
       { label: 'Programs List', onClick: () => router.push('/admin/programlist') },
       { label: 'Instructors', onClick: () => router.push('/admin/instructorlist') },
       { label: 'Students', onClick: () => router.push('/admin/studentlist') },
@@ -51,30 +50,36 @@ export default function Navbar() {
     ],
     instructor: [
       { label: 'Home', href: '/' },
+      { label: 'Announcements', href: '/announcements' },
       { label: 'Assigned Programs', onClick: () => router.push('/instructor/assignedprograms') },
       { label: 'General Forum', href: '/generalforum' },
     ],
     student: [
       { label: 'Home', href: '/' },
+      { label: 'Announcements', href: '/announcements' },
       { label: 'All Programs', onClick: () => router.push('/student/allprograms') },
       { label: 'My Programs', onClick: () => router.push('/student/myprograms') },
       { label: 'General Forum', href: '/generalforum' },
     ],
     guest: [
       { label: 'Home', href: '/' },
+      { label: 'Announcements', href: '/announcements' },
       { label: 'Vision', href: '/vision' },
       { label: 'About Us', href: '/aboutus' },
       { label: 'General Forum', href: '/generalforum' },
+      { label: 'Programs Offered', href: '/programsoffered' },
     ],
     default: [
       { label: 'Home', href: '/' },
+      { label: 'Announcements', href: '/announcements' },
       { label: 'Vision', href: '/vision' },
       { label: 'About Us', href: '/aboutus' },
       { label: 'General Forum', href: '/generalforum' },
+      { label: 'Programs Offered', href: '/programsoffered' },
     ],
   };
 
-  const profileConfig: Record<string, { profile: { name: string; email: string; img: string; bio: string; type?: 'student' | 'instructor' }, isAdmin: boolean }> = {
+  const profileConfig: Record<string, any> = {
     superadmin: { profile: { name: 'Super Admin', email: 'superadmin@example.com', img: '/profileicon.png', bio: 'Super Administrator' }, isAdmin: true },
     admin: { profile: { name: 'Admin', email: 'admin@example.com', img: '/profileicon.png', bio: 'Admin at ADD-ALL' }, isAdmin: true },
     instructor: { profile: { name: 'Mrs. Dela Cruz', email: 'instructor@example.com', img: '/profileicon.png', bio: 'Instructor at ADD-ALL', type: 'instructor' }, isAdmin: false },
@@ -90,34 +95,40 @@ export default function Navbar() {
       role === 'guest' ? navLinks.guest :
       navLinks.default;
 
-    return links.map((link, i) => {
-      if (link.href && !link.onClick) {
-        return (
-          <Link
-            key={i}
-            href={link.href}
-            className="text-white font-extrabold hover:text-[#FFC72C] text-base py-1 px-2 cursor-pointer"
-            onClick={isMobile ? () => setNavOpen(false) : undefined}
-          >
-            {link.label}
-          </Link>
-        );
+    return links.flatMap((link, i) => {
+      const commonClass = `text-white font-extrabold hover:text-[#FFC72C] ${isMobile ? 'text-base py-1 px-2' : 'text-sm py-1 px-1'} cursor-pointer whitespace-nowrap`;
+
+      const linkElement = link.href && !link.onClick ? (
+        <Link
+          key={i}
+          href={link.href}
+          className={commonClass}
+          onClick={isMobile ? () => setNavOpen(false) : undefined}
+        >
+          {link.label}
+        </Link>
+      ) : (
+        <button
+          key={i}
+          onClick={() => {
+            link.onClick && link.onClick();
+            if (isMobile) setNavOpen(false);
+          }}
+          className={`${commonClass} bg-transparent border-none text-left`}
+        >
+          {link.label}
+        </button>
+      );
+
+      // Optional visual separator for Superadmin
+      if (role === 'superadmin' && link.label === 'Programs' && !isMobile) {
+        return [
+          linkElement,
+          <span key={`divider-${i}`} className="mx-2 border-l border-white h-4" />,
+        ];
       }
-      if (link.onClick) {
-        return (
-          <button
-            key={i}
-            onClick={() => {
-              link.onClick && link.onClick();
-              if (isMobile) setNavOpen(false);
-            }}
-            className="text-white font-extrabold hover:text-[#FFC72C] text-base py-1 px-2 cursor-pointer bg-transparent border-none text-left"
-          >
-            {link.label}
-          </button>
-        );
-      }
-      return null;
+
+      return linkElement;
     });
   };
 
@@ -145,7 +156,8 @@ export default function Navbar() {
             </div>
           </div>
 
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-10">
+          {/* Center Navigation Links */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-x-6 items-center whitespace-nowrap text-sm">
             {renderLinks(false)}
           </div>
 
@@ -229,7 +241,20 @@ export default function Navbar() {
       )}
 
       {(!role || role === 'guest') && (
-        <SignInModal isOpen={showSignInModal} onClose={() => setShowSignInModal(false)} />
+        <SignInModal
+          isOpen={showSignInModal}
+          onClose={() => {
+            setShowSignInModal(false);
+            setShowRegisterModal(true);
+          }}
+        />
+      )}
+
+      {showRegisterModal && (
+        <RegisterModal
+          isOpen={showRegisterModal}
+          onClose={() => setShowRegisterModal(false)}
+        />
       )}
     </>
   );

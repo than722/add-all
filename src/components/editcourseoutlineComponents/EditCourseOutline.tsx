@@ -2,11 +2,14 @@
 
 import React, { useState, useMemo } from 'react';
 import { initialCourseOutline, moduleProgress, subsectionProgress } from '@/data/data';
-import Sidebar from '@/components/editcourseoutlineComponents/Sidebar'; // Explicit .tsx extension
+import Sidebar from '@/components/editcourseoutlineComponents/Sidebar';
 import ContentArea from '@/components/editcourseoutlineComponents/ContentArea';
 // Import the delete modals
-import DeleteModuleModal from '@/components/ui/Modals/AdminModals/DeleteModuleModal'; // Explicit .tsx extension
-import DeleteSubsectionModal from '@/components/ui/Modals/AdminModals/DeleteSubsectionModal'; // Explicit .tsx extension
+import DeleteModuleModal from '@/components/ui/Modals/AdminModals/DeleteModuleModal';
+import DeleteSubsectionModal from '@/components/ui/Modals/AdminModals/DeleteSubsectionModal';
+// Import the new, separated EditEvaluationFeedbackModal
+import EditEvaluationFeedbackModal, { FeedbackQuestion } from '@/components/ui/Modals/AdminModals/EditEvaluationFeedbackModal'; // Corrected import path
+import { evaluationQuestions as initialQuestions } from '@/data/CourseEvaluationData';
 
 interface ContentBlock {
   id: number;
@@ -69,6 +72,11 @@ export default function EditCourseOutline({
   const [showDeleteSubsectionModal, setShowDeleteSubsectionModal] = useState(false);
   const [subsectionToDelete, setSubsectionToDelete] = useState<{ modId: number; subId: number; title: string } | null>(null);
 
+  // Feedback/Evaluation state - now using the correct union type for 'type'
+  const [showEditFeedback, setShowEditFeedback] = useState(false);
+  const [feedbackQuestions, setFeedbackQuestions] = useState<FeedbackQuestion[]>(
+    initialQuestions.map(q => ({ ...q, type: q.type as 'rating' | 'text' | 'likert' })) // Explicitly include 'likert'
+  );
 
   const filteredModules = useMemo(
     () =>
@@ -276,12 +284,20 @@ export default function EditCourseOutline({
                 <span className="ml-4 text-green-600 font-semibold">{saveMessage}</span>
               )}
             </div>
-            <button
-              onClick={handleSave}
-              className="bg-green-600 text-white py-2 px-6 rounded-full hover:bg-green-700 transition font-semibold cursor-pointer"
-            >
-              Save All Changes
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowEditFeedback(true)}
+                className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition font-semibold cursor-pointer"
+              >
+                Edit Feedback Questions
+              </button>
+              <button
+                onClick={handleSave}
+                className="bg-green-600 text-white py-2 px-6 rounded-full hover:bg-green-700 transition font-semibold cursor-pointer"
+              >
+                Save All Changes
+              </button>
+            </div>
           </div>
 
           <ContentArea
@@ -306,6 +322,14 @@ export default function EditCourseOutline({
           />
         </div>
       </div>
+
+      {/* Edit Evaluation Feedback Modal - Rendered at the top level */}
+      <EditEvaluationFeedbackModal
+        isOpen={showEditFeedback}
+        onClose={() => setShowEditFeedback(false)}
+        questions={feedbackQuestions}
+        setQuestions={setFeedbackQuestions}
+      />
 
       {/* Delete Module Confirmation Modal - Rendered at the top level */}
       <DeleteModuleModal

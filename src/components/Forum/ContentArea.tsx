@@ -13,7 +13,7 @@ interface ContentAreaProps {
   comments: Comment[];
   handlePostClick: (post: ForumPost) => void;
   handleAddComment: (postId: string, commentText: string, parentCommentId?: string) => void;
-  handleLikePost: (postId: string) => void;
+  handleLikePost: (postId: string, isLiked: boolean) => void;
   programsList: Program[];
   programName?: string;
   isGuest: boolean;
@@ -33,6 +33,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
   isGuest,
 }) => {
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [likedPosts, setLikedPosts] = useState<string[]>([]);
 
   const renderReplies = (parentId: string, depth: number, postId: string): React.ReactNode => {
     if (depth >= MAX_NESTING_DEPTH) return null;
@@ -55,7 +56,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
         {!isGuest && (
           <button
             onClick={() => setReplyingTo(reply.id)}
-            className="text-xs text-blue-600 hover:underline mt-1"
+            className="text-xs text-blue-600 hover:underline mt-1 cursor-pointer"
           >
             <FontAwesomeIcon icon={faReply} className="mr-1" />
             Reply
@@ -80,7 +81,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
                   setReplyingTo(null);
                 }
               }}
-              className="text-white bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded text-xs"
+              className="text-white bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded text-xs cursor-pointer"
             >
               Post Reply
             </button>
@@ -110,9 +111,15 @@ const ContentArea: React.FC<ContentAreaProps> = ({
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleLikePost(post.id);
+                          if (likedPosts.includes(post.id)) {
+                            setLikedPosts((prev) => prev.filter((id) => id !== post.id));
+                            handleLikePost(post.id, false); // Unlike
+                          } else {
+                            setLikedPosts((prev) => [...prev, post.id]);
+                            handleLikePost(post.id, true); // Like
+                          }
                         }}
-                        className="hover:text-blue-500 transition-colors"
+                        className={`hover:text-blue-500 transition-colors cursor-pointer${likedPosts.includes(post.id) ? ' text-blue-600' : ' text-gray-500'}`}
                       >
                         <FontAwesomeIcon icon={faThumbsUp} size="lg" />
                       </button>
@@ -164,8 +171,17 @@ const ContentArea: React.FC<ContentAreaProps> = ({
               days ago
               <div className="flex items-center ml-4">
                 <button
-                  onClick={() => handleLikePost(selectedPost.id)}
-                  className="flex items-center text-gray-500 hover:text-blue-500 transition-colors"
+                  onClick={() => {
+                    if (likedPosts.includes(selectedPost.id)) {
+                      setLikedPosts((prev) => prev.filter((id) => id !== selectedPost.id));
+                      handleLikePost(selectedPost.id, false); // Unlike
+                    } else {
+                      setLikedPosts((prev) => [...prev, selectedPost.id]);
+                      handleLikePost(selectedPost.id, true); // Like
+                    }
+                  }}
+                  className={`flex items-center transition-colors cursor-pointer${likedPosts.includes(selectedPost.id) ? ' text-blue-600' : ' text-gray-500'} hover:text-blue-500`}
+                  disabled={likedPosts.includes(selectedPost.id)}
                 >
                   <FontAwesomeIcon icon={faThumbsUp} className="mr-1" />
                   <span className="font-bold">{selectedPost.likes}</span>
@@ -195,7 +211,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
                       textarea.value = '';
                     }
                   }}
-                  className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md"
+                  className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md cursor-pointer"
                 >
                   Post Comment
                 </button>
@@ -219,7 +235,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
                     {!isGuest && (
                       <button
                         onClick={() => setReplyingTo(comment.id)}
-                        className="text-xs text-blue-600 hover:underline mt-1"
+                        className="text-xs text-blue-600 hover:underline mt-1 cursor-pointer"
                       >
                         <FontAwesomeIcon icon={faReply} className="mr-1" />
                         Reply
@@ -244,7 +260,7 @@ const ContentArea: React.FC<ContentAreaProps> = ({
                               setReplyingTo(null);
                             }
                           }}
-                          className="text-white bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded text-xs"
+                          className="text-white bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded text-xs cursor-pointer"
                         >
                           Post Reply
                         </button>

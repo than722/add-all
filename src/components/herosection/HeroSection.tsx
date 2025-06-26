@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import React, { useState, useCallback } from 'react';
 import RegisterModal from '../ui/Modals/HeroSectionModals/registration';
 import InquireModal from '../ui/Modals/HeroSectionModals/InquireModal';
 import Image from 'next/image';
@@ -9,29 +8,7 @@ import Image from 'next/image';
 const HeroSection: React.FC = () => {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isInquireOpen, setIsInquireOpen] = useState(false);
-
   const isAnyModalOpen = isRegisterOpen || isInquireOpen;
-
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  // Automatically scroll if a scrollTarget param exists (from redirected links like /aboutus or /vision)
-  useEffect(() => {
-    const scrollTarget = searchParams.get('scrollTarget');
-    if (scrollTarget) {
-      const el = document.getElementById(scrollTarget);
-      if (el) {
-        setTimeout(() => {
-          el.scrollIntoView({ behavior: 'smooth' });
-        }, 100); // Small delay to ensure DOM is ready
-
-        // Remove the scrollTarget param from the URL after scrolling
-        const newUrl = `${pathname}`;
-        router.replace(newUrl);
-      }
-    }
-  }, [searchParams, pathname, router]);
 
   const scrollToPrograms = useCallback(() => {
     const element = document.getElementById('programs');
@@ -43,7 +20,6 @@ const HeroSection: React.FC = () => {
   return (
     <>
       <section className="relative min-h-screen flex items-center text-white px-3 sm:px-8 md:px-16 py-8 sm:py-12">
-        {/* Background Image and Overlay */}
         <div
           className="absolute inset-0 bg-[url('/landingpagebg.png')] bg-cover bg-center z-0"
           style={{
@@ -56,7 +32,6 @@ const HeroSection: React.FC = () => {
           style={{ display: isAnyModalOpen ? 'none' : 'block' }}
         />
 
-        {/* Content Section */}
         <div
           className="relative z-20 flex flex-col lg:flex-row justify-between items-start w-full max-w-7xl mx-auto gap-6 sm:gap-10"
           style={{
@@ -64,28 +39,15 @@ const HeroSection: React.FC = () => {
             transition: 'filter 0.3s ease',
           }}
         >
-          {/* Left Text Content */}
           <div className="flex-1 space-y-4 sm:space-y-6">
             <div className="space-y-1 sm:space-y-2">
-              <h1 className="text-2xl sm:text-4xl md:text-5xl font-light italic text-gray-200 drop-shadow font-inter">
-                Upskill.
-              </h1>
-              <h1
-                className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-transparent drop-shadow-md font-inter"
-                style={{ WebkitTextStroke: '1px #ccc' }}
-              >
-                RESKILL.
-              </h1>
-              <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-gray-200 drop-shadow font-inter">
-                CROSSKILL.
-              </h1>
+              <h1 className="text-2xl sm:text-4xl md:text-5xl font-light italic text-gray-200 drop-shadow font-inter">Upskill.</h1>
+              <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-transparent drop-shadow-md font-inter" style={{ WebkitTextStroke: '1px #ccc' }}>RESKILL.</h1>
+              <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-gray-200 drop-shadow font-inter">CROSSKILL.</h1>
             </div>
             <p className="text-xs sm:text-sm md:text-lg text-gray-100 leading-relaxed drop-shadow-sm max-w-xl font-inter">
-              Lifelong learning institutes empower adults to gain skills for personal growth,
-              professional development, active citizenship, and better employability—making them vital,
-              ever-expanding educational spaces. Aligned with these principles, the
-              <strong className="text-[#FFC72C]"> Ateneo de Davao Academy of Lifelong Learning (ADD-ALL)</strong> offers open courses for
-              learners aged 25 and above...
+              Lifelong learning institutes empower adults to gain skills for personal growth, professional development, active citizenship, and better employability—making them vital,
+              ever-expanding educational spaces. Aligned with these principles, the <strong className="text-[#FFC72C]">Ateneo de Davao Academy of Lifelong Learning (ADD-ALL)</strong> offers open courses for learners aged 25 and above...
             </p>
             <div className="flex flex-wrap gap-3 sm:gap-4">
               <button
@@ -103,7 +65,6 @@ const HeroSection: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Image Section */}
           <div className="flex-1 grid grid-rows-3 gap-2 sm:gap-4 w-full max-w-md sm:max-w-none mt-6 lg:mt-0">
             <Image src="/add-all image 1.jpg" alt="ADD-ALL 1" width={600} height={240} className="rounded-xl shadow-lg w-full h-32 sm:h-44 md:h-60 object-cover" />
             <Image src="/add-all image 2.jpg" alt="ADD-ALL 2" width={600} height={240} className="rounded-xl shadow-lg w-full h-32 sm:h-44 md:h-60 object-cover" />

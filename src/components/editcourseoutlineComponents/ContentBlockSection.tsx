@@ -84,13 +84,13 @@ const ContentBlockSection: React.FC<ContentBlockSectionProps> = ({
               className="bg-[#2d208a] text-white px-4 py-2 rounded font-semibold cursor-pointer"
               onClick={() => setAddingContentType('text')}
             >
-              + Add Text Block
+              + Add Text
             </button>
             <button
               className="bg-[#2d208a] text-white px-4 py-2 rounded font-semibold cursor-pointer"
               onClick={() => setAddingContentType('video')}
             >
-              + Add Video Block
+              + Add Video
             </button>
           </>
         )}
