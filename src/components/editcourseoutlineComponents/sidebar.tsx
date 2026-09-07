@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, Dispatch, SetStateAction } from 'react';
-import ProgressCircle from './ProgressCircle';
+import ProgressCircle from './progressCircle';
 import styles from '../../styles/EditCourseOutlineStyle.module.css';
 // Removed modal imports as they are now handled by the parent component
 

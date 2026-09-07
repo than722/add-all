@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { initialCourseOutline, moduleProgress, subsectionProgress } from '@/data/data';
-import ProgressCircle from '@/components/editcourseoutlineComponents/ProgressCircle';
+import ProgressCircle from '@/components/editcourseoutlineComponents/progressCircle';
 import CourseEvaluation from '@/components/CourseOutlineComponent/CourseEvaluation';
 import '@/styles/CourseOutlineStyle.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

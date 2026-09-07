@@ -2,8 +2,8 @@
 
 import React, { useState, useMemo } from 'react';
 import { initialCourseOutline, moduleProgress, subsectionProgress } from '@/data/data';
-import Sidebar from '@/components/editcourseoutlineComponents/Sidebar';
-import ContentArea from '@/components/editcourseoutlineComponents/ContentArea';
+import Sidebar from '@/components/editcourseoutlineComponents/sidebar';
+import ContentArea from '@/components/editcourseoutlineComponents/contentArea';
 // Import the delete modals
 import DeleteModuleModal from '@/components/ui/Modals/AdminModals/DeleteModuleModal';
 import DeleteSubsectionModal from '@/components/ui/Modals/AdminModals/DeleteSubsectionModal';
