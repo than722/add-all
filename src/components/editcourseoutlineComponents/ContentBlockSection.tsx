@@ -1,6 +1,6 @@
 import React from 'react';
-import ContentBlockEditor from './ContentBlockEditor';
-import ContentBlockDisplay from './ContentBlockDisplay';
+import ContentBlockEditor from './contentblockEditor';
+import ContentBlockDisplay from './contentblockDisplay';
 import AddContentBlock from './AddContentBlock';
 
 interface ContentBlock {
